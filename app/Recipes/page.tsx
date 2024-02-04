@@ -9,14 +9,18 @@ async function getRecipes() {
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&type=${mealType}&maxReadyTime=${maxReadyTime}&instructionsRequired=true&addRecipeInformation=true&addRecipeNutrition=true&number=10`,
         {cache: "no-store"}
         );
+    if (!response.ok) {
+        throw new Error("Failed to fetch recipes.");
+    }
     const data = await response.json();
     console.log(data);
     const results = data?.results;
     ShuffleArray(results);
-    return data?.results;
+    return results;
 }
 
 function ShuffleArray(array : Array<Recipe>) {
+    if (!array?.length) {return;}
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const temp = array[i];
@@ -31,8 +35,8 @@ export default async function Recipes() {
 
     return (
         <>
-            {recipes.map((recipe : Recipe, key : Key) => {
-                return <div key={key}>
+            {recipes?.map((recipe : Recipe, _key : Key) => {
+                return <div key={_key}>
                         <h2>{recipe.title}</h2>
                         <div dangerouslySetInnerHTML={{__html: recipe.summary}}></div>
                     </div>

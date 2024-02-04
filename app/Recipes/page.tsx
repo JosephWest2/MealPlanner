@@ -1,4 +1,4 @@
-import { Key } from "react";
+import type { Key } from "react";
 
 async function getRecipes() {
     const apiKey = process.env.SPOONACULAR_API_KEY;
@@ -15,18 +15,7 @@ async function getRecipes() {
     const data = await response.json();
     console.log(data);
     const results = data?.results;
-    ShuffleArray(results);
     return results;
-}
-
-function ShuffleArray(array : Array<Recipe>) {
-    if (!array?.length) {return;}
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
 }
 
 export default async function Recipes() {

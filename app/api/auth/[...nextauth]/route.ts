@@ -4,9 +4,14 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prismaSingleton";
 import { compare } from "bcrypt";
+import type { Session, User } from "next-auth";
 
 
 export const authOptions : AuthOptions = {
+    pages: {
+      signIn: "/Login",
+      newUser: "/Register"
+    },
     session: { strategy: "jwt"},
     providers: [
         GoogleProvider({
@@ -34,7 +39,11 @@ export const authOptions : AuthOptions = {
                     return null;
                 }
 
-                const isPasswordValid = await compare(credentials.password, user.password || "");
+                if (!user.password) {
+                    return null;
+                }
+
+                const isPasswordValid = await compare(credentials.password, user.password);
 
                 if (!isPasswordValid) {
                     return null;
@@ -50,22 +59,55 @@ export const authOptions : AuthOptions = {
         })
     ],
     callbacks: {
+        async signIn({ user, profile }) {
+
+            if (profile && profile.email) {
+                await prisma.user.upsert({
+                    where: {
+                        email: profile.email,
+                    },
+                    create: {
+                        email: profile.email,
+                        name: profile.name,
+                    },
+                    update: {
+                        name: profile.name,
+                    },
+                })
+                return true;
+
+            } else if (user && user.email) {
+
+                return true;
+
+            } else {
+                throw new Error("User does not exist");
+            }
+        },
         session: ({ session, token }) => {
             return {
                 ...session,
                 user: {
                     ...session.user,
-                    id: token.id
+                    id: Number(token.id)
                 }
             }
         },
         jwt: ({ token, user }) => {
             if (user) {
-                token.id = user.id;
+                token.id = Number(user.id)
             }
             return token ;
         }
     }
+}
+
+export type MySession = Session & {
+    user: MyUser
+}
+
+export type MyUser = User & {
+    id: number
 }
 
 const handler = NextAuth(authOptions);

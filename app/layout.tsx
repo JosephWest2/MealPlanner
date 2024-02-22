@@ -5,6 +5,7 @@ import "./globals.css";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { Providers } from "./providers";
+import Cart from "@/components/cart/cart";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,6 +41,7 @@ export default async function RootLayout({
             <Link href="/Recipes">Recipes</Link>
             <p>{JSON.stringify(session)}</p>
             <Account session={session}></Account>
+            <Cart></Cart>
           </nav>
           <main>
             {children}

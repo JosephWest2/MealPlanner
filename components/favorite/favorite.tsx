@@ -11,6 +11,8 @@ export default function Favorite({recipeId, isFavorited} : {recipeId: number, is
 
     const [favorited, setFavorited] = useState(isFavorited);
 
+    console.log(isFavorited);
+
     function OnChange() {
         const newFavorte = !favorited;
         changeFavorite(recipeId, newFavorte);

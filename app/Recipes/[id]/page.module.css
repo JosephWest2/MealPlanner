@@ -79,7 +79,9 @@
 }
 .ingredient {
     padding: 0.5rem;
+    margin-left: 1rem;
 }
 .instruction {
     padding: 0.5rem;
+    margin-left: 1rem;
 }

@@ -8,7 +8,8 @@
     max-width: 700px;
     box-shadow: 2px 2px 7px grey;
 
-    
+    text-decoration: none;
+    color: inherit;
 }
 .favoriteButton {
     grid-column-start: 1;
@@ -25,6 +26,9 @@
     align-items: center;
     gap: 1rem;
 }
+.recipeHeader > * {
+    min-width: 2rem;
+}
 
 .recipeInfo {
     display: flex;
@@ -35,4 +39,23 @@
 .recipeSummary {
     grid-column-start: 1;
     grid-column-end: 3;
+}
+
+.viewRecipe {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 1rem;
+    background-color: rgb(226, 226, 226);
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+
+
+    transition: background-color 200ms linear;
+}
+.viewRecipe:hover {
+    cursor: pointer;
+    background-color: lightgrey;
 }

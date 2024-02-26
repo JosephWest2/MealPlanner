@@ -1,9 +1,10 @@
 import type { Key } from "react";
-import RecipeOverview from "@/components/recipe/recipeOverview";
+import Recipe from "@/components/recipe/recipe";
 import RecipeSearch from "@/components/recipeSearch/recipeSearch";
 import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 
 async function SearchRecipes(params: RecipeSearchParams) {
 
@@ -12,16 +13,23 @@ async function SearchRecipes(params: RecipeSearchParams) {
         params.showFavorites = "false";
     }
 
-    const apiKey = process.env.SPOONACULAR_API_KEY;
-    const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${params.searchString ? params.searchString : ""}&type=${params.mealType ? params.mealType : "main course"}&maxReadyTime=${params.maxReadyTime ? params.maxReadyTime : "30"}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=30`,
-    {next: {revalidate: 3600}});
-    if (!response.ok) {
-        console.log(response.status);
-        throw new Error("Failed to fetch recipes.");
+    const fileData = existsSync("./devData/devRecipes.json") ? readFileSync("./devData/devRecipes.json", "utf8") : null;
+    if (process.env.NODE_ENV === "development" && fileData) {
+        return JSON.parse(fileData);
+    } else {
+        const apiKey = process.env.SPOONACULAR_API_KEY;
+        const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${params.searchString ? params.searchString : ""}&type=${params.mealType ? params.mealType : "main course"}&maxReadyTime=${params.maxReadyTime ? params.maxReadyTime : "30"}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=5`,
+        {next: {revalidate: 3600}});
+        if (!response.ok) {
+            console.log(response.status);
+            throw new Error("Failed to fetch recipes.");
+        }
+        const data = await response.json();
+        writeFileSync("./devData/devRecipes.json", JSON.stringify(data.results), "utf8");
+        return data?.results;
     }
-    const data = await response.json();
-    console.log(data);
-    return data?.results;
+    
+
 }
 
 
@@ -37,16 +45,30 @@ export default async function Recipes({searchParams} : {searchParams: RecipeSear
         })
     }
 
-    
-    const recipes = await SearchRecipes(searchParams);
+    console.log(favorites);
+    const recipes = await SearchRecipes(searchParams) as Array<Recipe>;
+
 
     return (
         <>
             <RecipeSearch session={session}></RecipeSearch>
             {recipes?.map((recipe : Recipe, _key : Key) => {
-                return <div key={_key}>
-                        <RecipeOverview favorites={favorites} recipeData={recipe}></RecipeOverview>
+                if (session && session.user && searchParams.showFavorites === "true") {
+                    for (let i = 0; i < favorites.length; i++) {
+                        if (favorites[i].recipeId === recipe.id) {
+                            return <div key={_key}>
+                                <Recipe favorites={favorites} recipeData={recipe}></Recipe>
+                            </div>
+                        }
+                    }
+                    return <></>
+                    
+                } else {
+                    return <div key={_key}>
+                        <Recipe favorites={favorites} recipeData={recipe}></Recipe>
                     </div>
+                }
+                
             })}
         </>
         

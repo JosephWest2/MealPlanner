@@ -23,28 +23,41 @@ export default function RecipeSearch({session} : {session: Session | null}) {
 
     return (
         <form className={styles.recipeSearch} action={OnSubmit}>
-            <label htmlFor="search"></label>
-            <input className={styles.mainSearch} type="text" name="search" id="search" placeholder="Search..." defaultValue={searchString}/>
-            <label htmlFor="mealType">Meal Type</label>
-            <select name="mealType" id="mealType" defaultValue={mealType}>
-                <option value="main course">Main Course</option>
-                <option value="side dish">Side Dish</option>
-                <option value="dessert">Dessert</option>
-                <option value="appetizer">Appetizer</option>
-                <option value="salad">Salad</option>
-                <option value="bread">Bread</option>
-                <option value="breakfast">Breakfast</option>
-                <option value="soup">Soup</option>
-                <option value="beverage">Beverage</option>
-                <option value="sauce">Sauce</option>
-                <option value="marinade">Marinade</option>
-                <option value="fingerfood">Fingerfood</option>
-                <option value="snack">Snack</option>
-                <option value="drink">Drink</option>
-            </select>
-            <label htmlFor="maxReadyTime">Time to prepare</label>
-            {session && session.user ? <><label htmlFor="showFavorites">Favorites</label><input type="checkbox" name="showFavorites" id="showFavorites" value="true"/></> : <></>}
-            <input className={styles.timeToPrepare} type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={maxReadyTime}/>
+            <div>
+                <label htmlFor="search"></label>
+                <input className={styles.mainSearch} type="text" name="search" id="search" placeholder="Search..." defaultValue={searchString}/>
+            </div>            
+            <div>
+                <label htmlFor="mealType">Meal Type</label>
+                <select className={styles.mealType} name="mealType" id="mealType" defaultValue={mealType}>
+                    <option value="main course">Main Course</option>
+                    <option value="side dish">Side Dish</option>
+                    <option value="dessert">Dessert</option>
+                    <option value="appetizer">Appetizer</option>
+                    <option value="salad">Salad</option>
+                    <option value="bread">Bread</option>
+                    <option value="breakfast">Breakfast</option>
+                    <option value="soup">Soup</option>
+                    <option value="beverage">Beverage</option>
+                    <option value="sauce">Sauce</option>
+                    <option value="marinade">Marinade</option>
+                    <option value="fingerfood">Fingerfood</option>
+                    <option value="snack">Snack</option>
+                    <option value="drink">Drink</option>
+                </select>
+            </div>
+            <div>
+                <label htmlFor="maxReadyTime">Minutes to prepare</label>
+                <input className={styles.timeToPrepare} type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={maxReadyTime}/>
+            </div>
+            
+            {session && session.user ?
+                <div>
+                    <label htmlFor="showFavorites">Favorites</label>
+                    <input className={styles.showFavorites} type="checkbox" name="showFavorites" id="showFavorites" value="true"/>
+                </div> 
+                : <></>
+            }
             <input className={styles.submit} type="submit" value="Search"></input>
         </form>
     );

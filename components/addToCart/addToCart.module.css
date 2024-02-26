@@ -1,0 +1,13 @@
+.addToCart {
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid grey;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background-color: lightblue;
+    transition: background-color 200ms linear;
+}
+.addToCart:hover {
+    cursor: pointer;
+    background-color: rgb(120, 191, 214);
+}

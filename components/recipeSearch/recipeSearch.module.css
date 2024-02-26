@@ -8,10 +8,29 @@
     padding: 1rem;
     box-shadow: var(--grey-box-shadow);
 }
-.recipeSearch > input {
+.recipeSearch > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.recipeSearch input {
     padding: 0.5rem;
     border: 1px solid grey;
     border-radius: 0.5rem;
+}
+
+.mealType {
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+}
+
+.showFavorites {
+    border-radius: 0.5rem;
+    width: 1.2rem;
+    height: 1.2rem;
 }
 
 .mainSearch {

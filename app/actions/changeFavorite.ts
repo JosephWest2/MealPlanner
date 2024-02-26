@@ -32,7 +32,4 @@ export default async function changeFavorite(recipeId : number, isFavorited: boo
     }
 
     revalidatePath("/Recipes");
-    revalidatePath("/Recipes/[id]");
-
-    return;
 }

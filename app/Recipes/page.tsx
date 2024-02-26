@@ -120,3 +120,18 @@ export type Recipe = {
     spoonacularScore: Number,
     spoonacularSourceUrl: string
 }
+
+export type Nutrition = {
+    nutrients: []
+    properties: []
+    flavonoids: []
+    ingredients: Ingredient[]
+}
+
+export type Ingredient = {
+    id: number
+    name: string
+    amount: number
+    unit: string
+    nutrients: []
+}

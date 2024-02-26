@@ -1,18 +1,30 @@
-import { cookies } from "next/headers";
+"use client";
 
-export default async function Cart() {
+import { CartContext } from "@/components/cartProvider/cartProvider";
+import { useContext, useState, useEffect } from "react";
 
-    const cartCookie = cookies().get("cart");
+export default function Cart() {
 
-    if (cartCookie === undefined) {
+    const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart} = useContext(CartContext);
+
+
+    if (!cart || !cart.count) {
         return <p>Cart is empty</p>
     }
 
-    const cart = JSON.parse(cartCookie.value);
-
     return (<>
         <h2>Recipes</h2>
+        <ul>
+            {cart.recipes.map((recipe, _key: number) => (
+                <li key={_key}>{recipe.name} <button onClick={() => RemoveRecipeFromCart(recipe)}>Remove</button></li>
+            ))}
+        </ul>
         <h2>Ingredients</h2>
+        <ol>
+            {cart.ingredients.map((ingredient, _key: number) => (
+                <li key={_key}>{ingredient.name} {ingredient.amount} {ingredient.unit} <input type="checkbox" onClick={() => ToggleIngredientInclusion(ingredient)} checked={ingredient.included}/></li>
+            ))}
+        </ol>
     </>)
 
 }

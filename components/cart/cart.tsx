@@ -2,14 +2,15 @@
 
 import { useState, useEffect, useContext } from "react";
 import styles from "./cart.module.css";
-import cart from "./cart.png";
+import cartImage from "./cart.png";
 import Image from "next/image";
+import Link from "next/link";
 import { CartContext } from "@/components/cartProvider/cartProvider";
 
 export default function Cart() {
     const [cartItemCount, setCartItemCount] = useState(0);
 
-    const {cart, setCart} = useContext(CartContext);
+    const {cart, AddRecipeToCart} = useContext(CartContext);
 
     useEffect(() => {
         if (cart && cart.count) {
@@ -25,9 +26,14 @@ export default function Cart() {
     }
 
     return (
-        <div className={styles.cart}>
-            <Image src={cart} alt="cart"></Image>
-            {CartCount()}
-        </div>
+        <>
+        <Link href="/Cart">
+            <div className={styles.cart}>
+                <Image src={cartImage} alt="cart"></Image>
+                {CartCount()}
+            </div>
+        </Link>
+        </>
+        
     );
 }

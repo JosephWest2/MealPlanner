@@ -101,7 +101,7 @@ export type Recipe = {
     nutrition: any,
     sourceName: string,
     pricePerServing: Number,
-    extendedIngredients: [],
+    extendedIngredients: Ingredient[],
     id: number,
     title: string,
     readyInMinutes: Number,
@@ -121,14 +121,29 @@ export type Recipe = {
     spoonacularSourceUrl: string
 }
 
+export type Ingredient = {
+    id: number,
+    aisle: string,
+    image: string,
+    consistency: string,
+    name: string,
+    nameClean: string,
+    original: string,
+    originalName: string,
+    amount: number,
+    unit: string,
+    meta: [],
+    measures: [Object]
+}
+
 export type Nutrition = {
     nutrients: []
     properties: []
     flavonoids: []
-    ingredients: Ingredient[]
+    ingredients: NutritionIngredient[]
 }
 
-export type Ingredient = {
+export type NutritionIngredient = {
     id: number
     name: string
     amount: number

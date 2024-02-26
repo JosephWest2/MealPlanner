@@ -61,10 +61,6 @@ export default async function RecipeDetails({params} : {params: any}) {
     }
     
 
-    
-
-    
-
     return (
         <>
             <RecipeSearch session={session}></RecipeSearch>

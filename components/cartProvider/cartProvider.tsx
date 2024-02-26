@@ -25,10 +25,11 @@ export default function CartProvider({ children } : any) {
         }
         _cart.recipes.push({id: recipe.id, name: recipe.title, guid: guid});
         _cart.count++;
+        console.log(_cart);
         setCart(_cart);
     }
 
-    function RemoveRecipeFromCart(recipe: Recipe) {
+    function RemoveRecipeFromCart(recipe: Recipe | cartRecipe) {
         let _cart = {...cart};
         let guid = null;
         for (let i = 0; i < cart.recipes.length; i++) {
@@ -39,13 +40,18 @@ export default function CartProvider({ children } : any) {
             }
         }
         if (guid !== null) {
-            for (let i = 0; i < cart.ingredients.length; i++) {
+            let i = 0;
+            while (i < cart.ingredients.length) {
                 if (cart.ingredients[i].associatedRecipeGUID === guid) {
                     _cart.ingredients.splice(i, 1);
+                }
+                else {
+                    i++;
                 }
             }
         }
         _cart.count--;
+        console.log(_cart);
         setCart(_cart);
     }
 

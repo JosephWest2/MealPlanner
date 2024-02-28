@@ -10,7 +10,7 @@ import { CartContext } from "@/components/cartProvider/cartProvider";
 export default function Cart() {
     const [cartItemCount, setCartItemCount] = useState(0);
 
-    const {cart, AddRecipeToCart} = useContext(CartContext);
+    const {cart} = useContext(CartContext);
 
     useEffect(() => {
         if (cart && cart.count) {
@@ -18,22 +18,12 @@ export default function Cart() {
         }
     }, [cart])
 
-    function CartCount() {
-        if (!cart || !cart.count) {
-            return <></>
-        }
-        return <p>{cartItemCount}</p>
-    }
-
     return (
-        <>
         <Link href="/Cart">
             <div className={styles.cart}>
                 <Image src={cartImage} alt="cart"></Image>
-                {CartCount()}
+                <p>{cartItemCount}</p>
             </div>
         </Link>
-        </>
-        
     );
 }

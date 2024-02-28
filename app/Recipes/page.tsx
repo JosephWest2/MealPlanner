@@ -14,11 +14,11 @@ async function SearchRecipes(params: RecipeSearchParams) {
     }
 
     const fileData = existsSync("./devData/devRecipes.json") ? readFileSync("./devData/devRecipes.json", "utf8") : null;
-    if (process.env.NODE_ENV === "development" && fileData) {
+    if (false && process.env.NODE_ENV === "development" && fileData) {
         return JSON.parse(fileData);
     } else {
         const apiKey = process.env.SPOONACULAR_API_KEY;
-        const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${params.searchString ? params.searchString : ""}&type=${params.mealType ? params.mealType : "main course"}&maxReadyTime=${params.maxReadyTime ? params.maxReadyTime : "30"}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=5`,
+        const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${params.searchString ? params.searchString : ""}&type=${params.mealType ? params.mealType : "main course"}&maxReadyTime=${params.maxReadyTime ? params.maxReadyTime : "30"}&intolerances=${params.intolerances ? params.intolerances : ""}&diet=${params.diet ? params.diet : ""}&cuisine=${params.cuisine ? params.cuisine : ""}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=50`,
         {next: {revalidate: 3600}});
         if (!response.ok) {
             console.log(response.status);
@@ -47,6 +47,19 @@ export default async function Recipes({searchParams} : {searchParams: RecipeSear
 
     console.log(favorites);
     const recipes = await SearchRecipes(searchParams) as Array<Recipe>;
+    console.log(recipes[0]);
+    let unitsArray = existsSync("./devData/units.json") ? JSON.parse(readFileSync("./devData/units.json", "utf8")) : null;
+    let units = new Set<string>();
+    if (unitsArray) {
+        units = new Set<string>(unitsArray);
+    }
+    recipes.forEach((recipe: Recipe) => {
+        for (let i=0; i < recipe.nutrition.ingredients.length; i++) {
+            units.add(recipe.nutrition.ingredients[i].unit);
+        }
+    })
+    unitsArray = Array.from(units.values());
+    writeFileSync("./devData/units.json", JSON.stringify(unitsArray), "utf8");
 
 
     return (
@@ -78,7 +91,10 @@ type RecipeSearchParams = {
     searchString: string | undefined,
     mealType: string | undefined,
     maxReadyTime: Number | undefined,
-    showFavorites: string | undefined
+    showFavorites: string | undefined,
+    intolerances: string | undefined,
+    diet: string | undefined,
+    cuisine: string | undefined,
 }
 export type Recipe = {
     vegetarian: boolean,

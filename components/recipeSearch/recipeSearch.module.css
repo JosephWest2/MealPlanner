@@ -1,47 +1,133 @@
-.recipeSearch {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 1rem;
-    padding: 1rem;
+
+
+
+.recipeSearchContainer {
     box-shadow: var(--grey-box-shadow);
-}
-.recipeSearch > div {
+    border-radius: 1rem;
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    padding: 1rem;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
-.recipeSearch input {
+.searchForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+.searchForm input {
+    margin-right: 0.5rem;
+}
+.searchForm select {
+    margin-right: 0.5rem;
+}
+.intolerances {
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    gap: 0.3rem;
+    background-color: lightgray;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    text-align: right;
+}
+.intolerancesHeader {
+    text-align: center;
+    grid-column-start: 1;
+    grid-column-end: 7;
+}
+.intolerances input {
+    margin: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.toggleOptionsButton {
+    padding: 0.5rem 4rem;
+    border-radius: 1rem;
+    font-size: 1em;
+    border: none;
+    background-color: transparent;
+}
+.toggleOptionsButton:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+}
+.searchForm input {
     padding: 0.5rem;
     border: 1px solid grey;
     border-radius: 0.5rem;
 }
-
-.mealType {
+.select {
     border-radius: 0.5rem;
-    padding: 0.2rem;
+    padding: 0.4rem;
 }
-
 .showFavorites {
     border-radius: 0.5rem;
     width: 1.2rem;
     height: 1.2rem;
 }
-
 .mainSearch {
     width: 20rem;
 }
-
-.timeToPrepare {
+.numberInput {
     width: 4rem;
 }
-
 .submit:hover {
     cursor: pointer;
     background-color: lightgray;
+}
+.nutrientLimits {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.leftInput {
+    padding: 0.5rem;
+    border-radius: 1rem 0 0 1rem;
+    border: 1px solid grey;
+    height: 2.1rem;
+    margin-left: 1rem;
+}
+.middleInput {
+    height: 2.1rem;
+    padding: 0.5rem;
+    border-radius: 0;
+    border: 1px solid grey;
+    border-left: none;
+}
+.rightInput {
+    height: 2.1rem;
+    padding: 0.5rem;
+    border-radius: 0 1rem 1rem 0;
+    border: 1px solid grey;
+    border-left: none;
+}
+.rightInput:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+.nutrientRemoveButton {
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 1px solid grey;
+    border-radius: 0.3rem;
+    margin-left: 0.5rem;
+}
+.nutrientRemoveButton:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+.nutrientLimitsList {
+    margin-left: 1.3rem;
+}
+.units {
+    color: rgb(102, 102, 102)
 }

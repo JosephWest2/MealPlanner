@@ -10,7 +10,6 @@ import AddToCart from "@/components/addToCart/addToCart";
 
 export default async function RecipeDetails({params} : {params: any}) {
 
-
     async function GetRecipe() {
         const id = params.id;
         const fileData = existsSync("./devData/devRecipe.json") ? readFileSync("./devData/devRecipe.json", "utf8") : null;
@@ -63,8 +62,6 @@ export default async function RecipeDetails({params} : {params: any}) {
 
     return (
         <>
-            <RecipeSearch session={session}></RecipeSearch>
-    
             <div className={styles.recipe}>
                 
                 <div className={styles.header}>

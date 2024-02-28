@@ -36,7 +36,7 @@ function NormalizeUnit(amount: number, unit: string) {
 
 export default function Cart() {
 
-    const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart} = useContext(CartContext);
+    const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
 
     const [ingredients, setIngredients] = useState({} as any);
 
@@ -70,7 +70,7 @@ export default function Cart() {
         <h2>Ingredients</h2>
         <ol>
             {cart.ingredients.map((ingredient, _key: number) => (
-                <li key={_key}>{ingredient.name} {ingredient.amount} {ingredient.unit} <input type="checkbox" onClick={() => ToggleIngredientInclusion(ingredient)} checked={ingredient.included}/></li>
+                <li key={_key}>{ingredient.name} {ingredient.amount} {ingredient.unit} <input type="checkbox" onClick={() => ToggleIngredientInclusion(ingredient)} checked={ingredient.included}/> <input type="number" onChange={(e) => OverrideIngredient(ingredient, e.target.value)} /></li>
             ))}
         </ol>
         <ol>

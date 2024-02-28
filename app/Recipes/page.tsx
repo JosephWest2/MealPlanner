@@ -6,19 +6,21 @@ import { getServerSession } from "next-auth";
 import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 
-async function SearchRecipes(params: RecipeSearchParams) {
-
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-        params.showFavorites = "false";
-    }
+async function SearchRecipes(params: any) {
 
     const fileData = existsSync("./devData/devRecipes.json") ? readFileSync("./devData/devRecipes.json", "utf8") : null;
-    if (false && process.env.NODE_ENV === "development" && fileData) {
+    if (process.env.NODE_ENV === "development" && fileData) {
         return JSON.parse(fileData);
     } else {
         const apiKey = process.env.SPOONACULAR_API_KEY;
-        const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${params.searchString ? params.searchString : ""}&type=${params.mealType ? params.mealType : "main course"}&maxReadyTime=${params.maxReadyTime ? params.maxReadyTime : "30"}&intolerances=${params.intolerances ? params.intolerances : ""}&diet=${params.diet ? params.diet : ""}&cuisine=${params.cuisine ? params.cuisine : ""}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=50`,
+        let searchParamString = `?apiKey=${apiKey}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=50`;
+        params.searchString ? searchParamString += `&query=${params.searchString}` : "";
+        params.mealType ? searchParamString += `&type=${params.mealType}` : "&type=main course";
+        params.maxReadyTime ? searchParamString += `&maxReadyTime=${params.maxReadyTime}` : "&maxReadyTime=30";
+        params.intolerances ? searchParamString += `&intolerances=${params.intolerances}` : "";
+        params.diet ? searchParamString += `&diet=${params.diet}` : "";
+        params.cuisine ? searchParamString += `&cuisine=${params.cuisine}` : "";
+        const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch${searchParamString}`,
         {next: {revalidate: 3600}});
         if (!response.ok) {
             console.log(response.status);
@@ -28,10 +30,7 @@ async function SearchRecipes(params: RecipeSearchParams) {
         writeFileSync("./devData/devRecipes.json", JSON.stringify(data.results), "utf8");
         return data?.results;
     }
-    
-
 }
-
 
 export default async function Recipes({searchParams} : {searchParams: RecipeSearchParams}) {
 
@@ -60,7 +59,6 @@ export default async function Recipes({searchParams} : {searchParams: RecipeSear
     })
     unitsArray = Array.from(units.values());
     writeFileSync("./devData/units.json", JSON.stringify(unitsArray), "utf8");
-
 
     return (
         <>

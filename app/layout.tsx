@@ -39,6 +39,8 @@ export default async function RootLayout({
           <nav>
             <Link href="/">Home</Link>
             <Link href="/Recipes">Recipes</Link>
+            <Link href="https://www.amazon.com/ref=nosim?tag=jwest11-20" target="_blank">Amazon</Link>
+            <a target="_blank" href="https://www.amazon.com/b?_encoding=UTF8&tag=jwest11-20&linkCode=ur2&linkId=d04db934cb1440846d88f0db4e8d9b6d&camp=1789&creative=9325&node=7072561011">Top Cell Phones</a>
             <p>{JSON.stringify(session)}</p>
             <Account session={session}></Account>
             <Cart></Cart>

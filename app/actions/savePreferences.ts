@@ -4,10 +4,10 @@ import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
-import { EncodeNutrientLimits } from "@/app/account/page";
-import type { SearchParams, MySession } from "@/types";
+import { EncodeNutrientLimits } from "@/lib/getPreferences";
+import type { RecipeSearchParams, MySession } from "@/types";
 
-export default async function SavePreferences(preferences: SearchParams) {
+export default async function SavePreferences(preferences: RecipeSearchParams) {
 
     const session = await getServerSession(authOptions) as MySession;
 

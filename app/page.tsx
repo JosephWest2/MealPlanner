@@ -5,9 +5,10 @@ import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import type { SearchParamStrings, Recipe, MySession } from "@/types";
+import type { RecipeSearchParamStrings, Recipe, MySession } from "@/types";
+import { GetPreferences } from "@/lib/getPreferences";
 
-async function SearchRecipes(params: any) {
+async function SearchRecipes(params: RecipeSearchParamStrings) {
 
     const fileData = existsSync("./devData/devRecipes.json") ? readFileSync("./devData/devRecipes.json", "utf8") : null;
     if (process.env.NODE_ENV === "development" && fileData) {
@@ -15,7 +16,7 @@ async function SearchRecipes(params: any) {
     } else {
         const apiKey = process.env.SPOONACULAR_API_KEY;
         let searchParamString = `?apiKey=${apiKey}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=50`;
-        params.searchString ? searchParamString += `&query=${params.searchString}` : "";
+        params.query ? searchParamString += `&query=${params.query}` : "";
         params.mealType ? searchParamString += `&type=${params.mealType}` : "&type=main course";
         params.maxReadyTime ? searchParamString += `&maxReadyTime=${params.maxReadyTime}` : "&maxReadyTime=30";
         params.intolerances ? searchParamString += `&intolerances=${params.intolerances}` : "";
@@ -33,7 +34,7 @@ async function SearchRecipes(params: any) {
     }
 }
 
-export default async function Home({searchParams} : {searchParams: SearchParamStrings}) {
+export default async function Home({searchParams} : {searchParams: RecipeSearchParamStrings}) {
 
     const session = await getServerSession(authOptions) as MySession;
     let favorites = null as any;
@@ -61,11 +62,13 @@ export default async function Home({searchParams} : {searchParams: SearchParamSt
     unitsArray = Array.from(units.values());
     writeFileSync("./devData/units.json", JSON.stringify(unitsArray), "utf8");
 
+    const preferences = await GetPreferences(session);
+
     return (
         <>
-            <RecipeSearch session={session}></RecipeSearch>
+            <RecipeSearch session={session} preferences={preferences}></RecipeSearch>
             {recipes?.map((recipe : Recipe, _key : Key) => {
-                if (session && session.user && searchParams.showFavorites === "true") {
+                if (session && session.user && searchParams.onlyFavorites === "true") {
                     for (let i = 0; i < favorites.length; i++) {
                         if (favorites[i].recipeId === recipe.id) {
                             return <div key={_key}>

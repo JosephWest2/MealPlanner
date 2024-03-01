@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import type { Recipe, NormalizedUnitType, Cart, CartRecipe } from "@/types";
 import { Guid } from "js-guid";
 
-export const CartContext = createContext({cart: null, AddRecipeToCart: null, RemoveRecipeFromCart: null, ClearCart: null, ToggleIngredientInclusion: null, OverrideIngredient: null, CancelIngredientOverride: null});
+export const CartContext = createContext({cart: null as Cart | null, AddRecipeToCart: null as any, RemoveRecipeFromCart: null as any, ClearCart: null as any, ToggleIngredientInclusion: null as any, OverrideIngredient: null as any, CancelIngredientOverride: null as any});
 
 export default function CartProvider({ children } : any) {
     const [cookies, setCookie] = useCookies(["cart"]);

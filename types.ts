@@ -1,27 +1,28 @@
 import type { Session, User } from "next-auth"
 
 
-export type SearchParams = {
+export type RecipeSearchParams = {
     diet: string | null
     mealType: string | null
     intolerances: string[]
     cuisine: string | null
     maxReadyTime: number | null
-    nutrientLimits: NutrientLimit | null
+    nutrientLimits: NutrientLimits | null
 }
 
-export type NutrientLimit = {
+export type NutrientLimits = {
     [key: string]: number
 }
 
-export type SearchParamStrings = {
-    searchString: string | undefined,
+export type RecipeSearchParamStrings = {
+    query: string | undefined,
     mealType: string | undefined,
     maxReadyTime: Number | undefined,
-    showFavorites: string | undefined,
+    onlyFavorites: string | undefined,
     intolerances: string | undefined,
     diet: string | undefined,
     cuisine: string | undefined,
+    nutrientLimits: string | undefined
 }
 export type Recipe = {
     vegetarian: boolean,

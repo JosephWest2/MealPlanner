@@ -4,6 +4,7 @@ import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css"
+import type { CartRecipe, Cart } from "@/types";
 
 export default function Cart() {
 
@@ -14,7 +15,7 @@ export default function Cart() {
     }, []);
 
     const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
-
+    
     if (!cart || !isClient) {
         return <p>Cart is empty</p>
     }
@@ -24,7 +25,7 @@ export default function Cart() {
     return (<>
         <h2>Recipes</h2>
         <ul>
-            {cart.recipes.map((recipe, _key: number) => (
+            {cart.recipes.map((recipe: CartRecipe, _key: number) => (
                 <li key={_key}><Link href={`/recipes/${recipe.id}`}>{recipe.name}</Link> <button onClick={() => RemoveRecipeFromCart(recipe)}>Remove</button></li>
             ))}
         </ul>

@@ -6,9 +6,9 @@ import { optionMapping, unitMapping } from "@/components/client/recipeSearch/rec
 import { Session } from "next-auth";
 import SavePreferences from "@/app/actions/savePreferences";
 import { redirect } from "next/navigation";
-import type { SearchParams } from "@/types";
+import type { RecipeSearchParams } from "@/types";
 
-export default function PreferencesForm({session, initialPreferences} : {session: Session | null, initialPreferences: SearchParams}) {
+export default function PreferencesForm({session, initialPreferences} : {session: Session | null, initialPreferences: RecipeSearchParams}) {
 
     if (!session || !session.user) {
         redirect("/api/auth/signin");
@@ -45,8 +45,8 @@ export default function PreferencesForm({session, initialPreferences} : {session
         const limitName = formData.get("nutrientLimitName");
         const limitValue = formData.get("nutrientLimitValue");
         if (limitName && limitValue) {
-            const doc = document as any;
-            doc.getElementById("nutrientLimitValue").value = "";
+            const element = document.getElementById("nutrientLimitValue") as HTMLInputElement;
+            if (element) { element.value = "" }
             let _nutrientLimits = {...nutrientLimits};
 
             _nutrientLimits[optionMapping[limitName.toString()]] = limitValue + unitMapping[limitName.toString()];
@@ -211,8 +211,8 @@ export default function PreferencesForm({session, initialPreferences} : {session
                 <input className={styles.nutrientLimit} type="submit" value="Add"/>
             </form>
             <ul className={styles.nutrientList}>
-                {nutrientLimits ? Object.entries(nutrientLimits as any).map(([key, value]) => (
-                    <li key={key}>{key}: {value as string}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
+                {nutrientLimits ? Object.entries(nutrientLimits).map(([key, value]) => (
+                    <li key={key}>{key}: {value}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
                 )) : null}
             </ul>
             <button className={styles.saveButton} onClick={SavePreferencesLocal}>Save</button>

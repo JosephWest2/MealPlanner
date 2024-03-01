@@ -1,0 +1,22 @@
+.nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-shadow: var(--grey-box-shadow);
+}
+.navBox {
+    padding: 1.5rem 1.7rem;
+    height: 5rem;
+    border-right: 1px solid lightgrey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 200ms linear;
+    text-decoration: none;
+    color: inherit;
+    
+}
+.navBox:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}

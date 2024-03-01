@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.intolerances {
+    max-width: 300px;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(4, 1fr);
+}
+.intolerancesHeader {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    padding-bottom: 0.5rem;
+}
+.select {
+    margin-left: 0.5rem;
+    padding: 0.2rem;
+}
+.nutrientLimitForm {
+    display: flex;
+    flex-direction: row;
+}
+.nutrientLimitHeader {
+    margin-right: 1rem;
+}
+.nutrientLimit {
+    padding: 0.25rem;
+}
+.saveButton {
+    padding: 1rem;
+    border: 1px solid lightgrey;
+    transition: background-color 200ms linear;
+}
+.saveButton:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+.nutrientRemoveButton {
+    padding: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.5rem;
+}
+.nutrientList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    justify-content: center;
+}

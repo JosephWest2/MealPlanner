@@ -2,7 +2,7 @@
 
 import { createContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import type { Recipe, Ingredient } from "@/app/Recipes/page";
+import type { Recipe, Ingredient } from "@/app/page";
 import { Guid } from "js-guid";
 
 export const CartContext = createContext({cart: null as cart | null, AddRecipeToCart: null as any, RemoveRecipeFromCart: null as any, ClearCart: null as any, ToggleIngredientInclusion: null as any, OverrideIngredient: null as any, CancelIngredientOverride: null as any});
@@ -55,6 +55,7 @@ export default function CartProvider({ children } : any) {
                 ingredientInCart.recipeIngredients.push({amount: ingredient.amount, unit: ingredient.unit, recipeGUID: guid});
                 const normalized = NormalizeUnit(ingredient.amount, ingredient.unit);
                 ingredientInCart.totalAmount += normalized.amount;
+                ingredientInCart.totalAmount = Math.round(ingredientInCart.totalAmount);
                 ingredientInCart.unit = normalized.unitType || "";
             } else {
                 const normalized = NormalizeUnit(ingredient.amount, ingredient.unit);
@@ -91,6 +92,7 @@ export default function CartProvider({ children } : any) {
                     if (ingredient.recipeIngredients[i].recipeGUID === guid) {
                         const normalized = NormalizeUnit(ingredient.recipeIngredients[i].amount, ingredient.recipeIngredients[i].unit);
                         ingredient.totalAmount -= normalized.amount;
+                        ingredient.totalAmount = Math.round(ingredient.totalAmount);
                         ingredient.recipeIngredients.splice(i, 1);
                     } else {
                         i++;
@@ -126,7 +128,7 @@ export default function CartProvider({ children } : any) {
     function CancelIngredientOverride(ingredientName: string) {
         let _cart = {...cart};
         if (ingredientName in _cart.ingredients) {
-            _cart.ingredients[ingredientName].override = true;
+            _cart.ingredients[ingredientName].override = false;
             _cart.ingredients[ingredientName].overrideValue = null;
             setCart(_cart);
         }

@@ -10,15 +10,16 @@
 }
 
 .input {
-    padding: 0.5rem;
+    padding: 0.8rem;
     border: 1px solid grey;
     border-radius: 0.5rem;
 }
 
 .submit {
-    padding: 0.5rem;
+    padding: 0.8rem;
     border: 1px solid grey;
     border-radius: 0.5rem;
+    transition: background-color 200ms linear;
 }
 .submit:hover {
     cursor: pointer;

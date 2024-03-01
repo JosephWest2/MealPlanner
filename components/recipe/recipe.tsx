@@ -1,7 +1,7 @@
-import type { Recipe } from "../../app/Recipes/page";
-import Favorite from "../favorite/favorite";
+import type { Recipe } from "@/app/page";
+import Favorite from "@/components/favorite/favorite";
 import { getServerSession } from "next-auth";
-import { MySession, authOptions } from "../../app/api/auth/[...nextauth]/route";
+import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ProcessSummary } from "@/lib/processSummary";
 import Link from "next/link";
 import styles from "./recipe.module.css";
@@ -43,7 +43,7 @@ export default async function Recipe({recipeData, favorites} : {recipeData: Reci
             </div>
             
             <div className={styles.recipeSummary} dangerouslySetInnerHTML={{__html: ProcessSummary(recipeData.summary)}}></div>
-            <Link className={styles.viewRecipe} href={`/Recipes/${recipeData.id}`}>View Recipe</Link>
+            <Link className={styles.viewRecipe} href={`/recipes/${recipeData.id}`}>View Recipe</Link>
         </div>
     
 }

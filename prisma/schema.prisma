@@ -17,6 +17,13 @@ model User {
   name String?
   recipes RecipeRef[]
   cart Cart?
+
+  diet String?
+  mealType String?
+  intolerances String[]
+  cuisine String?
+  maxReadyTime Int?
+  nutrientLimits String?
 }
 
 model RecipeRef {

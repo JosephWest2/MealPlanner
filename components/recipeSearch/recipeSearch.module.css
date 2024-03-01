@@ -71,8 +71,18 @@
 }
 .showFavorites {
     border-radius: 0.5rem;
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.favoriteContainer {
+    border-radius: 1rem;
+    background-color: lightgrey;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.4rem 0.5rem;
+    font-size: medium;
 }
 .mainSearch {
     width: 20rem;
@@ -130,4 +140,16 @@
 }
 .units {
     color: rgb(102, 102, 102)
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.inputSet {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
 }

@@ -8,26 +8,6 @@
   --grey-box-shadow: 2px 2px 7px 3px lightgray;
 }
 
-nav {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid lightgrey;
-}
-
-nav > a {
-  padding: 1.5rem 2rem;
-  border-right: 1px solid lightgrey;
-
-  text-decoration: none;
-  color: inherit;
-
-  transition: background-color 300ms linear;
-}
-
-nav > a:hover {
-  background-color: lightgrey;
-}
-
 main {
   padding: 2rem;
   display: flex;

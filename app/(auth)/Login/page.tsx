@@ -24,6 +24,7 @@ export default function Login() {
             <label className={styles.label} htmlFor="password">Password</label>
             <input className={styles.input} type="password" name="password" id="password" />
             <input className={styles.submit} type="submit" value="Login"/>
+            <p>Don't have an account? <a href="/Register">Register</a></p>
         </form>
     );
 }

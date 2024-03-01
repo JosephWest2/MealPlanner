@@ -1,8 +1,7 @@
 .cart {
+    position: relative;
     width: 2rem;
     height: 2rem;
-    position: relative;
-    margin: 1rem;
 }
 
 .cart > img {

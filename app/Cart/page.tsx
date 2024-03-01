@@ -2,81 +2,76 @@
 
 import { CartContext } from "@/components/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
-import type { cart, cartIngredient } from "@/components/cartProvider/cartProvider";
-
-
-const masses = {"g": 1, "mg": 0.001, "lb": 453.592, "oz": 28.3495, "pounds": 453.592, "kg": 1000, "grams": 1, "ounce": 28.3495, "gram": 1, "ounces": 28.3495, "ozs": 28.3495, "gms": 1, "pound": 453.592} as any;
-const volumes = {"ml": 1, "l": 1000, "cup": 236.588, "cups": 236.588, "fl oz": 29.5735, "liters": 1000, "pint": 473.176, "quart": 946.353, "gallon": 3785.41, "milliliters": 1, "deciliters": 100, "deciliter": 100, "quarts": 946.353, "pints": 473.176, "drops": 0.05, "T": 15, "t": 5, "tsps": 5, "C": 240, "tbs": 15, "tbsp": 15, "tbsps": 15, "mls": 1} as any;
-const quantities = {"": 1, "piece": 0.5, "slice": 0.5, "ball": 1, "roll": 1, "servings": 1, "bunch": 1, "handful": 1, "scoop": 1, "strip": 1, "rib": 1, "stalk": 1, "head": 1, "small piece": 1, "handfuls": 1, "large cloves": 1, "loaf": 1, "stick": 1, "sheets": 1, "halves": 0.5, "glass": 1} as any;
-const pack = {"pack": 1, "bottle": 1, "can": 1, "package": 1, "cans": 1, "packet": 1, "jar": 1, "container": 1, "packets": 1, "box": 1, "pouch": 1, "pkg": 1,  "envelope": 1, "bag": 1} as any;
-type NormalizedUnitType = "g" | "mL" | "count" | "pack" | undefined
-
-function NormalizeUnit(amount: number, unit: string) {
-
-    let unitType: NormalizedUnitType = undefined;
-    let outputAmount: number;
-    if (unit in masses) {
-        unitType = "g";
-        outputAmount = amount * masses[unit];
-    } else if (unit in volumes) {
-        unitType = "mL"
-        outputAmount = amount * volumes[unit];
-    } else if (unit in quantities) {
-        unitType = "count"
-        outputAmount = amount * quantities[unit];
-    } else if (unit in pack) {
-        unitType = "pack"
-        outputAmount = amount * pack[unit];
-    } else {
-        outputAmount = amount;
-    }
-
-    return {amount: outputAmount, unitType: unitType}
-}
+import Link from "next/link";
+import styles from "./page.module.css"
 
 export default function Cart() {
 
-    const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
-
-    const [ingredients, setIngredients] = useState({} as any);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        if (!cart) return;
-        let _ingredients = {} as any;
-        for (let i = 0; i < cart.ingredients.length; i++) {
-            const ingredient = cart.ingredients[i];
-            const normalized = NormalizeUnit(ingredient.amount, ingredient.unit);
-            if (ingredient.name in _ingredients) {
-                _ingredients[ingredient.name].amount += normalized.amount;
-            } else {
-                _ingredients[ingredient.name] = {amount: normalized.amount, unitType: normalized.unitType, included: ingredient.included};
-            }
+        setIsClient(true);
+    }, []);
 
-        }
-        setIngredients(_ingredients);
-    }, [cart])
+    const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
 
-    if (!cart || !cart.count) {
+    if (!cart || !isClient) {
         return <p>Cart is empty</p>
     }
+
+    const ingredients = cart.ingredients;
 
     return (<>
         <h2>Recipes</h2>
         <ul>
             {cart.recipes.map((recipe, _key: number) => (
-                <li key={_key}>{recipe.name} <button onClick={() => RemoveRecipeFromCart(recipe)}>Remove</button></li>
+                <li key={_key}><Link href={`/recipes/${recipe.id}`}>{recipe.name}</Link> <button onClick={() => RemoveRecipeFromCart(recipe)}>Remove</button></li>
             ))}
         </ul>
         <h2>Ingredients</h2>
-        <ol>
-            {cart.ingredients.map((ingredient, _key: number) => (
-                <li key={_key}>{ingredient.name} {ingredient.amount} {ingredient.unit} <input type="checkbox" onClick={() => ToggleIngredientInclusion(ingredient)} checked={ingredient.included}/> <input type="number" onChange={(e) => OverrideIngredient(ingredient, e.target.value)} /></li>
-            ))}
-        </ol>
-        <ol>
-            {Object.keys(ingredients).map((ingredient, _key: number) => (
-                <li key={_key}>{ingredient} {ingredients[ingredient].amount} {ingredients[ingredient].unitType}</li>
-            ))}
+        <ol className={styles.ingredientContainer}>
+            {Object.keys(ingredients).map((ingredientName: string, _key: number) => {
+
+                const ingredient = ingredients[ingredientName];
+                let amount = <span>{ingredient.totalAmount}</span>
+                if (ingredient.override) {
+                    amount = <span style={{color: "red"}}>{ingredient.overrideValue}</span>
+                }
+
+                function FormAction (formData : FormData) {
+
+                    const doc = document as any;
+                    doc.getElementById("amount" + _key).value = "";
+
+                    const amount = formData.get("amount");
+                    if (amount) {
+                        OverrideIngredient(ingredientName, amount);
+                    } else {
+                        CancelIngredientOverride(ingredientName);
+                    }
+                }
+
+                let overrideAmountInput;
+                if (ingredient.override) {
+                    overrideAmountInput = <input className={styles.ingredientOverrideInput} id={"amount" + _key} name="amount" type="number" min="0" data-enabled="false" disabled/>
+                } else {
+                    overrideAmountInput = <input className={styles.ingredientOverrideInput} id={"amount" + _key} name="amount" type="number" min="0" />
+                }
+
+                return (
+                <li className={styles.ingredientItem} data-included={ingredient.included} key={_key}>
+                    <p>{ingredientName} {amount} {ingredient.unit}</p>
+                    <form className={styles.ingredientOverrideForm} action={FormAction}>
+                        {overrideAmountInput}
+                        <input className={styles.ingredientOverrideSubmit} data-override={ingredient.override} type="submit" value={ingredient.override ? "Cancel" : "Override"} />
+                    </form>
+                    <div>
+                        <label htmlFor="include">Include</label>
+                        <input className={styles.ingredientCheckbox} name="include" id="include" type="checkbox" onClick={() => ToggleIngredientInclusion(ingredientName)} defaultChecked={ingredients[ingredientName].included}/>
+                    </div>
+                </li>
+                )
+            })}
         </ol>
     </>)
 

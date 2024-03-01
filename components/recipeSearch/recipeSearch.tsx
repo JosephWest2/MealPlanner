@@ -7,7 +7,7 @@ import styles from "./recipeSearch.module.css";
 
 type MealType = "main course" | "side dish" | "dessert" | "appetizer" | "salad" | "bread" | "breakfast" | "soup" | "beverage" | "sauce" | "marinade" | "fingerfood" | "snack" | "drink";
 
-const optionMapping = {
+export const optionMapping = {
     minCarbs: 'min Carbs',
     maxCarbs: 'max Carbs',
     minProtein: 'min Protein',
@@ -32,7 +32,7 @@ const optionMapping = {
     maxAlcohol: 'max Alcohol'
 } as any;
 
-const unitMapping = {
+export const unitMapping = {
     minCarbs: 'g',
     maxCarbs: 'g',
     minProtein: 'g',
@@ -92,7 +92,7 @@ export default function RecipeSearch({session} : {session: Session | null}) {
         for (const [key, value] of Object.entries(nutrientLimits)) {
             nutrientLimitString += `&${key}=${value}`;
         }
-        router.push(`/Recipes?searchString=${search}&mealType=${mealType}&maxReadyTime=${maxReadyTime}&showFavorites=${showFavorites}&intolerances=${intolerances.toString()}&diet=${diet}&cuisine=${cuisine}${nutrientLimitString}`);
+        router.push(`/?searchString=${search}&mealType=${mealType}&maxReadyTime=${maxReadyTime}&showFavorites=${showFavorites}&intolerances=${intolerances.toString()}&diet=${diet}&cuisine=${cuisine}${nutrientLimitString}`);
     }
 
     function ToggleOptions() {
@@ -101,10 +101,10 @@ export default function RecipeSearch({session} : {session: Session | null}) {
 
     function LoggedInContent() {
         if (session && session.user) {
-            return <>
+            return <div className={styles.favoriteContainer}>
                     <label htmlFor="showFavorites">Favorites only</label>
                     <input className={styles.showFavorites} type="checkbox" name="showFavorites" id="showFavorites" value="true"/>
-                </>
+                </div>
         }
         return <></>
     }
@@ -133,76 +133,80 @@ export default function RecipeSearch({session} : {session: Session | null}) {
     return (<div className={styles.recipeSearchContainer}>
                 <form className={styles.searchForm} action={OnSubmit}>
                     <div className={styles.row}>
-                        <input className={styles.mainSearch} type="text" name="search" id="search" placeholder="Search..." defaultValue={searchString}/>            
-                        <label htmlFor="mealType">Meal type</label>
-                        <select className={styles.select} name="mealType" id="mealType" defaultValue={mealType}>
-                            <option value="main course">Main Course</option>
-                            <option value="side dish">Side Dish</option>
-                            <option value="dessert">Dessert</option>
-                            <option value="appetizer">Appetizer</option>
-                            <option value="salad">Salad</option>
-                            <option value="bread">Bread</option>
-                            <option value="breakfast">Breakfast</option>
-                            <option value="soup">Soup</option>
-                            <option value="beverage">Beverage</option>
-                            <option value="sauce">Sauce</option>
-                            <option value="marinade">Marinade</option>
-                            <option value="fingerfood">Fingerfood</option>
-                            <option value="snack">Snack</option>
-                            <option value="drink">Drink</option>
-                        </select>
-                        <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
-                        <input className={styles.numberInput} type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={maxReadyTime}/>
-                        {LoggedInContent()}
+                        <input className={styles.mainSearch}  type="text" name="search" id="search" placeholder="Search..." defaultValue={searchString}/>
                         <input className={styles.submit} type="submit" value="Search"></input>
+                        {LoggedInContent()}
                     </div>
-                    <div className={styles.row} style={{display: showOptions ? "flex" : "none"}}>
-                        <label htmlFor="diet">Cuisine</label>
-                        <select className={styles.select} name="cuisine" id="cuisine">
-                            <option value="">N/A</option>
-                            <option value="African">African</option>
-                            <option value="Asian">Asian</option>
-                            <option value="American">American</option>
-                            <option value="British">British</option>
-                            <option value="Cajun">Cajun</option>
-                            <option value="Caribbean">Caribbean</option>
-                            <option value="Chinese">Chinese</option>
-                            <option value="Eastern European">Eastern European</option>
-                            <option value="European">European</option>
-                            <option value="French">French</option>
-                            <option value="German">German</option>
-                            <option value="Greek">Greek</option>
-                            <option value="Indian">Indian</option>
-                            <option value="Irish">Irish</option>
-                            <option value="Italian">Italian</option>
-                            <option value="Japanese">Japanese</option>
-                            <option value="Jewish">Jewish</option>
-                            <option value="Korean">Korean</option>
-                            <option value="Latin American">Latin American</option>
-                            <option value="Mediterranean">Mediterranean</option>
-                            <option value="Mexican">Mexican</option>
-                            <option value="Middle Eastern">Middle Eastern</option>
-                            <option value="Nordic">Nordic</option>
-                            <option value="Southern">Southern</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="Thai">Thai</option>
-                            <option value="Vietnamese">Vietnamese</option>
-                        </select>
-                        <label htmlFor="diet">Diet type</label>
-                        <select className={styles.select} name="diet" id="diet">
-                            <option value="">N/A</option>
-                            <option value="Gluten Free">Gluten free</option>
-                            <option value="Vegetarian">Vegetarian</option>
-                            <option value="Vegan">Vegan</option>
-                            <option value="Ketogenic">Ketogenic</option>
-                            <option value="Pescetarian">Pescetarian</option>
-                            <option value="Paleo">Paleo</option>
-                            <option value="Primal">Primal</option>
-                            <option value="Low FODMAP">Low FODMAP</option>
-                            <option value="Lacto-Vegetarian">Lacto-vegetarian</option>
-                            <option value="Ovo-Vegetarian">Ovo-vegetarian</option>
-                            <option value="Whole30">Whole30</option>
-                        </select>
+                    <div className={styles.column} style={{display: showOptions ? "flex" : "none"}}>
+                        <div className={styles.inputSet}>
+                            <label htmlFor="mealType">Meal type</label>
+                            <select className={styles.select} name="mealType" id="mealType" defaultValue={mealType}>
+                                <option value="main course">Main Course</option>
+                                <option value="side dish">Side Dish</option>
+                                <option value="dessert">Dessert</option>
+                                <option value="appetizer">Appetizer</option>
+                                <option value="salad">Salad</option>
+                                <option value="bread">Bread</option>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="soup">Soup</option>
+                                <option value="beverage">Beverage</option>
+                                <option value="sauce">Sauce</option>
+                                <option value="marinade">Marinade</option>
+                                <option value="fingerfood">Fingerfood</option>
+                                <option value="snack">Snack</option>
+                                <option value="drink">Drink</option>
+                            </select>
+                        </div>
+                        <div className={styles.inputSet}>
+                            <label htmlFor="diet">Cuisine</label>
+                            <select className={styles.select} name="cuisine" id="cuisine">
+                                <option value="">N/A</option>
+                                <option value="African">African</option>
+                                <option value="Asian">Asian</option>
+                                <option value="American">American</option>
+                                <option value="British">British</option>
+                                <option value="Cajun">Cajun</option>
+                                <option value="Caribbean">Caribbean</option>
+                                <option value="Chinese">Chinese</option>
+                                <option value="Eastern European">Eastern European</option>
+                                <option value="European">European</option>
+                                <option value="French">French</option>
+                                <option value="German">German</option>
+                                <option value="Greek">Greek</option>
+                                <option value="Indian">Indian</option>
+                                <option value="Irish">Irish</option>
+                                <option value="Italian">Italian</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Jewish">Jewish</option>
+                                <option value="Korean">Korean</option>
+                                <option value="Latin American">Latin American</option>
+                                <option value="Mediterranean">Mediterranean</option>
+                                <option value="Mexican">Mexican</option>
+                                <option value="Middle Eastern">Middle Eastern</option>
+                                <option value="Nordic">Nordic</option>
+                                <option value="Southern">Southern</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Thai">Thai</option>
+                                <option value="Vietnamese">Vietnamese</option>
+                            </select>
+                        </div>
+                        <div className={styles.inputSet}>
+                            <label htmlFor="diet">Diet type</label>
+                            <select className={styles.select} name="diet" id="diet">
+                                <option value="">N/A</option>
+                                <option value="Gluten Free">Gluten free</option>
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Ketogenic">Ketogenic</option>
+                                <option value="Pescetarian">Pescetarian</option>
+                                <option value="Paleo">Paleo</option>
+                                <option value="Primal">Primal</option>
+                                <option value="Low FODMAP">Low FODMAP</option>
+                                <option value="Lacto-Vegetarian">Lacto-vegetarian</option>
+                                <option value="Ovo-Vegetarian">Ovo-vegetarian</option>
+                                <option value="Whole30">Whole30</option>
+                            </select>
+                        </div>
                         <div className={styles.intolerances}>
                             <h4 className={styles.intolerancesHeader}>Intolerances</h4>
                             <label htmlFor="dairy">Dairy</label>
@@ -229,45 +233,50 @@ export default function RecipeSearch({session} : {session: Session | null}) {
                             <input type="checkbox" id="tree-nut" name="intolerances" value="Tree Nut"/>
                             <label htmlFor="wheat">Wheat</label>
                             <input type="checkbox" id="wheat" name="intolerances" value="Wheat"/>
-                        </div>                        
+                        </div>
+                        <div className={styles.inputSet}>
+                            <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
+                            <input className={styles.numberInput} type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={maxReadyTime}/>
+                        </div>
+                        <div>
+                            <form action={AddNutrientLimit} className={styles.nutrientLimits}>
+                                <h4 className={styles.nutrientLimitsHeader}>Nutrient Limits <span className={styles.units}>(per serving)</span></h4>
+                                <select className={styles.leftInput} name="nutrientLimitName" id="nutrientLimitName">
+                                    <option value="minCarbs">min Carbs (g)</option>
+                                    <option value="maxCarbs">max Carbs (g)</option>
+                                    <option value="minProtein">min Protein (g)</option>
+                                    <option value="maxProtein">max Protein (g)</option>
+                                    <option value="minFat">min Fat (g)</option>
+                                    <option value="maxFat">max Fat (g)</option>
+                                    <option value="minCalories">min Calories</option>
+                                    <option value="maxCalories">max Calories</option>
+                                    <option value="minSodium">min Sodium (mg)</option>
+                                    <option value="maxSodium">max Sodium (mg)</option>
+                                    <option value="minSugar">min Sugar (g)</option>
+                                    <option value="maxSugar">max Sugar (g)</option>
+                                    <option value="minCholesterol">min Cholesterol (mg)</option>
+                                    <option value="maxCholesterol">max Cholesterol (mg)</option>
+                                    <option value="minCaffeine">min Caffeine (mg)</option>
+                                    <option value="maxCaffeine">max Caffeine (mg)</option>
+                                    <option value="minSaturatedFat">min Saturated Fat (g)</option>
+                                    <option value="maxSaturatedFat">max Saturated Fat (g)</option>
+                                    <option value="minFiber">min Fiber (g)</option>
+                                    <option value="maxFiber">max Fiber (g)</option>
+                                    <option value="minAlcohol">min Alcohol (g)</option>
+                                    <option value="maxAlcohol">max Alcohol (g)</option>
+                                </select>
+                                <input type="number" name="nutrientLimitValue" id="nutrientLimitValue" className={styles.numberInput + " " + styles.middleInput} />
+                                <input type="submit" value="Add" className={styles.rightInput}/>
+                            </form>
+                            <ul style={{display: showOptions ? "" : "none"}} className={styles.nutrientLimitsList}>
+                                {Object.entries(nutrientLimits).map(([key, value]) => (
+                                    <li key={key}>{key}: {value as string}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
+                    <button className={styles.toggleOptionsButton} onClick={ToggleOptions}>{showOptions ? "↑" : "↓"}</button>
                 </form>
-                <form action={AddNutrientLimit} className={styles.nutrientLimits} style={{display: showOptions ? "flex" : "none"}}>
-                    <h4 className={styles.nutrientLimitsHeader}>Nutrient Limits <span className={styles.units}>(per serving)</span></h4>
-                    <select className={styles.leftInput} name="nutrientLimitName" id="nutrientLimitName">
-                        <option value="minCarbs">min Carbs (g)</option>
-                        <option value="maxCarbs">max Carbs (g)</option>
-                        <option value="minProtein">min Protein (g)</option>
-                        <option value="maxProtein">max Protein (g)</option>
-                        <option value="minFat">min Fat (g)</option>
-                        <option value="maxFat">max Fat (g)</option>
-                        <option value="minCalories">min Calories</option>
-                        <option value="maxCalories">max Calories</option>
-                        <option value="minSodium">min Sodium (mg)</option>
-                        <option value="maxSodium">max Sodium (mg)</option>
-                        <option value="minSugar">min Sugar (g)</option>
-                        <option value="maxSugar">max Sugar (g)</option>
-                        <option value="minCholesterol">min Cholesterol (mg)</option>
-                        <option value="maxCholesterol">max Cholesterol (mg)</option>
-                        <option value="minCaffeine">min Caffeine (mg)</option>
-                        <option value="maxCaffeine">max Caffeine (mg)</option>
-                        <option value="minSaturatedFat">min Saturated Fat (g)</option>
-                        <option value="maxSaturatedFat">max Saturated Fat (g)</option>
-                        <option value="minFiber">min Fiber (g)</option>
-                        <option value="maxFiber">max Fiber (g)</option>
-                        <option value="minAlcohol">min Alcohol (g)</option>
-                        <option value="maxAlcohol">max Alcohol (g)</option>
-                    </select>
-                    <input type="number" name="nutrientLimitValue" id="nutrientLimitValue" className={styles.numberInput + " " + styles.middleInput} />
-                    <input type="submit" value="Add" className={styles.rightInput}/>
-                </form>
-                <ul style={{display: showOptions ? "" : "none"}} className={styles.nutrientLimitsList}>
-                    {Object.entries(nutrientLimits).map(([key, value]) => (
-                        <li key={key}>{key}: {value as string}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
-                    ))}
-                </ul>
-                <button className={styles.toggleOptionsButton} onClick={ToggleOptions}>{showOptions ? "↑" : "↓"}</button>
             </div>
-        
     );
 }

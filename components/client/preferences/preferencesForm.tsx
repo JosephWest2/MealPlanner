@@ -2,13 +2,13 @@
 
 import styles from "./preferencesForm.module.css";
 import { useState } from "react";
-import { optionMapping, unitMapping } from "@/components/recipeSearch/recipeSearch";
+import { optionMapping, unitMapping } from "@/components/client/recipeSearch/recipeSearch";
 import { Session } from "next-auth";
 import SavePreferences from "@/app/actions/savePreferences";
 import { redirect } from "next/navigation";
-import { Preferences } from "@/app/actions/savePreferences";
+import type { SearchParams } from "@/types";
 
-export default function PreferencesForm({session, initialPreferences} : {session: Session | null, initialPreferences: Preferences}) {
+export default function PreferencesForm({session, initialPreferences} : {session: Session | null, initialPreferences: SearchParams}) {
 
     if (!session || !session.user) {
         redirect("/api/auth/signin");
@@ -47,14 +47,14 @@ export default function PreferencesForm({session, initialPreferences} : {session
         if (limitName && limitValue) {
             const doc = document as any;
             doc.getElementById("nutrientLimitValue").value = "";
-            let _nutrientLimits = {...nutrientLimits} as any;
+            let _nutrientLimits = {...nutrientLimits};
 
             _nutrientLimits[optionMapping[limitName.toString()]] = limitValue + unitMapping[limitName.toString()];
             setNutrientLimits(_nutrientLimits);
         }
     }
     function RemoveNutrientLimit(key: string) {
-        let _nutrientLimits = {...nutrientLimits} as any;
+        let _nutrientLimits = {...nutrientLimits};
         delete _nutrientLimits[key];
         setNutrientLimits(_nutrientLimits);
     }

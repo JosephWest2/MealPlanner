@@ -2,14 +2,14 @@
 
 import { createContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import type { Recipe, Ingredient } from "@/app/page";
+import type { Recipe, NormalizedUnitType, Cart, CartRecipe } from "@/types";
 import { Guid } from "js-guid";
 
-export const CartContext = createContext({cart: null as cart | null, AddRecipeToCart: null as any, RemoveRecipeFromCart: null as any, ClearCart: null as any, ToggleIngredientInclusion: null as any, OverrideIngredient: null as any, CancelIngredientOverride: null as any});
+export const CartContext = createContext({cart: null, AddRecipeToCart: null, RemoveRecipeFromCart: null, ClearCart: null, ToggleIngredientInclusion: null, OverrideIngredient: null, CancelIngredientOverride: null});
 
 export default function CartProvider({ children } : any) {
     const [cookies, setCookie] = useCookies(["cart"]);
-    const [cart, setCart] = useState(cookies.cart as cart || {count: 0, recipes: [], ingredients: {}} as cart);
+    const [cart, setCart] = useState(cookies.cart as Cart || {count: 0, recipes: [], ingredients: {}} as Cart);
 
     useEffect(() => {
         setCookie("cart", JSON.stringify(cart), {maxAge: 3600});
@@ -22,7 +22,7 @@ export default function CartProvider({ children } : any) {
         const volumes = {"ml": 1, "l": 1000, "cup": 236.588, "cups": 236.588, "fl oz": 29.5735, "liters": 1000, "pint": 473.176, "quart": 946.353, "gallon": 3785.41, "milliliters": 1, "deciliters": 100, "deciliter": 100, "quarts": 946.353, "pints": 473.176, "drops": 0.05, "T": 15, "t": 5, "tsps": 5, "C": 240, "tbs": 15, "tbsp": 15, "tbsps": 15, "mls": 1} as any;
         const quantities = {"": 1, "piece": 0.5, "slice": 0.5, "ball": 1, "roll": 1, "servings": 1, "bunch": 1, "handful": 1, "scoop": 1, "strip": 1, "rib": 1, "stalk": 1, "head": 1, "small piece": 1, "handfuls": 1, "large cloves": 1, "loaf": 1, "stick": 1, "sheets": 1, "halves": 0.5, "glass": 1} as any;
         const pack = {"pack": 1, "bottle": 1, "can": 1, "package": 1, "cans": 1, "packet": 1, "jar": 1, "container": 1, "packets": 1, "box": 1, "pouch": 1, "pkg": 1,  "envelope": 1, "bag": 1} as any;
-        type NormalizedUnitType = "g" | "mL" | "count" | "pack" | undefined;
+        
 
         let unitType: NormalizedUnitType = undefined;
         let outputAmount: number;
@@ -74,7 +74,7 @@ export default function CartProvider({ children } : any) {
         setCart(_cart);
     }
 
-    function RemoveRecipeFromCart(recipe: Recipe | cartRecipe) {
+    function RemoveRecipeFromCart(recipe: Recipe | CartRecipe) {
         let _cart = {...cart};
         let guid = null as null | string;
         for (let i = 0; i < cart.recipes.length; i++) {
@@ -149,36 +149,4 @@ export default function CartProvider({ children } : any) {
             {children}
         </CartContext.Provider>
     );
-}
-
-export type cart = {
-    count: number,
-    recipes: cartRecipe[]
-    ingredients: dynamicIngredients
-}
-
-export type cartRecipe = {
-    name: string
-    id: number
-    guid: string
-}
-
-export type dynamicIngredients = {
-    [ingredientName: string]: cartIngredient
-}
-
-export type cartIngredient = {
-    name: string
-    totalAmount: number
-    unit: string
-    included: boolean
-    override: boolean
-    overrideValue: number | null
-    recipeIngredients: recipeIngredient[]
-}
-
-export type recipeIngredient = {
-    amount: number
-    unit: string
-    recipeGUID: string
 }

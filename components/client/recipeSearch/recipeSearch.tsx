@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import styles from "./recipeSearch.module.css";
 
-type MealType = "main course" | "side dish" | "dessert" | "appetizer" | "salad" | "bread" | "breakfast" | "soup" | "beverage" | "sauce" | "marinade" | "fingerfood" | "snack" | "drink";
-
 export const optionMapping = {
     minCarbs: 'min Carbs',
     maxCarbs: 'max Carbs',
@@ -30,7 +28,7 @@ export const optionMapping = {
     maxFiber: 'max Fiber',
     minAlcohol: 'min Alcohol',
     maxAlcohol: 'max Alcohol'
-} as any;
+};
 
 export const unitMapping = {
     minCarbs: 'g',
@@ -55,12 +53,20 @@ export const unitMapping = {
     maxFiber: 'g',
     minAlcohol: 'g',
     maxAlcohol: 'g'
-} as any;
+};
 
 export default function RecipeSearch({session} : {session: Session | null}) {
 
     const [showOptions, setShowOptions] = useState(false);
     const [nutrientLimits, setNutrientLimits] = useState({});
+
+    const [query, setQuery] = useState("");
+    const [mealTypes, setMealTypes] = useState("");
+    const [maxReadyTimes, setMaxReadyTimes] = useState(30);
+    const [cuisine, setCuisine] = useState("");
+    const [diet, setDiet] = useState("");
+    const [intolerances, setIntolerances] = useState([]);
+    const [showFavorites, setShowFavorites] = useState(false);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -69,7 +75,7 @@ export default function RecipeSearch({session} : {session: Session | null}) {
     const maxReadyTime = searchParams.get("maxReadyTime") || 30;
 
     useEffect(() => {
-        let _nutrientLimits = {...nutrientLimits} as any;
+        let _nutrientLimits = {...nutrientLimits};
         searchParams.forEach((value, key) => {
             if (key.startsWith("min") || key.startsWith("max") && key !== "maxReadyTime") {
                 _nutrientLimits[key] = value;
@@ -116,7 +122,7 @@ export default function RecipeSearch({session} : {session: Session | null}) {
         if (limitName && limitValue) {
             const doc = document as any;
             doc.getElementById("nutrientLimitValue").value = "";
-            let _nutrientLimits = {...nutrientLimits} as any;
+            let _nutrientLimits = {...nutrientLimits};
 
             _nutrientLimits[optionMapping[limitName.toString()]] = limitValue + unitMapping[limitName.toString()];
             setNutrientLimits(_nutrientLimits);
@@ -124,7 +130,7 @@ export default function RecipeSearch({session} : {session: Session | null}) {
     }
 
     function RemoveNutrientLimit(key: string) {
-        let _nutrientLimits = {...nutrientLimits} as any;
+        let _nutrientLimits = {...nutrientLimits};
         delete _nutrientLimits[key];
         setNutrientLimits(_nutrientLimits);
     }
@@ -238,45 +244,51 @@ export default function RecipeSearch({session} : {session: Session | null}) {
                             <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
                             <input className={styles.numberInput} type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={maxReadyTime}/>
                         </div>
-                        <div>
-                            <form action={AddNutrientLimit} className={styles.nutrientLimits}>
-                                <h4 className={styles.nutrientLimitsHeader}>Nutrient Limits <span className={styles.units}>(per serving)</span></h4>
-                                <select className={styles.leftInput} name="nutrientLimitName" id="nutrientLimitName">
-                                    <option value="minCarbs">min Carbs (g)</option>
-                                    <option value="maxCarbs">max Carbs (g)</option>
-                                    <option value="minProtein">min Protein (g)</option>
-                                    <option value="maxProtein">max Protein (g)</option>
-                                    <option value="minFat">min Fat (g)</option>
-                                    <option value="maxFat">max Fat (g)</option>
-                                    <option value="minCalories">min Calories</option>
-                                    <option value="maxCalories">max Calories</option>
-                                    <option value="minSodium">min Sodium (mg)</option>
-                                    <option value="maxSodium">max Sodium (mg)</option>
-                                    <option value="minSugar">min Sugar (g)</option>
-                                    <option value="maxSugar">max Sugar (g)</option>
-                                    <option value="minCholesterol">min Cholesterol (mg)</option>
-                                    <option value="maxCholesterol">max Cholesterol (mg)</option>
-                                    <option value="minCaffeine">min Caffeine (mg)</option>
-                                    <option value="maxCaffeine">max Caffeine (mg)</option>
-                                    <option value="minSaturatedFat">min Saturated Fat (g)</option>
-                                    <option value="maxSaturatedFat">max Saturated Fat (g)</option>
-                                    <option value="minFiber">min Fiber (g)</option>
-                                    <option value="maxFiber">max Fiber (g)</option>
-                                    <option value="minAlcohol">min Alcohol (g)</option>
-                                    <option value="maxAlcohol">max Alcohol (g)</option>
-                                </select>
-                                <input type="number" name="nutrientLimitValue" id="nutrientLimitValue" className={styles.numberInput + " " + styles.middleInput} />
-                                <input type="submit" value="Add" className={styles.rightInput}/>
-                            </form>
-                            <ul style={{display: showOptions ? "" : "none"}} className={styles.nutrientLimitsList}>
-                                {Object.entries(nutrientLimits).map(([key, value]) => (
-                                    <li key={key}>{key}: {value as string}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
-                                ))}
-                            </ul>
-                        </div>
                     </div>
-                    <button className={styles.toggleOptionsButton} onClick={ToggleOptions}>{showOptions ? "↑" : "↓"}</button>
                 </form>
+                <form action={AddNutrientLimit} className={styles.nutrientLimits}>
+                    <h4 className={styles.nutrientLimitsHeader}>Nutrient Limits <span className={styles.units}>(per serving)</span></h4>
+                    <select className={styles.leftInput} name="nutrientLimitName" id="nutrientLimitName">
+                        <option value="minCarbs">min Carbs (g)</option>
+                        <option value="maxCarbs">max Carbs (g)</option>
+                        <option value="minProtein">min Protein (g)</option>
+                        <option value="maxProtein">max Protein (g)</option>
+                        <option value="minFat">min Fat (g)</option>
+                        <option value="maxFat">max Fat (g)</option>
+                        <option value="minCalories">min Calories</option>
+                        <option value="maxCalories">max Calories</option>
+                        <option value="minSodium">min Sodium (mg)</option>
+                        <option value="maxSodium">max Sodium (mg)</option>
+                        <option value="minSugar">min Sugar (g)</option>
+                        <option value="maxSugar">max Sugar (g)</option>
+                        <option value="minCholesterol">min Cholesterol (mg)</option>
+                        <option value="maxCholesterol">max Cholesterol (mg)</option>
+                        <option value="minCaffeine">min Caffeine (mg)</option>
+                        <option value="maxCaffeine">max Caffeine (mg)</option>
+                        <option value="minSaturatedFat">min Saturated Fat (g)</option>
+                        <option value="maxSaturatedFat">max Saturated Fat (g)</option>
+                        <option value="minFiber">min Fiber (g)</option>
+                        <option value="maxFiber">max Fiber (g)</option>
+                        <option value="minAlcohol">min Alcohol (g)</option>
+                        <option value="maxAlcohol">max Alcohol (g)</option>
+                    </select>
+                    <input type="number" name="nutrientLimitValue" id="nutrientLimitValue" className={styles.numberInput + " " + styles.middleInput} />
+                    <input type="submit" value="Add" className={styles.rightInput}/>
+                </form>
+                <ul style={{display: showOptions ? "" : "none"}} className={styles.nutrientLimitsList}>
+                    {Object.entries(nutrientLimits).map(([key, value]) => (
+                        <li key={key}>{key}: {value as string}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
+                    ))}
+                </ul>
+                <button className={styles.toggleOptionsButton} onClick={ToggleOptions}>{showOptions ? "less options" : "more options"}</button>
             </div>
     );
+}
+
+function FORM() {
+    return (
+        <div className={styles.column}>
+
+        </div>
+    )
 }

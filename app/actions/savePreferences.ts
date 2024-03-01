@@ -2,24 +2,12 @@
 
 import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
-import { MySession, authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
 import { EncodeNutrientLimits } from "@/app/account/page";
+import type { SearchParams, MySession } from "@/types";
 
-export type Preferences = {
-    diet: string | null
-    mealType: string | null
-    intolerances: string[]
-    cuisine: string | null
-    maxReadyTime: number | null
-    nutrientLimits: NutrientLimit | null
-}
-
-export type NutrientLimit = {
-    [key: string]: number
-}
-
-export default async function SavePreferences(preferences: Preferences) {
+export default async function SavePreferences(preferences: SearchParams) {
 
     const session = await getServerSession(authOptions) as MySession;
 
@@ -27,7 +15,7 @@ export default async function SavePreferences(preferences: Preferences) {
         throw new Error("User not authenticated");
     }
 
-    let _nutrientLimits = undefined;
+    let _nutrientLimits : string | undefined = undefined;
     if (preferences.nutrientLimits) {
         _nutrientLimits = EncodeNutrientLimits(preferences.nutrientLimits);
     }
@@ -42,7 +30,7 @@ export default async function SavePreferences(preferences: Preferences) {
             intolerances: preferences.intolerances,
             cuisine: preferences.cuisine,
             maxReadyTime: preferences.maxReadyTime,
-            nutrientLimits: preferences.nutrientLimits
+            nutrientLimits: _nutrientLimits
         }
     })
     

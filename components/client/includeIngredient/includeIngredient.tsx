@@ -1,6 +1,5 @@
 "use client";
 
-import type { cartIngredient } from "../cartProvider/cartProvider";
 import { useState, useContext } from "react";
 import { CartContext } from "../cartProvider/cartProvider";
 

@@ -5,7 +5,7 @@ import cartImage from "./navcart.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useContext } from "react";
-import { CartContext } from "@/components/cartProvider/cartProvider";
+import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useState, useEffect } from "react";
 
 export default function NavCart({className} : {className: string}) {

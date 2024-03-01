@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
-import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import styles from "./page.module.css";
-import PreferencesForm from "@/components/preferences/preferencesForm";
-import { NutrientLimit, Preferences } from "@/app/actions/savePreferences";
+import PreferencesForm from "@/components/client/preferences/preferencesForm";
 import { prisma } from "@/lib/prismaSingleton";
+import type { MySession, NutrientLimit, SearchParams } from "@/types";
 
 export default async function Account() {
 
@@ -27,7 +27,7 @@ export default async function Account() {
         }
     })
 
-    let clientInit = {} as Preferences;
+    let clientInit = {} as SearchParams;
     if (initialPreferences) {
         clientInit = {
             diet: initialPreferences.diet,

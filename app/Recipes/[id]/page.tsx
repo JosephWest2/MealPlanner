@@ -1,12 +1,12 @@
 import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Favorite from "@/components/favorite/favorite";
+import Favorite from "@/components/client/favorite/favorite";
 import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { ProcessSummary } from "@/lib/processSummary";
-import RecipeSearch from "@/components/recipeSearch/recipeSearch";
+import RecipeSearch from "@/components/client/recipeSearch/recipeSearch";
 import styles from "./page.module.css";
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import AddToCart from "@/components/addToCart/addToCart";
+import AddToCart from "@/components/client/addToCart/addToCart";
 
 export default async function RecipeDetails({params} : {params: any}) {
 

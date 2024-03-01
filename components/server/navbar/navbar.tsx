@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Session } from "next-auth";
-import NavCart from "@/components/navCart/navCart";
+import NavCart from "@/components/client/navCart/navCart";
 import styles from "./navbar.module.css";
 
 export default function Navbar({session} : {session: Session | null}) {

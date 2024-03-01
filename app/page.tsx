@@ -1,10 +1,11 @@
 import type { Key } from "react";
-import Recipe from "@/components/recipe/recipe";
-import RecipeSearch from "@/components/recipeSearch/recipeSearch";
+import RecipeComponent from "@/components/server/recipe/recipe";
+import RecipeSearch from "@/components/client/recipeSearch/recipeSearch";
 import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
-import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { readFileSync, writeFileSync, existsSync } from "fs";
+import type { SearchParamStrings, Recipe, MySession } from "@/types";
 
 async function SearchRecipes(params: any) {
 
@@ -32,7 +33,7 @@ async function SearchRecipes(params: any) {
     }
 }
 
-export default async function Home({searchParams} : {searchParams: RecipeSearchParams}) {
+export default async function Home({searchParams} : {searchParams: SearchParamStrings}) {
 
     const session = await getServerSession(authOptions) as MySession;
     let favorites = null as any;
@@ -68,7 +69,7 @@ export default async function Home({searchParams} : {searchParams: RecipeSearchP
                     for (let i = 0; i < favorites.length; i++) {
                         if (favorites[i].recipeId === recipe.id) {
                             return <div key={_key}>
-                                <Recipe favorites={favorites} recipeData={recipe}></Recipe>
+                                <RecipeComponent favorites={favorites} recipeData={recipe}></RecipeComponent>
                             </div>
                         }
                     }
@@ -76,7 +77,7 @@ export default async function Home({searchParams} : {searchParams: RecipeSearchP
                     
                 } else {
                     return <div key={_key}>
-                        <Recipe favorites={favorites} recipeData={recipe}></Recipe>
+                        <RecipeComponent favorites={favorites} recipeData={recipe}></RecipeComponent>
                     </div>
                 }
                 
@@ -84,83 +85,4 @@ export default async function Home({searchParams} : {searchParams: RecipeSearchP
         </>
         
     );
-}
-type RecipeSearchParams = {
-    searchString: string | undefined,
-    mealType: string | undefined,
-    maxReadyTime: Number | undefined,
-    showFavorites: string | undefined,
-    intolerances: string | undefined,
-    diet: string | undefined,
-    cuisine: string | undefined,
-}
-export type Recipe = {
-    vegetarian: boolean,
-    vegan: boolean,
-    glutenFree: boolean,
-    dairyFree:boolean,
-    veryHealthy: boolean,
-    cheap: boolean,
-    veryPopular: boolean,
-    sustainable: boolean,
-    lowFodmap: boolean,
-    weightWatcherSmartPoints: Number,
-    gaps: string,
-    preparationMinutes: Number,
-    cookingMinutes: Number,
-    aggregateLikes: Number,
-    healthScore: Number,
-    creditsText: string,
-    license: string,
-    nutrition: any,
-    sourceName: string,
-    pricePerServing: Number,
-    extendedIngredients: Ingredient[],
-    id: number,
-    title: string,
-    readyInMinutes: Number,
-    servings: Number,
-    sourceUrl: string,
-    image: string,
-    imageType: string,
-    summary: string,
-    cuisines: [],
-    dishTypes: [],
-    diets: [],
-    occasions: [],
-    instructions: string
-    analyzedInstructions: [],
-    originalId: Number | null,
-    spoonacularScore: Number,
-    spoonacularSourceUrl: string
-}
-
-export type Ingredient = {
-    id: number,
-    aisle: string,
-    image: string,
-    consistency: string,
-    name: string,
-    nameClean: string,
-    original: string,
-    originalName: string,
-    amount: number,
-    unit: string,
-    meta: [],
-    measures: [Object]
-}
-
-export type Nutrition = {
-    nutrients: []
-    properties: []
-    flavonoids: []
-    ingredients: NutritionIngredient[]
-}
-
-export type NutritionIngredient = {
-    id: number
-    name: string
-    amount: number
-    unit: string
-    nutrients: []
 }

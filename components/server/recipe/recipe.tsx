@@ -1,14 +1,15 @@
-import type { Recipe } from "@/app/page";
-import Favorite from "@/components/favorite/favorite";
+import type { Recipe } from "@/types";
+import Favorite from "@/components/client/favorite/favorite";
 import { getServerSession } from "next-auth";
-import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ProcessSummary } from "@/lib/processSummary";
 import Link from "next/link";
 import styles from "./recipe.module.css";
+import type { MySession } from "@/types";
 
 
 
-export default async function Recipe({recipeData, favorites} : {recipeData: Recipe, favorites: any}) {
+export default async function RecipeComponent({recipeData, favorites} : {recipeData: Recipe, favorites: any}) {
 
     const session = await getServerSession(authOptions) as MySession;
 

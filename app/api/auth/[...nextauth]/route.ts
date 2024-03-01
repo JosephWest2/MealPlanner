@@ -4,7 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prismaSingleton";
 import { compare } from "bcrypt";
-import type { Session, User } from "next-auth";
 
 
 export const authOptions : AuthOptions = {
@@ -100,14 +99,6 @@ export const authOptions : AuthOptions = {
             return token ;
         }
     }
-}
-
-export type MySession = Session & {
-    user: MyUser
-}
-
-export type MyUser = User & {
-    id: number
 }
 
 const handler = NextAuth(authOptions);

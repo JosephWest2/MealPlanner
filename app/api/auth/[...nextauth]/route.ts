@@ -8,9 +8,9 @@ import { compare } from "bcrypt";
 
 export const authOptions : AuthOptions = {
     pages: {
-      signIn: "/Login",
-      newUser: "/Register",
-      signOut: "/SignOut"
+      signIn: "/login",
+      newUser: "/register",
+      signOut: "/signout"
     },
     session: { strategy: "jwt"},
     providers: [

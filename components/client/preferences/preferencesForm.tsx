@@ -21,6 +21,9 @@ export default function PreferencesForm({session, initialPreferences} : {session
     const [diet, setDiet] = useState(initialPreferences.diet);
     const [intolerances, setIntolerances] = useState(initialPreferences.intolerances);
 
+    const [nutrientLimit, setNutrientLimit] = useState("minCarbs" as string | null);
+    const [nutrientLimitValue, setNutrientLimitValue] = useState(null as number | null);
+
     async function SavePreferencesLocal() {
         if (session && session.user) {
             const result = await SavePreferences({
@@ -41,16 +44,15 @@ export default function PreferencesForm({session, initialPreferences} : {session
         }
     }
 
-    function AddNutrientLimit(formData: FormData) {
-        const limitName = formData.get("nutrientLimitName");
-        const limitValue = formData.get("nutrientLimitValue");
-        if (limitName && limitValue) {
+    function AddNutrientLimit() {
+        if (nutrientLimit && nutrientLimitValue) {
             const element = document.getElementById("nutrientLimitValue") as HTMLInputElement;
             if (element) { element.value = "" }
             let _nutrientLimits = {...nutrientLimits};
 
-            _nutrientLimits[optionMapping[limitName.toString()]] = limitValue + unitMapping[limitName.toString()];
+            _nutrientLimits[optionMapping[nutrientLimit.toString()]] = nutrientLimitValue + unitMapping[nutrientLimit.toString()];
             setNutrientLimits(_nutrientLimits);
+            setNutrientLimitValue(null);
         }
     }
     function RemoveNutrientLimit(key: string) {
@@ -65,13 +67,14 @@ export default function PreferencesForm({session, initialPreferences} : {session
         } else {
             let i = 0;
             while (i < _intolerances.length) {
-                if (_intolerances[i] === intolerance && checked) {
+                if (_intolerances[i] === intolerance && !checked) {
                     _intolerances.splice(i, 1);
                 } else {
                     i++;
                 }
             }
         }
+        console.log(_intolerances);
         
         setIntolerances(_intolerances);
 
@@ -79,14 +82,9 @@ export default function PreferencesForm({session, initialPreferences} : {session
 
     return (
         <>
-            <div className={styles.container}>
-                <div>
-                    <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
-                    <input className={styles.select} type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={readyTime?.toString()} onChange={(e) => setReadyTime(Number(e.target.value))}/> 
-                </div>
-                <div>
+            <div className="optionsGrid">
                     <label htmlFor="mealType">Meal type</label>
-                    <select className={styles.select} name="mealType" id="mealType" defaultValue={mealType?.toString()} onChange={(e) => setMealType(e.target.value)}>
+                    <select name="mealType" id="mealType" defaultValue={mealType?.toString()} onChange={(e) => setMealType(e.target.value)}>
                         <option value="main course">Main Course</option>
                         <option value="side dish">Side Dish</option>
                         <option value="dessert">Dessert</option>
@@ -102,10 +100,10 @@ export default function PreferencesForm({session, initialPreferences} : {session
                         <option value="snack">Snack</option>
                         <option value="drink">Drink</option>
                     </select>
-                </div>
-                <div>
+                    <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
+                    <input type="number" name="maxReadyTime" id="maxReadyTime" placeholder="Max Ready Time..." defaultValue={readyTime?.toString()} onChange={(e) => setReadyTime(Number(e.target.value))}/> 
                     <label htmlFor="diet">Cuisine</label>
-                    <select className={styles.select} name="cuisine" id="cuisine" defaultValue={cuisine?.toString()} onChange={(e) => setCuisine(e.target.value)}>
+                    <select name="cuisine" id="cuisine" defaultValue={cuisine?.toString()} onChange={(e) => setCuisine(e.target.value)}>
                         <option value="">N/A</option>
                         <option value="African">African</option>
                         <option value="Asian">Asian</option>
@@ -135,10 +133,8 @@ export default function PreferencesForm({session, initialPreferences} : {session
                         <option value="Thai">Thai</option>
                         <option value="Vietnamese">Vietnamese</option>
                     </select>
-                </div>
-                <div>
                     <label htmlFor="diet">Diet type</label>
-                    <select className={styles.select} name="diet" id="diet" defaultValue={diet?.toString()} onChange={(e) => setDiet(e.target.value)}>
+                    <select name="diet" id="diet" defaultValue={diet?.toString()} onChange={(e) => setDiet(e.target.value)}>
                         <option value="">N/A</option>
                         <option value="Gluten Free">Gluten free</option>
                         <option value="Vegetarian">Vegetarian</option>
@@ -152,38 +148,37 @@ export default function PreferencesForm({session, initialPreferences} : {session
                         <option value="Ovo-Vegetarian">Ovo-vegetarian</option>
                         <option value="Whole30">Whole30</option>
                     </select>
-                </div>
-                <div className={styles.intolerances}>
-                    <h4 className={styles.intolerancesHeader}>Intolerances</h4>
-                    <label htmlFor="dairy">Dairy</label>
-                    <input type="checkbox" id="dairy" name="intolerances" value="Dairy" defaultChecked={intolerances?.includes("Dairy")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="egg">Egg</label>
-                    <input type="checkbox" id="egg" name="intolerances" value="Egg" defaultChecked={intolerances?.includes("Egg")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="gluten">Gluten</label>
-                    <input type="checkbox" id="gluten" name="intolerances" value="Gluten" defaultChecked={intolerances?.includes("Gluten")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="grain">Grain</label>
-                    <input type="checkbox" id="grain" name="intolerances" value="Grain" defaultChecked={intolerances?.includes("Grain")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="peanut">Peanut</label>
-                    <input type="checkbox" id="peanut" name="intolerances" value="Peanut" defaultChecked={intolerances?.includes("Peanut")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="seafood">Seafood</label>
-                    <input type="checkbox" id="seafood" name="intolerances" value="Seafood" defaultChecked={intolerances?.includes("Seafood")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="sesame">Sesame</label>
-                    <input type="checkbox" id="sesame" name="intolerances" value="Sesame" defaultChecked={intolerances?.includes("Sesame")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="shellfish">Shellfish</label>
-                    <input type="checkbox" id="shellfish" name="intolerances" value="Shellfish" defaultChecked={intolerances?.includes("Shellfish")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="soy">Soy</label>
-                    <input type="checkbox" id="soy" name="intolerances" value="Soy" defaultChecked={intolerances?.includes("Soy")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="sulfite">Sulfite</label>
-                    <input type="checkbox" id="sulfite" name="intolerances" value="Sulfite" defaultChecked={intolerances?.includes("Sulfite")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="tree-nut">Tree Nut</label>
-                    <input type="checkbox" id="tree-nut" name="intolerances" value="Tree Nut" defaultChecked={intolerances?.includes("Tree Nut")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                    <label htmlFor="wheat">Wheat</label>
-                    <input type="checkbox" id="wheat" name="intolerances" value="Wheat" defaultChecked={intolerances?.includes("Wheat")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
-                </div>  
             </div>
-            <form className={styles.nutrientLimitForm} action={AddNutrientLimit}>
-                <h4 className={styles.nutrientLimitHeader}>Nutrient Limits <span style={{color: "grey"}}>(per serving)</span></h4>
-                <select className={styles.nutrientLimit} name="nutrientLimitName" id="nutrientLimitName">
+            <div className="intolerances">
+                <h4 className="subHeader">Intolerances</h4>
+                <label htmlFor="dairy">Dairy</label>
+                <input type="checkbox" id="dairy" name="intolerances" value="Dairy" defaultChecked={intolerances?.includes("Dairy")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="egg">Egg</label>
+                <input type="checkbox" id="egg" name="intolerances" value="Egg" defaultChecked={intolerances?.includes("Egg")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="gluten">Gluten</label>
+                <input type="checkbox" id="gluten" name="intolerances" value="Gluten" defaultChecked={intolerances?.includes("Gluten")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="grain">Grain</label>
+                <input type="checkbox" id="grain" name="intolerances" value="Grain" defaultChecked={intolerances?.includes("Grain")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="peanut">Peanut</label>
+                <input type="checkbox" id="peanut" name="intolerances" value="Peanut" defaultChecked={intolerances?.includes("Peanut")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="seafood">Seafood</label>
+                <input type="checkbox" id="seafood" name="intolerances" value="Seafood" defaultChecked={intolerances?.includes("Seafood")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="sesame">Sesame</label>
+                <input type="checkbox" id="sesame" name="intolerances" value="Sesame" defaultChecked={intolerances?.includes("Sesame")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="shellfish">Shellfish</label>
+                <input type="checkbox" id="shellfish" name="intolerances" value="Shellfish" defaultChecked={intolerances?.includes("Shellfish")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="soy">Soy</label>
+                <input type="checkbox" id="soy" name="intolerances" value="Soy" defaultChecked={intolerances?.includes("Soy")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="sulfite">Sulfite</label>
+                <input type="checkbox" id="sulfite" name="intolerances" value="Sulfite" defaultChecked={intolerances?.includes("Sulfite")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="tree-nut">Tree Nut</label>
+                <input type="checkbox" id="tree-nut" name="intolerances" value="Tree Nut" defaultChecked={intolerances?.includes("Tree Nut")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+                <label htmlFor="wheat">Wheat</label>
+                <input type="checkbox" id="wheat" name="intolerances" value="Wheat" defaultChecked={intolerances?.includes("Wheat")} onChange={(e) => SetIntolerance(e.target.value, e.target.checked)}/>
+            </div>
+            <div className="row" style={{gap: "0", height: "2.2rem"}}>
+                <h4 style={{paddingRight: "1rem"}}>Nutrient Limits <span style={{color: "grey"}}>(per serving)</span></h4>
+                <select style={{borderRadius: "0.5rem 0 0 0.5rem", height: "100%", borderRight: "none"}} id="nutrientLimit" onChange={(e) => setNutrientLimit(e.target.value)}>
                     <option value="minCarbs">min Carbs (g)</option>
                     <option value="maxCarbs">max Carbs (g)</option>
                     <option value="minProtein">min Protein (g)</option>
@@ -207,15 +202,15 @@ export default function PreferencesForm({session, initialPreferences} : {session
                     <option value="minAlcohol">min Alcohol (g)</option>
                     <option value="maxAlcohol">max Alcohol (g)</option>
                 </select>
-                <input className={styles.nutrientLimit} type="number" name="nutrientLimitValue" id="nutrientLimitValue" />
-                <input className={styles.nutrientLimit} type="submit" value="Add"/>
-            </form>
-            <ul className={styles.nutrientList}>
+                <input style={{borderRadius: "0", height: "100%"}} type="number" id="nutrientLimitValue" onChange={(e) => {setNutrientLimitValue(Number(e.target.value))}} />
+                <button style={{borderRadius: "0 0.5rem 0.5rem 0", height: "100%", borderLeft: "none", padding: "0 0.6rem"}} onClick={AddNutrientLimit}>Add</button>
+            </div>
+            <ul>
                 {nutrientLimits ? Object.entries(nutrientLimits).map(([key, value]) => (
-                    <li key={key}>{key}: {value}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
+                    <li key={key}>{key}: {value}<button onClick={() => RemoveNutrientLimit(key)} >X</button></li>
                 )) : null}
             </ul>
-            <button className={styles.saveButton} onClick={SavePreferencesLocal}>Save</button>
+            <button onClick={SavePreferencesLocal}>Save</button>
         </>
         
     );

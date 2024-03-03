@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import type { RecipeSearchParamStrings, Recipe, MySession } from "@/types";
-import { GetPreferences } from "@/lib/getPreferences";
+import { DecodeNutrientLimits, GetPreferences } from "@/lib/getPreferences";
 
 async function SearchRecipes(params: RecipeSearchParamStrings) {
 
@@ -22,6 +22,12 @@ async function SearchRecipes(params: RecipeSearchParamStrings) {
         params.intolerances ? searchParamString += `&intolerances=${params.intolerances}` : "";
         params.diet ? searchParamString += `&diet=${params.diet}` : "";
         params.cuisine ? searchParamString += `&cuisine=${params.cuisine}` : "";
+        if (params.nutrientLimits) {
+            const nutrientLimits = DecodeNutrientLimits(params.nutrientLimits);
+            Object.keys(nutrientLimits).forEach(key => {
+                searchParamString += `&${key}=${nutrientLimits[key]}`
+            })
+        }
         const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch${searchParamString}`,
         {next: {revalidate: 3600}});
         if (!response.ok) {
@@ -65,7 +71,7 @@ export default async function Home({searchParams} : {searchParams: RecipeSearchP
     const preferences = await GetPreferences(session);
 
     return (
-        <>
+        <div className="column">
             <RecipeSearch session={session} preferences={preferences}></RecipeSearch>
             {recipes?.map((recipe : Recipe, _key : Key) => {
                 if (session && session.user && searchParams.onlyFavorites === "true") {
@@ -85,7 +91,6 @@ export default async function Home({searchParams} : {searchParams: RecipeSearchP
                 }
                 
             })}
-        </>
-        
+        </div>
     );
 }

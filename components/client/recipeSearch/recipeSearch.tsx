@@ -59,7 +59,7 @@ export const unitMapping = {
 export default function RecipeSearch({session, preferences} : {session: MySession | null, preferences: RecipeSearchParams}) {
 
     const [showMoreOptions, setShowMoreOptions] = useState(false);
-    
+
     const [query, setQuery] = useState("");
     const [mealType, setMealType] = useState(preferences.mealType);
     const [cuisine, setCuisine] = useState(preferences.cuisine);
@@ -69,7 +69,7 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
     const [nutrientLimits, setNutrientLimits] = useState(preferences.nutrientLimits || {} as NutrientLimits);
     const [onlyFavorites, setOnlyFavorites] = useState(false);
 
-    const [nutrientLimit, setNutrientLimit] = useState(null as string | null);
+    const [nutrientLimit, setNutrientLimit] = useState("minCarbs" as string | null);
     const [nutrientLimitValue, setNutrientLimitValue] = useState(null as number | null);
 
     const router = useRouter();
@@ -124,9 +124,9 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
 
     function LoggedInContent() {
         if (session && session.user) {
-            return <div className={styles.row}>
+            return <div className="row" style={{minWidth: "fit-content"}}>
                     <label htmlFor="showFavorites">Favorites only</label>
-                    <input className={styles.showFavorites} type="checkbox" name="showFavorites" id="showFavorites" value="true"/>
+                    <input type="checkbox" name="showFavorites" id="showFavorites" value="true"/>
                 </div>
         }
         return <></>
@@ -137,10 +137,8 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
             const element = document.getElementById("nutrientLimitValue") as HTMLInputElement;
             if (element) {element.value = ""}
             let _nutrientLimits = {...nutrientLimits};
-
             _nutrientLimits[optionMapping[nutrientLimit.toString()]] = nutrientLimitValue + unitMapping[nutrientLimit.toString()];
             setNutrientLimits(_nutrientLimits);
-            setNutrientLimit(null);
             setNutrientLimitValue(null);
         }
     }
@@ -159,16 +157,16 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
         }
     }
 
-    return (<div className={styles.recipeSearchContainer}>
-                <div className={styles.row}>
-                    <input className={styles.textInput}  type="text" name="search" id="search" placeholder="Search..." defaultValue={query}/>
-                    <button className={styles.searchButton} onClick={Search}>Search</button>
+    return (<div className="box column">
+                <div className="row">
+                    <input style={{width: "100%"}} type="text" name="search" id="search" placeholder="Search..." defaultValue={query}/>
+                    <button onClick={Search}>Search</button>
                     {LoggedInContent()}
                 </div>
-                <div className={styles.column} data-enabled={showMoreOptions.toString()}>
-                    <div className={styles.row}>
-                        <label className={styles.label} htmlFor="mealType">Meal type</label>
-                        <select className={styles.select} onChange={(e) => setMealType(e.target.value)} id="mealType" defaultValue={mealType ? mealType : "main course"}>
+                <div className="column toggleable" data-enabled={showMoreOptions.toString()}>
+                    <div className="optionsGrid">
+                        <label htmlFor="mealType">Meal type</label>
+                        <select onChange={(e) => setMealType(e.target.value)} id="mealType" defaultValue={mealType ? mealType : "main course"}>
                             <option value="main course">Main Course</option>
                             <option value="side dish">Side Dish</option>
                             <option value="dessert">Dessert</option>
@@ -184,10 +182,10 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
                             <option value="snack">Snack</option>
                             <option value="drink">Drink</option>
                         </select>
-                    </div>
-                    <div className={styles.row}>
-                        <label className={styles.label} htmlFor="diet">Cuisine</label>
-                        <select className={styles.select} onChange={(e) => setCuisine(e.target.value)} id="cuisine" defaultValue={cuisine ? cuisine : ""}>
+                        <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
+                        <input id="maxReadyTime" onChange={(e) => setMaxReadyTime(Number(e.target.value))} type="number" placeholder="Max Ready Time..." defaultValue={maxReadyTime ? maxReadyTime : 30}/>
+                        <label htmlFor="diet">Cuisine</label>
+                        <select onChange={(e) => setCuisine(e.target.value)} id="cuisine" defaultValue={cuisine ? cuisine : ""}>
                             <option value="">N/A</option>
                             <option value="African">African</option>
                             <option value="Asian">Asian</option>
@@ -217,10 +215,8 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
                             <option value="Thai">Thai</option>
                             <option value="Vietnamese">Vietnamese</option>
                         </select>
-                    </div>
-                    <div className={styles.row}>
-                        <label className={styles.label} htmlFor="diet">Diet type</label>
-                        <select className={styles.select} onChange={(e) => setDiet(e.target.value)} id="diet" defaultValue={diet ? diet : ""}>
+                        <label htmlFor="diet">Diet type</label>
+                        <select onChange={(e) => setDiet(e.target.value)} id="diet" defaultValue={diet ? diet : ""}>
                             <option value="">N/A</option>
                             <option value="Gluten Free">Gluten free</option>
                             <option value="Vegetarian">Vegetarian</option>
@@ -235,8 +231,8 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
                             <option value="Whole30">Whole30</option>
                         </select>
                     </div>
-                    <div className={styles.intolerances}>
-                        <h4 className={styles.subHeader}>Intolerances</h4>
+                    <div className="intolerances">
+                        <h4 className="subHeader" style={{marginBottom: "0.5rem"}}>Intolerances</h4>
                         <label htmlFor="dairy">Dairy</label>
                         <input type="checkbox" id="dairy" onChange={e => ToggleIntolerance("Dairy", e.target.checked)} value="Dairy" defaultChecked={intolerances.includes("Dairy")}/>
                         <label htmlFor="egg">Egg</label>
@@ -262,13 +258,9 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
                         <label htmlFor="wheat">Wheat</label>
                         <input type="checkbox" id="wheat" onChange={e => ToggleIntolerance("Wheat", e.target.checked)} value="Wheat" defaultChecked={intolerances.includes("Wheat")}/>
                     </div>
-                    <div className={styles.row}>
-                        <label className={styles.label} htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
-                        <input className={styles.numberInput} id="maxReadyTime" onChange={(e) => setMaxReadyTime(Number(e.target.value))} type="number" placeholder="Max Ready Time..." defaultValue={maxReadyTime ? maxReadyTime : 30}/>
-                    </div>
-                    <div className={styles.row}>
-                        <h4 className={styles.subHeader}>Nutrient Limits <span className={styles.units}>(per serving)</span></h4>
-                        <select className={styles.leftInput} onChange={(e) => setNutrientLimit(e.target.value)}>
+                    <div className="row" style={{gap: "0", height: "2.2rem"}}>
+                        <h4 style={{paddingRight: "1rem"}}>Nutrient Limits <span style={{color: "gray"}}>(per serving)</span></h4>
+                        <select style={{borderRadius: "0.5rem 0 0 0.5rem", height: "100%", borderRight: "none"}} id="nutrientLimit" onChange={(e) => setNutrientLimit(e.target.value)}>
                             <option value="minCarbs">min Carbs (g)</option>
                             <option value="maxCarbs">max Carbs (g)</option>
                             <option value="minProtein">min Protein (g)</option>
@@ -292,17 +284,16 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
                             <option value="minAlcohol">min Alcohol (g)</option>
                             <option value="maxAlcohol">max Alcohol (g)</option>
                         </select>
-                        <input type="number" onChange={(e) => setNutrientLimitValue(Number(e.target.value))} className={styles.middleInput} />
-                        <button className={styles.rightInput} onClick={AddNutrientLimit}>Add</button>
+                        <input style={{borderRadius: "0", height: "100%"}} type="number" id="nutrientLimitValue" onChange={(e) => setNutrientLimitValue(Number(e.target.value))} />
+                        <button style={{borderRadius: "0 0.5rem 0.5rem 0", height: "100%", borderLeft: "none", padding: "0 0.6rem"}} onClick={AddNutrientLimit}>Add</button>
                     </div>
-                        
-                    <ul className={styles.nutrientLimitsList}>
+                    <ul>
                         {Object.entries(nutrientLimits).map(([key, value]) => (
-                            <li key={key}>{key}: {value}<button onClick={() => RemoveNutrientLimit(key)} className={styles.nutrientRemoveButton}>X</button></li>
+                            <li key={key}>{key}: {value}<button onClick={() => RemoveNutrientLimit(key)}>X</button></li>
                         ))}
                     </ul>
                 </div>
-                <button className={styles.toggleOptionsButton} onClick={e => setShowMoreOptions(!showMoreOptions)}>{showMoreOptions ? "less options" : "more options"}</button>
+                <button onClick={(e) => setShowMoreOptions(!showMoreOptions)}>{showMoreOptions ? "Less options" : "More options"}</button>
             </div>
     );
 }

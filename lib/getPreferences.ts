@@ -29,7 +29,6 @@ export async function GetPreferences(session: MySession) {
         }
     })
 
-    
     if (dbPreferences) {
         preferences = {
             diet: dbPreferences.diet,

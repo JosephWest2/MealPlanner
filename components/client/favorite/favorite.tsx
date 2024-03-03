@@ -7,7 +7,7 @@ import greyHeart from "./heartGrey.png";
 import { useState } from "react";
 import changeFavorite from "@/app/actions/changeFavorite";
 
-export default function Favorite({recipeId, isFavorited} : {recipeId: number, isFavorited: boolean}) {
+export default function Favorite({recipeId, isFavorited, className} : {recipeId: number, isFavorited: boolean, className: string | null}) {
 
     const [favorited, setFavorited] = useState(isFavorited);
 
@@ -20,7 +20,7 @@ export default function Favorite({recipeId, isFavorited} : {recipeId: number, is
     }
 
     return (
-        <button data-favorited={favorited} className={styles.favoriteButton} onClick={OnChange}>
+        <button data-favorited={favorited} className={styles.favoriteButton + " " + className} onClick={OnChange}>
             <Image src={favorited ? heart : greyHeart} alt="heart"></Image>
         </button>
     )

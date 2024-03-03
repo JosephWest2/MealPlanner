@@ -1,12 +1,12 @@
-import { MySession, authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Favorite from "@/components/client/favorite/favorite";
 import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { ProcessSummary } from "@/lib/processSummary";
-import RecipeSearch from "@/components/client/recipeSearch/recipeSearch";
 import styles from "./page.module.css";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import AddToCart from "@/components/client/addToCart/addToCart";
+import type { MySession } from "@/types";
 
 export default async function RecipeDetails({params} : {params: any}) {
 
@@ -56,7 +56,7 @@ export default async function RecipeDetails({params} : {params: any}) {
             })
         }
 
-        return <Favorite isFavorited={favorited} recipeId={recipe.id}></Favorite>
+        return <Favorite className={null} isFavorited={favorited} recipeId={recipe.id}></Favorite>
     }
     
 
@@ -105,9 +105,10 @@ export default async function RecipeDetails({params} : {params: any}) {
                     })}
                 </ol>
 
-                <AddToCart recipe={recipe}></AddToCart>
+                
                 
             </div>
+            <AddToCart recipe={recipe}></AddToCart>
         </>
     )
 }

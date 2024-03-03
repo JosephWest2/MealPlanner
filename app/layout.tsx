@@ -26,11 +26,11 @@ export default async function RootLayout({
       <Providers>
         <body>
           <Navbar session={session}></Navbar>
-          <main>
+          <main style={{minHeight: "80vh"}}>
             {children}
           </main>
           <footer>
-            <p>Footer</p>
+            <p style={{color: "grey"}}>© Joseph West</p>
           </footer>
         </body>
       </Providers>

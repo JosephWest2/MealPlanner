@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import PreferencesForm from "@/components/client/preferences/preferencesForm";
 import type { MySession, RecipeSearchParams } from "@/types";
 import { GetPreferences } from "@/lib/getPreferences";
+import Link from "next/link";
 
 export default async function Account() {
 
@@ -22,11 +23,11 @@ export default async function Account() {
                 <p><b>Email:</b> {session.user.email}</p>
                 <p><b>Name:</b> {session.user.name}</p>
                 <p><b>Id:</b> {session.user.id}</p>
-                <button>Change Password</button>
-                <a className="btn" href="/api/auth/signout">Sign Out</a>
+                <Link className="btn" href="/changepassword">Change Pasword</Link>
+                <Link className="btn" href="/api/auth/signout">Sign Out</Link>
             </div>
             <div className="box column">
-                <h1>Default Search</h1>
+                <h1>Search Defaults</h1>
                 <PreferencesForm session={session} initialPreferences={preferences}></PreferencesForm>
             </div>
             <div className="box column">

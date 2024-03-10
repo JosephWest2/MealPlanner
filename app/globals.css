@@ -25,7 +25,7 @@ input, select {
   border: var(--standard-border);
   border-radius: var(--standard-border-radius);
 }
-input[type="text"] {
+input[type="text"], input[type="password"] {
   width: 20rem;
   padding: 0.8rem
 }

@@ -5,17 +5,19 @@ import { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css"
 import type { CartRecipe, Cart } from "@/types";
+import AddToSmithsCart from "@/app/actions/addToSmithsCart";
 
 export default function Cart() {
 
     const [isClient, setIsClient] = useState(false);
+    const [location, setLocation] = useState<any>(null);
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
     const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
-    
+
     if (!cart || !isClient || cart.recipes.length == 0 || !cart.ingredients || Object.keys(cart.ingredients).length == 0) {
         return <div className="box column">
             <h2>Cart is Empty</h2>
@@ -78,6 +80,15 @@ export default function Cart() {
                     )
                 })}
             </ol>
+
+            <button onClick={() => {
+                navigator.geolocation.getCurrentPosition((position)=>{
+                    setLocation(position)
+                }, ()=>{
+
+                })
+                AddToSmithsCart(cart);
+            }}>Add to Smiths Cart</button>
         </div>
 
         

@@ -33,6 +33,7 @@ export default function RegisterPage() {
             <label className={styles.label} htmlFor="password">Password</label>
             <input className={styles.input} type="password" name="password" id="password" required/>
             <input className={styles.submit} type="submit" value="Register"/>
+            <p>Already have an account? <a href="/login">Login</a></p>
         </form>
     );
 }

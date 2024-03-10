@@ -2,8 +2,9 @@
 
 import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
-import { MySession, authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
+import type { MySession } from "@/types";
 
 export default async function changeFavorite(recipeId : number, isFavorited: boolean) {
 

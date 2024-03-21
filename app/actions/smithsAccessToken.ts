@@ -1,4 +1,4 @@
-
+"use server";
 
 export default async function GetSmithsAccessToken() {
 
@@ -16,6 +16,6 @@ export default async function GetSmithsAccessToken() {
         throw new Error("Failed to fetch Smiths token");
     }
     const data = await response.json();
-    return data.access_token;
+    return data.access_token as string;
 
 }

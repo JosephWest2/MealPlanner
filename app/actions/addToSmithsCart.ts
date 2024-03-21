@@ -1,7 +1,7 @@
 "use server";
 
 import type { Cart } from "@/types";
-import GetSmithsAccessToken from "@/lib/smithsAccessToken";
+import GetSmithsAccessToken from "@/app/actions/smithsAccessToken";
 
 export default async function AddToSmithsCart(cart: Cart) {
 

@@ -1,6 +1,6 @@
 "use server";
 
-import GetSmithsAccessToken from "@/app/actions/smithsAccessToken";
+import GetSmithsAccessToken from "@/app/actions/getSmithsAccessToken";
 
 export default async function getNearestKrogerStore(latitude : number | undefined, longitude : number | undefined, zipCode : number | undefined) {
 
@@ -13,7 +13,7 @@ export default async function getNearestKrogerStore(latitude : number | undefine
 
     const token = await GetSmithsAccessToken();
 
-    const response = await fetch(`https://api-ce.kroger.com/v1/locations${query}`, {
+    const response = await fetch(`https://api.kroger.com/v1/locations${query}`, {
         method: "GET",
         headers: {
             "Accept": "application/json",

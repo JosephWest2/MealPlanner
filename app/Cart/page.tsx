@@ -2,8 +2,10 @@
 
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
+import { useRouter } from 'next/navigation'
 import getNearestKrogerStore from "@/app/actions/getNearestKrogerStore";
-import GetSmithsAccessToken from "@/app/actions/smithsAccessToken";
+import GetSmithsAccessToken from "@/app/actions/getSmithsAccessToken";
+import GetSmithsClientID from "@/app/actions/getSmithsClientID";
 import Link from "next/link";
 import styles from "./page.module.css"
 import type { CartRecipe, Cart } from "@/types";
@@ -14,7 +16,6 @@ export default function Cart() {
     const [location, setLocation] = useState<GeolocationCoordinates | undefined>(undefined);
     const [zipCode, setZipCode] = useState<number | undefined>(undefined);
     const [nearestStore, setNearestStore] = useState<any>(null);
-    const [clientKrogerId, setClientKrogerId] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         setIsClient(true);
@@ -28,6 +29,7 @@ export default function Cart() {
     }, [location, zipCode])
 
     const {cart, ToggleIngredientInclusion, RemoveRecipeFromCart, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
+    const router = useRouter();
 
     if (!cart || !isClient || cart.recipes.length == 0 || !cart.ingredients || Object.keys(cart.ingredients).length == 0) {
         return <div className="box column">
@@ -42,6 +44,13 @@ export default function Cart() {
         }, () => {
             alert("Failed to get location")
         })
+    }
+
+    async function Authorize() {
+        const scopes = "profile.compact product.compact cart.basic:write"
+        const redirectURI = "http://localhost:3000/krogerauthorize";
+        const ClientID = await GetSmithsClientID();
+        router.push(`https://api.kroger.com/v1/connect/oauth2/authorize?scope=${scopes}&response_type=code&client_id=${ClientID}&redirect_uri=${redirectURI}`);
     }
 
     const ingredients = cart.ingredients;
@@ -112,20 +121,7 @@ export default function Cart() {
             <p>Zip Code: {zipCode}</p>
             <p>Nearest Store: {nearestStore?.name}</p>
 
-            <button onClick={() => {
-                GetSmithsAccessToken().then(token => {
-                    console.log(token);
-                    fetch("https:/api-ce.kroger.com/v1/identity/profile", {
-                        method: "GET",
-                        mode: "no-cors",
-                        headers: {
-                            "Accept": "application/json",
-                            "Authorization": token
-                        }
-                    }).then(response => response.json()).then(data => console.log(data)).catch(e => console.log(e));
-                })
-                
-            }}>authorize</button>
+            <button onClick={Authorize}>authorize</button>
 
             <Link className="btn" href="/cart/kroger">Add to Kroger cart</Link>
         </div>

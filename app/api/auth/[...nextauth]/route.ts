@@ -4,7 +4,8 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prismaSingleton";
 import { compare } from "bcrypt";
-
+import type { KrogerProfile } from "@/types";
+import { AdapterUser } from "next-auth/adapters";
 
 export const authOptions : AuthOptions = {
     pages: {
@@ -14,10 +15,22 @@ export const authOptions : AuthOptions = {
     },
     session: { strategy: "jwt"},
     providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        }),
+        {
+            id: "kroger",
+            name: "Kroger",
+            type: "oauth",
+            clientId: process.env.KROGER_CLIENT_ID,
+            clientSecret: process.env.KROGER_CLIENT_SECRET,
+            authorization: { url: "https://api.kroger.com/v1/connect/oauth2/authorize", params: { scope: "profile.compact product.compact cart.basic:write"}},
+            token: "https://api.kroger.com/v1/connect/oauth2/token",
+            userinfo: "https://api.kroger.com/v1/identity/profile",
+            profile(profile : KrogerProfile) {
+              return {
+                id: profile.data.id,
+                testvar: "JSHDFAKJHSDFKDASHKLJDFAHJKLDFHK"
+              }
+            },
+        },
         CredentialsProvider({
             name: "credentials",
             credentials: {
@@ -60,28 +73,16 @@ export const authOptions : AuthOptions = {
     ],
     callbacks: {
         async signIn({ user, profile }) {
-
-            if (profile && profile.email) {
-                await prisma.user.upsert({
-                    where: {
-                        email: profile.email,
-                    },
-                    create: {
-                        email: profile.email,
-                        name: profile.name,
-                    },
-                    update: {
-                        name: profile.name,
-                    },
-                })
-                return true;
-
+            if (profile) {
+                const _profile = profile as KrogerProfile;
+                if (_profile.data && _profile.data.id) {
+                    return true;
+                }
+                return false;
             } else if (user && user.email) {
-
                 return true;
-
             } else {
-                throw new Error("User does not exist");
+                return true;
             }
         },
         session: ({ session, token }) => {
@@ -89,13 +90,18 @@ export const authOptions : AuthOptions = {
                 ...session,
                 user: {
                     ...session.user,
-                    id: Number(token.id)
-                }
+                    id: Number(token.id),
+                    
+                },
+                accessToken: token.accessToken
             }
         },
-        jwt: ({ token, user }) => {
+        jwt: ({ token, user, account }) => {
             if (user) {
                 token.id = Number(user.id)
+            }
+            if (account) {
+                token.accessToken = account.access_token
             }
             return token ;
         }

@@ -131,6 +131,7 @@ export type RecipeIngredient = {
 
 export type MySession = Session & {
     user: MyUser
+    accessToken: string | undefined
 }
 
 export type MyUser = User & {
@@ -138,3 +139,10 @@ export type MyUser = User & {
 }
 
 export type MealType = "main course" | "side dish" | "dessert" | "appetizer" | "salad" | "bread" | "breakfast" | "soup" | "beverage" | "sauce" | "marinade" | "fingerfood" | "snack" | "drink";
+
+export type KrogerProfile = {
+    data: {
+        id: string
+        meta: any
+    }
+}

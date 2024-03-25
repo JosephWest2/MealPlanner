@@ -2,7 +2,7 @@
 
 export default async function GetSmithsAccessToken() {
 
-    const response = await fetch("https://api-ce.kroger.com/v1/connect/oauth2/token", {
+    const response = await fetch("https://api.kroger.com/v1/connect/oauth2/token", {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",

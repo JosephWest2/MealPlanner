@@ -9,16 +9,24 @@ export default function Login() {
     const callbackUrl = useSearchParams().get("callbackUrl") || "/";
     const error = useSearchParams().get("error");
 
-    async function OnSubmit(formData : FormData) {
+    async function CredentialsSignIn(formData : FormData) {
         signIn("credentials", {
             email: formData.get("email"),
             password: formData.get("password"),
             callbackUrl: callbackUrl
         })
     }
+    async function KrogerSignIn(formData: FormData) {
+        signIn("kroger", {
+            callbackUrl: callbackUrl
+        })
+    }
 
-    return (
-        <form className={styles.form} action={OnSubmit}>
+    return (<>
+        <form action={KrogerSignIn}>
+            <input className={styles.submit} type="submit" value="Kroger Sign In" />
+        </form>
+        <form className={styles.form} action={CredentialsSignIn}>
             <h2 className={styles.header}>Login</h2>
             {error ? <p style={{color: "red"}}>Invalid credentials</p> : null}
             <label className={styles.label} htmlFor="email">Email</label>
@@ -28,5 +36,7 @@ export default function Login() {
             <input className={styles.submit} type="submit" value="Login"/>
             <p>Don't have an account? <a href="/register">Register</a></p>
         </form>
+    </>
+        
     );
 }

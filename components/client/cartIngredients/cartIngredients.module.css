@@ -1,10 +1,3 @@
-
-.ingredientContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin: 1rem;
-}
 .ingredientItem {
     display: grid;
     grid-template-columns: 1fr 1fr 0.25fr 0.25fr;
@@ -24,7 +17,8 @@
     padding: 0.2rem 0.5rem;
     border: 1px solid grey;
     border-right: none;
-    border-radius: 1rem 0 0 1rem;    
+    border-radius: 1rem 0 0 1rem;  
+    height: 2.5rem;  
 }
 .ingredientOverrideInput[data-enabled="false"] {
     background-color: lightgrey;  
@@ -33,6 +27,7 @@
     padding: 0.5rem;
     border: 1px solid grey;
     border-radius: 0 1rem 1rem 0;
+    height: 2.5rem;
 }
 .ingredientOverrideSubmit[data-override="true"] {
     color: red;
@@ -40,8 +35,4 @@
 .ingredientOverrideSubmit:hover {
     cursor: pointer;
     background-color: lightgray;
-}
-.ingredientOverrideForm {
-    display: flex;
-    flex-direction: row;
 }

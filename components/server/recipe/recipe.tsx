@@ -1,35 +1,14 @@
 import type { Recipe } from "@/types";
-import Favorite from "@/components/client/favorite/favorite";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ProcessSummary } from "@/lib/processSummary";
 import Link from "next/link";
 import styles from "./recipe.module.css";
-import type { MySession } from "@/types";
 
 
 
-export default async function RecipeComponent({recipeData, favorites} : {recipeData: Recipe, favorites: any}) {
+export default async function RecipeComponent({recipeData} : {recipeData: Recipe}) {
 
-    const session = await getServerSession(authOptions) as MySession;
-
-    function LoggedInContent() {
-        if (session && session.user) {
-            let favorited = false;
-            if (favorites) {
-                favorites.forEach((favorite: any) => {
-                    if (favorite.recipeId === recipeData.id) {
-                        favorited = true;
-                    }
-                })
-            }
-            return <Favorite className={styles.favorite} isFavorited={favorited} recipeId={recipeData.id}></Favorite>
-        }
-        return <></>
-    }
 
     return <div className={styles.recipeGrid + " box"}>
-            {LoggedInContent()}
             <h2 className={styles.header}>{recipeData.title}</h2>
             
             <img className={styles.image} src={recipeData.image} alt="recipeImage" />

@@ -1,10 +1,3 @@
-
-.ingredientContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin: 1rem;
-}
 .ingredientItem {
     display: grid;
     grid-template-columns: 1fr 1fr 0.25fr 0.25fr;
@@ -40,8 +33,4 @@
 .ingredientOverrideSubmit:hover {
     cursor: pointer;
     background-color: lightgray;
-}
-.ingredientOverrideForm {
-    display: flex;
-    flex-direction: row;
 }

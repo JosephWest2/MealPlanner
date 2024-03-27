@@ -1,12 +1,11 @@
 import type { Key } from "react";
 import RecipeComponent from "@/components/server/recipe/recipe";
 import RecipeSearch from "@/components/client/recipeSearch/recipeSearch";
-import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import type { RecipeSearchParamStrings, Recipe, MySession } from "@/types";
-import { DecodeNutrientLimits, GetPreferences } from "@/lib/getPreferences";
+import { DecodeNutrientLimits } from "@/lib/nutrientLimits";
 
 async function SearchRecipes(params: RecipeSearchParamStrings) {
 
@@ -42,17 +41,6 @@ async function SearchRecipes(params: RecipeSearchParamStrings) {
 
 export default async function Home({searchParams} : {searchParams: RecipeSearchParamStrings}) {
 
-    const session = await getServerSession(authOptions) as MySession;
-    let favorites = null as any;
-    if (session && session.user) {
-        favorites = await prisma.recipeRef.findMany({
-            where: {
-                userId: session.user.id
-            }
-        })
-    }
-
-    console.log(favorites);
     const recipes = await SearchRecipes(searchParams) as Array<Recipe>;
     console.log(recipes[0]);
     let unitsArray = existsSync("./devData/units.json") ? JSON.parse(readFileSync("./devData/units.json", "utf8")) : null;
@@ -68,28 +56,13 @@ export default async function Home({searchParams} : {searchParams: RecipeSearchP
     unitsArray = Array.from(units.values());
     writeFileSync("./devData/units.json", JSON.stringify(unitsArray), "utf8");
 
-    const preferences = await GetPreferences(session);
-
     return (
         <div className="column">
-            <RecipeSearch session={session} preferences={preferences}></RecipeSearch>
+            <RecipeSearch></RecipeSearch>
             {recipes?.map((recipe : Recipe, _key : Key) => {
-                if (session && session.user && searchParams.onlyFavorites === "true") {
-                    for (let i = 0; i < favorites.length; i++) {
-                        if (favorites[i].recipeId === recipe.id) {
-                            return <div key={_key}>
-                                <RecipeComponent favorites={favorites} recipeData={recipe}></RecipeComponent>
-                            </div>
-                        }
-                    }
-                    return <></>
-                    
-                } else {
-                    return <div key={_key}>
-                        <RecipeComponent favorites={favorites} recipeData={recipe}></RecipeComponent>
-                    </div>
-                }
-                
+                return <div key={_key}>
+                <RecipeComponent recipeData={recipe}></RecipeComponent>
+            </div>
             })}
         </div>
     );

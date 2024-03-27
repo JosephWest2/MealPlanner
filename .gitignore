@@ -36,6 +36,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-WM_IO_my_rsa_key_pair
-
 package-lock.json

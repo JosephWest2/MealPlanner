@@ -1,26 +1,35 @@
 "use server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { MySession } from "@/types";
 
-import GetSmithsAccessToken from "@/app/actions/getSmithsAccessToken";
+export default async function getNearestKrogerStore(latitude : number | undefined, longitude : number | undefined, zipCode : string | undefined) {
 
-export default async function getNearestKrogerStore(latitude : number | undefined, longitude : number | undefined, zipCode : number | undefined) {
-
-    let query = "";
-    if (latitude && longitude) {
-        query = "?filter.latLong.near=" + latitude + "," + longitude;
-    } else if (zipCode) {
-        query = "?filter.zipCode.near=" + zipCode;
+    const session = await getServerSession(authOptions) as MySession;
+    if (!session?.accessToken) {
+        return "Invalid access token";
     }
 
-    const token = await GetSmithsAccessToken();
+    let query = "";
+    
+    if (zipCode) {
+        query = "?filter.zipCode.near=" + zipCode;
+    } else if (latitude && longitude) {
+        query = "?filter.latLong.near=" + latitude + "," + longitude;
+    }
 
     const response = await fetch(`https://api.kroger.com/v1/locations${query}`, {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "Authorization": "Bearer " + token
+            "Authorization": "Bearer " + session.accessToken
         }
     })
 
+    if (response.status == 401) {
+        return "Invalid access token";
+    }
     const data = await response.json();
+    console.log(data);
     return data.data as Array<any>;
 }

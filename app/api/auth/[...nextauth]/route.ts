@@ -1,11 +1,6 @@
 import { AuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prismaSingleton";
-import { compare } from "bcrypt";
 import type { KrogerProfile } from "@/types";
-import { AdapterUser } from "next-auth/adapters";
 
 export const authOptions : AuthOptions = {
     pages: {
@@ -26,64 +21,20 @@ export const authOptions : AuthOptions = {
             userinfo: "https://api.kroger.com/v1/identity/profile",
             profile(profile : KrogerProfile) {
               return {
-                id: profile.data.id,
-                testvar: "JSHDFAKJHSDFKDASHKLJDFAHJKLDFHK"
+                id: profile.data.id
               }
             },
-        },
-        CredentialsProvider({
-            name: "credentials",
-            credentials: {
-                email: { label: "Email", type: "email", placeholder: "email@example.com"},
-                password: { label: "Password", type: "password"}
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials.password) {
-                    return null;
-                }
-
-                const user = await prisma.user.findUnique({
-                    where : {
-                        email : credentials.email
-                    }
-                });
-
-                if (!user) {
-                    return null;
-                }
-
-                if (!user.password) {
-                    return null;
-                }
-
-                const isPasswordValid = await compare(credentials.password, user.password);
-
-                if (!isPasswordValid) {
-                    return null;
-                }
-
-                return {
-                    id: user.id.toString(),
-                    email: user.email,
-                    name: user.name
-                }
-            }
-            
-        })
+        }
     ],
     callbacks: {
-        async signIn({ user, profile }) {
+        async signIn({ profile }) {
             if (profile) {
                 const _profile = profile as KrogerProfile;
                 if (_profile.data && _profile.data.id) {
                     return true;
                 }
-                return false;
-            } else if (user && user.email) {
-                return true;
-            } else {
-                return true;
             }
+            return false;
         },
         session: ({ session, token }) => {
             return {
@@ -93,17 +44,18 @@ export const authOptions : AuthOptions = {
                     id: Number(token.id),
                     
                 },
-                accessToken: token.accessToken
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken,
+                expiresAt: token.expiresAt
             }
         },
-        jwt: ({ token, user, account }) => {
-            if (user) {
-                token.id = Number(user.id)
-            }
+        jwt: ({ token, account }) => {
             if (account) {
-                token.accessToken = account.access_token
+                token.accessToken = account.access_token,
+                token.refreshToken = account.refresh_token,
+                token.expiresAt = Date.now() + 1800 * 1000
             }
-            return token ;
+            return token;
         }
     }
 }

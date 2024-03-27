@@ -132,6 +132,8 @@ export type RecipeIngredient = {
 export type MySession = Session & {
     user: MyUser
     accessToken: string | undefined
+    refreshToken: string | undefined
+    expiresAt: number
 }
 
 export type MyUser = User & {

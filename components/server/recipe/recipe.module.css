@@ -1,17 +1,14 @@
 .recipeGrid {
     max-width: 800px;
     display: grid;
-    grid-template-columns: 0.2fr 1.8fr 2fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
-    gap: 1rem;
+    gap: 1.5rem;
     grid-template-areas: 
-        "favorite header header"
-        "image image info"
-        "summary summary summary"
-        "link link link";
-}
-.favorite {
-    grid-area: favorite;
+        "header header"
+        "image info"
+        "summary summary"
+        "link link";
 }
 .header {
     font-size: 2em;
@@ -21,6 +18,7 @@
     grid-area: image;
 }
 .info {
+    align-self: center;
     grid-area: info;
 }
 .summary {

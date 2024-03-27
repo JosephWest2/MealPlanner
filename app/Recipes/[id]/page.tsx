@@ -1,6 +1,4 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Favorite from "@/components/client/favorite/favorite";
-import { prisma } from "@/lib/prismaSingleton";
 import { getServerSession } from "next-auth";
 import { ProcessSummary } from "@/lib/processSummary";
 import styles from "./page.module.css";
@@ -31,41 +29,13 @@ export default async function RecipeDetails({params} : {params: any}) {
         }
     }
 
-    const session = await getServerSession(authOptions) as MySession;
     const recipe = await GetRecipe();
-
-    async function LoggedInContent() {
-        
-        if (!session || !session.user) {
-            return <></>
-        }
-
-        let favorites = await prisma.recipeRef.findMany({
-            where: {
-                userId: session.user.id
-            }
-        })
-        
-        let favorited = false;
-        if (favorites) {
-            favorites.forEach((favorite: any) => {
-                console.log(favorite.recipeId);
-                if (favorite.recipeId == recipe.id) {
-                    favorited = true;
-                }
-            })
-        }
-
-        return <Favorite className={null} isFavorited={favorited} recipeId={recipe.id}></Favorite>
-    }
-    
 
     return (
         <>
             <div className={styles.recipe}>
                 
                 <div className={styles.header}>
-                    {LoggedInContent()}
                     <h2>{recipe.title}</h2>
                 </div>
                 

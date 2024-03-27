@@ -2,9 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import styles from "./recipeSearch.module.css";
-import type { RecipeSearchParams, MySession, NutrientLimits } from "@/types";
-import { EncodeNutrientLimits } from "@/lib/getPreferences";
+import type { RecipeSearchParams, NutrientLimits } from "@/types";
+import { EncodeNutrientLimits } from "@/lib/nutrientLimits";
 
 export const optionMapping = {
     minCarbs: 'min Carbs',
@@ -56,17 +55,23 @@ export const unitMapping = {
     maxAlcohol: 'g'
 } as any;
 
-export default function RecipeSearch({session, preferences} : {session: MySession | null, preferences: RecipeSearchParams}) {
+export default function RecipeSearch() {
+
+    let preferences = null as RecipeSearchParams | null;
+
+    if (typeof window !== undefined) {
+        //preferences = JSON.parse(localStorage.getItem("mpjw-preferences") || "{}");
+    }
 
     const [showMoreOptions, setShowMoreOptions] = useState(false);
 
     const [query, setQuery] = useState("");
-    const [mealType, setMealType] = useState(preferences.mealType);
-    const [cuisine, setCuisine] = useState(preferences.cuisine);
-    const [diet, setDiet] = useState(preferences.diet);
-    const [intolerances, setIntolerances] = useState(preferences.intolerances);
-    const [maxReadyTime, setMaxReadyTime] = useState(preferences.maxReadyTime);
-    const [nutrientLimits, setNutrientLimits] = useState(preferences.nutrientLimits || {} as NutrientLimits);
+    const [mealType, setMealType] = useState(preferences? preferences.mealType : "main course");
+    const [cuisine, setCuisine] = useState(preferences? preferences.cuisine : "");
+    const [diet, setDiet] = useState(preferences? preferences.diet : "");
+    const [intolerances, setIntolerances] = useState(preferences? preferences.intolerances : []);
+    const [maxReadyTime, setMaxReadyTime] = useState(preferences? preferences.maxReadyTime : 45);
+    const [nutrientLimits, setNutrientLimits] = useState(preferences && preferences.nutrientLimits ? preferences.nutrientLimits : {} as NutrientLimits);
     const [onlyFavorites, setOnlyFavorites] = useState(false);
 
     const [nutrientLimit, setNutrientLimit] = useState("minCarbs" as string | null);
@@ -122,16 +127,6 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
         router.push(`/?query=${query}&mealType=${mealType}&maxReadyTime=${maxReadyTime}&onlyFavorites=${onlyFavorites}&intolerances=${intolerances.toString()}&diet=${diet}&cuisine=${cuisine}&nutrientLimits=${EncodeNutrientLimits(nutrientLimits)}`);
     }
 
-    function LoggedInContent() {
-        if (session && session.user) {
-            return <div className="row" style={{minWidth: "fit-content"}}>
-                    <label htmlFor="showFavorites">Favorites only</label>
-                    <input type="checkbox" name="showFavorites" id="showFavorites" value="true"/>
-                </div>
-        }
-        return <></>
-    }
-
     function AddNutrientLimit() {
         if (nutrientLimit && nutrientLimitValue) {
             const element = document.getElementById("nutrientLimitValue") as HTMLInputElement;
@@ -161,7 +156,6 @@ export default function RecipeSearch({session, preferences} : {session: MySessio
                 <div className="row">
                     <input style={{width: "100%"}} type="text" name="search" id="search" placeholder="Search..." defaultValue={query}/>
                     <button onClick={Search}>Search</button>
-                    {LoggedInContent()}
                 </div>
                 <div className="column toggleable" data-enabled={showMoreOptions.toString()}>
                     <div className="optionsGrid">

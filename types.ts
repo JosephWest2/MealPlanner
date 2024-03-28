@@ -152,6 +152,59 @@ export type KrogerProfile = {
 export type MappedIngredients = {
     [ingredientName: string]: {
         cartIngredient: CartIngredient
-        productInfo: any
+        productOptions: KrogerProductInfo[]
     }
+}
+
+export type KrogerLocation = {
+    locationId: number
+    storeNumber: number
+    chain: string
+    address: {
+        addressLine1: string
+        city: string
+        state: string
+        zipCode: string
+    }
+    name: string
+}
+
+export type KrogerProductInfo = {
+    productId: number
+    upc: number
+    brand: string
+    countryOrigin: string
+    aisleLocations: []
+    categories: string[]
+    description: string
+    images: [{
+        perspective: string
+        featured?: boolean
+        sizes: [
+            {
+                size: "xlarge" | "large" | "medium" | "small"
+                url: string
+            }
+        ]
+    }]
+    items: [
+        {
+            itemId: number
+            favorite: boolean
+            fulfillment: {
+                curbside: boolean
+                delivery: boolean
+                inStore: boolean
+                shipToHome: boolean
+            },
+            size: string
+        }
+
+    ]
+    itemInformation: any
+    temperature: {
+        indicator: string
+        heatSensitive: boolean
+    }
+
 }

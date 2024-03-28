@@ -1,6 +1,6 @@
 "use server";
 
-import { DynamicIngredients, MappedIngredients } from "@/types";
+import { DynamicIngredients, KrogerProductInfo, MappedIngredients } from "@/types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { MySession } from "@/types";
@@ -12,7 +12,6 @@ export default async function GetKrogerProductInfo(ingredients : DynamicIngredie
         return "Invalid access token";
     }
 
-    
     const mappedIngredients = {} as MappedIngredients;
 
     Object.keys(ingredients).forEach(async (key) => {
@@ -37,8 +36,11 @@ export default async function GetKrogerProductInfo(ingredients : DynamicIngredie
         }
 
         const data = await response.json();
-        console.log(data);
+        mappedIngredients[ingredient.name] = {
+            cartIngredient: ingredient,
+            productOptions: data.data as KrogerProductInfo[]
+        }
     });
 
-
+    return mappedIngredients;
 }

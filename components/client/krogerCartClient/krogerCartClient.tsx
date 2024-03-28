@@ -1,17 +1,14 @@
 "use client";
 
-import { MySession } from "@/types";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import getNearestKrogerStore from "@/app/actions/getNearestKrogerStore";
 import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
 import { useContext } from "react";
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 
-export default function KrogerCartClient({session} : {session: MySession}) {
+export default function KrogerCartClient() {
 
     const { cart } = useContext(CartContext);
-    const router = useRouter();
 
     const [location, setLocation] = useState<GeolocationCoordinates | undefined>(undefined);
     const [zipCode, setZipCode] = useState<string | undefined>(undefined);
@@ -21,7 +18,6 @@ export default function KrogerCartClient({session} : {session: MySession}) {
         if (!location && !zipCode || !location && !(zipCode?.toString().length == 5)) {return;}
         getNearestKrogerStore(location?.latitude, location?.longitude, zipCode).then(data => {
             if (data == "Invalid access token") {
-                router.push("/auth/kroger/signin");
                 return;
             }
             setNearestStores(data);

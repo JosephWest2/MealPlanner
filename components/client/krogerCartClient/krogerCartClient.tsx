@@ -1,15 +1,17 @@
 "use client";
 
 import { MySession } from "@/types";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import getNearestKrogerStore from "@/app/actions/getNearestKrogerStore";
+import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
+import { useContext } from "react";
+import { CartContext } from "@/components/client/cartProvider/cartProvider";
 
-export default function KrogerCartClient({session} : {session: MySession | null}) {
+export default function KrogerCartClient({session} : {session: MySession}) {
 
-    if (!session || !session.accessToken || session.expiresAt < Date.now()) {
-        signIn("kroger", { callbackUrl: "/cart/kroger" });
-    }
+    const { cart } = useContext(CartContext);
+    const router = useRouter();
 
     const [location, setLocation] = useState<GeolocationCoordinates | undefined>(undefined);
     const [zipCode, setZipCode] = useState<string | undefined>(undefined);
@@ -19,7 +21,7 @@ export default function KrogerCartClient({session} : {session: MySession | null}
         if (!location && !zipCode || !location && !(zipCode?.toString().length == 5)) {return;}
         getNearestKrogerStore(location?.latitude, location?.longitude, zipCode).then(data => {
             if (data == "Invalid access token") {
-                signIn("kroger", { callbackUrl: "/cart/kroger" });
+                router.push("/auth/kroger/signin");
                 return;
             }
             setNearestStores(data);
@@ -45,6 +47,10 @@ export default function KrogerCartClient({session} : {session: MySession | null}
         <p>{zipCode}</p>
 
         <div className="row">Find nearby stores by Zip Code <input pattern="[0-9]{5}" type="text" style={{height: "2rem", width: "6rem"}} onChange={(e)=> setZipCode(e.target.value)} /> or <button onClick={GetLocation} style={{height: "2rem", display: "flex", alignItems: "center"}}>use current location</button></div>
-    
+        <button onClick={() => {
+            if (cart?.ingredients) {
+                GetKrogerProductInfo(cart.ingredients, undefined);
+            }
+        }}>Query Product API</button>
     </>
 }

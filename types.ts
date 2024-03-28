@@ -148,3 +148,10 @@ export type KrogerProfile = {
         meta: any
     }
 }
+
+export type MappedIngredients = {
+    [ingredientName: string]: {
+        cartIngredient: CartIngredient
+        productInfo: any
+    }
+}

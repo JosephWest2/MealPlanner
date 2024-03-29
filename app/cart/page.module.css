@@ -1,0 +1,47 @@
+
+.ingredientContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem;
+}
+.ingredientItem {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.25fr 0.25fr;
+    grid-template-rows: auto;
+    gap: 1rem;
+    align-items: center;
+}
+.ingredientItem[data-included="false"] {
+    opacity: 0.6;
+}
+.ingredientCheckbox {
+    height: 1.2rem;
+    width: 1.2rem;
+    margin: 0.5rem;
+}
+.ingredientOverrideInput {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid grey;
+    border-right: none;
+    border-radius: 1rem 0 0 1rem;    
+}
+.ingredientOverrideInput[data-enabled="false"] {
+    background-color: lightgrey;  
+}
+.ingredientOverrideSubmit {
+    padding: 0.5rem;
+    border: 1px solid grey;
+    border-radius: 0 1rem 1rem 0;
+}
+.ingredientOverrideSubmit[data-override="true"] {
+    color: red;
+}
+.ingredientOverrideSubmit:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+.ingredientOverrideForm {
+    display: flex;
+    flex-direction: row;
+}

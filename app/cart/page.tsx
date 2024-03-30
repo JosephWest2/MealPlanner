@@ -2,7 +2,7 @@
 
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
-import getNearestKrogerStore from "@/app/actions/getNearestKrogerStore";
+import GetNearestKrogerStores from "@/app/actions/getNearestKrogerStores";
 import Link from "next/link";
 import type { CartRecipe, Cart } from "@/types";
 import CartIngredients from "@/components/client/cartIngredients/cartIngredients";

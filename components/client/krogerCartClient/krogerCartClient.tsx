@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import getNearestKrogerStore from "@/app/actions/getNearestKrogerStore";
+import GetNearestKrogerStores from "@/app/actions/getNearestKrogerStores";
 import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
 import { useContext } from "react";
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
+import { KrogerLocation } from "@/types";
+import GetLatLongDistance from "@/lib/getLatLongDistance";
 
 export default function KrogerCartClient() {
 
@@ -12,17 +14,24 @@ export default function KrogerCartClient() {
 
     const [location, setLocation] = useState<GeolocationCoordinates | undefined>(undefined);
     const [zipCode, setZipCode] = useState<string | undefined>(undefined);
-    const [nearestStores, setNearestStores] = useState<any[] | undefined>(undefined);
+    const [nearestStores, setNearestStores] = useState<KrogerLocation[] | undefined>(undefined);
+    const [selectedStoreIndex, setSelectedStoreIndex] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         if (!location && !zipCode || !location && !(zipCode?.toString().length == 5)) {return;}
-        getNearestKrogerStore(location?.latitude, location?.longitude, zipCode).then(data => {
+        GetNearestKrogerStores(location?.latitude, location?.longitude, zipCode).then(data => {
             if (data == "Invalid access token") {
                 return;
             }
             setNearestStores(data);
         });
     }, [location, zipCode])
+
+    useEffect(() => {
+        if (!selectedStoreIndex && nearestStores && nearestStores[0]) {
+            setSelectedStoreIndex(0);
+        }
+    }, [nearestStores])
 
     useEffect(() => {
         GetLocation();
@@ -36,9 +45,34 @@ export default function KrogerCartClient() {
         })
     }
 
+    function NearestStores() {
+
+        if (!nearestStores) {
+            return <></>
+        }
+
+        function OnChange(e : any) {
+            setSelectedStoreIndex(Number(e.target.value))
+        }
+        
+        return <>
+            <select name="selectedStore" id="selectedStore" onChange={OnChange} value={selectedStoreIndex}>
+                {nearestStores.map((store, index) => {
+                    let distance = undefined;
+                    if (location) {
+                        distance = GetLatLongDistance(location.latitude, store.geolocation.latitude, location.longitude, store.geolocation.longitude);
+                        distance = Math.round(distance * 100) / 100;
+                    }
+                    return <option key={index} value={index}>{store.name} {distance} mi</option>
+                })}
+            </select>
+        </>
+    }
+
     return <>
     
-        <p>{nearestStores ? nearestStores[0].name : null}</p>
+        <NearestStores></NearestStores>
+        
         <p>{location?.latitude} {location?.longitude}</p>
         <p>{zipCode}</p>
 

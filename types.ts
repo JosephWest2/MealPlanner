@@ -157,9 +157,13 @@ export type MappedIngredients = {
 }
 
 export type KrogerLocation = {
-    locationId: number
-    storeNumber: number
+    locationId: string
+    storeNumber: string
     chain: string
+    geolocation: {
+        latitude: number
+        longitude: number
+    }
     address: {
         addressLine1: string
         city: string
@@ -170,18 +174,29 @@ export type KrogerLocation = {
 }
 
 export type KrogerProductInfo = {
-    productId: number
-    upc: number
+    productId: string
+    upc: string
     brand: string
     countryOrigin: string
-    aisleLocations: []
+    aisleLocations: [{
+        bayNumber: string
+        description: string
+        number: string
+        numberOfFacings: string
+        sequenceNumber: string
+        side: string
+        shelfNumber: string
+        shelfPositionInBay: string
+    }]
     categories: string[]
     description: string
     images: [{
+        id?: string
         perspective: string
         featured?: boolean
         sizes: [
             {
+                id?: string
                 size: "xlarge" | "large" | "medium" | "small"
                 url: string
             }
@@ -189,14 +204,27 @@ export type KrogerProductInfo = {
     }]
     items: [
         {
-            itemId: number
+            itemId: string
             favorite: boolean
             fulfillment: {
                 curbside: boolean
                 delivery: boolean
-                inStore: boolean
-                shipToHome: boolean
+                instore: boolean
+                shiptohome: boolean
             },
+            price: {
+                regular: number
+                promo: number
+                regularPerUnitEstimate: number
+                promoPerUnitEstimate: number
+            },
+            nationalPrice: {
+                regular: number
+                promo: number
+                regularPerUnitEstimate: number
+                promoPerUnitEstimate: number
+            },
+            soldby: string
             size: string
         }
 

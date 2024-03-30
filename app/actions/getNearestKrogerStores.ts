@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { KrogerLocation, MySession } from "@/types";
 
-export default async function getNearestKrogerStore(latitude : number | undefined, longitude : number | undefined, zipCode : string | undefined) {
+export default async function GetNearestKrogerStores(latitude : number | undefined, longitude : number | undefined, zipCode : string | undefined) {
 
     const session = await getServerSession(authOptions) as MySession;
     if (!session?.accessToken) {
@@ -30,5 +30,5 @@ export default async function getNearestKrogerStore(latitude : number | undefine
         return "Invalid access token";
     }
     const data = await response.json();
-    return data.data as Array<KrogerLocation>;
+    return data.data.slice(0,5) as Array<KrogerLocation>;
 }

@@ -150,10 +150,12 @@ export type KrogerProfile = {
 }
 
 export type MappedIngredients = {
-    [ingredientName: string]: {
-        cartIngredient: CartIngredient
-        productOptions: KrogerProductInfo[]
-    }
+    [ingredientName: string]: MappedIngredient
+}
+
+export type MappedIngredient = {
+    cartIngredient: CartIngredient
+    productOptions: KrogerProductInfo[]
 }
 
 export type KrogerLocation = {
@@ -236,7 +238,3 @@ export type KrogerProductInfo = {
     }
 
 }
-
-export type IngredientProvider = null | KrogerProvider
-
-export type KrogerProvider = {providerName: "Kroger", locationId: string | null}

@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import GetNearestKrogerStores from "@/app/actions/getNearestKrogerStores";
-import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
 import { useContext } from "react";
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { KrogerLocation } from "@/types";
 import GetLatLongDistance from "@/lib/getLatLongDistance";
 import type { MappedIngredients } from "@/types";
-import CartIngredients from "@/components/client/cartIngredients/cartIngredients";
+import KrogerCartIngredients from "../krogerCartIngredients/krogerCartIngredients";
 
 export default function KrogerCartClient() {
 
@@ -84,7 +83,7 @@ export default function KrogerCartClient() {
                 })}
             </select>}
         </div>
-        <CartIngredients provider={{providerName: "Kroger", locationId: selectedStoreID || null}}></CartIngredients>
+        <KrogerCartIngredients></KrogerCartIngredients>
         
     </div>
 }

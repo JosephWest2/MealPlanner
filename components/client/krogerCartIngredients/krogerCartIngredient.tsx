@@ -1,6 +1,6 @@
 "use client";
 
-import type { CartIngredient, KrogerProvider } from "@/types";
+import type { CartIngredient } from "@/types";
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import styles from "./krogerIngredient.module.css";
@@ -8,7 +8,7 @@ import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
 import type { KrogerProductInfo } from "@/types";
 import Image from "next/image";
 
-export default function KrogerCartIngredient({ingredient, provider} : {ingredient: CartIngredient, provider: KrogerProvider}) {
+export default function KrogerCartIngredientClient({ingredient, locationId} : {ingredient: CartIngredient, locationId: string | null}) {
 
     const {ToggleIngredientInclusion, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
     const [overrideAmount, setOverrideAmount] = useState<number>(0);
@@ -17,7 +17,7 @@ export default function KrogerCartIngredient({ingredient, provider} : {ingredien
     const [productImageURL, setProductImageURL] = useState<string | undefined>();
 
     useEffect(() => {
-        GetKrogerProductInfo(ingredient, provider.locationId).then(res => {
+        GetKrogerProductInfo(ingredient, locationId).then(res => {
             res.promise.then(data => {
                 console.log(data);
                 if (data == "Invalid access token") {

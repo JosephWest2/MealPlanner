@@ -3,10 +3,8 @@
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
 import CartIngredient from "./cartIngredient";
-import type { IngredientProvider } from "@/types";
-import KrogerCartIngredient from "./krogerCartIngredient";
 
-export default function CartIngredients({provider} : {provider:IngredientProvider}) {
+export default function CartIngredients() {
 
     const { cart } = useContext(CartContext);
     const [isClient, setIsClient] = useState(false);
@@ -27,9 +25,6 @@ export default function CartIngredients({provider} : {provider:IngredientProvide
             <ol className="column">
                 {keys.map((ingredientName: string) => {
                     const ingredient = cart.ingredients[ingredientName];
-                    if (provider && provider.providerName === "Kroger") {
-                        return <KrogerCartIngredient provider={provider} ingredient={ingredient} key={ingredientName}></KrogerCartIngredient>
-                    }
                     return <CartIngredient ingredient={ingredient} key={ingredientName}></CartIngredient>
                 })}
             </ol>

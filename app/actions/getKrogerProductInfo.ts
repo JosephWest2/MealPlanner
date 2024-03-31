@@ -1,6 +1,6 @@
 "use server";
 
-import { CartIngredient, KrogerProductInfo, MappedIngredients } from "@/types";
+import { CartIngredient, KrogerProductInfo } from "@/types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { MySession } from "@/types";

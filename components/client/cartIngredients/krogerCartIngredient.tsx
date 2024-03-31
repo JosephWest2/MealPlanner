@@ -17,14 +17,18 @@ export default function KrogerCartIngredient({ingredient, provider} : {ingredien
     const [productImageURL, setProductImageURL] = useState<string | undefined>();
 
     useEffect(() => {
-        GetKrogerProductInfo(ingredient, provider.locationId).then(data => {
-            if (data == "Invalid access token") {
-                return;
-            } else if (data == "Failed to fetch products") {
-                return;
-            }
-            setKrogerProductInfo(data);
-            setSelectedProductID(data[0].productId);
+        GetKrogerProductInfo(ingredient, provider.locationId).then(res => {
+            res.promise.then(data => {
+                console.log(data);
+                if (data == "Invalid access token") {
+                    return;
+                } else if (data == "Failed to fetch products") {
+                    return;
+                }
+                setKrogerProductInfo(data);
+                setSelectedProductID(data[0].productId);
+            })
+            
         });
     }, []);
 

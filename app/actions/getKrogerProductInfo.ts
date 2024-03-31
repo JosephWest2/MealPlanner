@@ -1,46 +1,37 @@
 "use server";
 
-import { DynamicIngredients, KrogerProductInfo, MappedIngredients } from "@/types";
+import { CartIngredient, KrogerProductInfo, MappedIngredients } from "@/types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { MySession } from "@/types";
 
-export default async function GetKrogerProductInfo(ingredients : DynamicIngredients, locationId : string | undefined) {
+export default async function GetKrogerProductInfo(ingredient : CartIngredient, locationId : string | null) {
 
     const session = await getServerSession(authOptions) as MySession;
     if (!session?.accessToken) {
         return "Invalid access token";
     }
 
-    const mappedIngredients = {} as MappedIngredients;
+    let url = `https://api.kroger.com/v1/products?filter.term=${ingredient.name}&filter.fulfillment=ais`;
 
-    Object.keys(ingredients).forEach(async (key) => {
-        const ingredient = ingredients[key];
+    if (locationId) {
+        url += `&filter.locationId=${locationId}`;
+    }
 
-        let url = `https://api.kroger.com/v1/products?filter.term=${ingredient.name}&filter.fulfillment=ais`;
-
-        if (locationId) {
-            url += `&filter.locationId=${locationId}`;
-        }
-
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Authorization": "Bearer " + session.accessToken
-            }
-        });
-
-        if (response.status == 401) {
-            return "Invalid access token";
-        }
-
-        const data = await response.json();
-        mappedIngredients[ingredient.name] = {
-            cartIngredient: ingredient,
-            productOptions: data.data as KrogerProductInfo[]
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + session.accessToken
         }
     });
 
-    return mappedIngredients;
+    if (response.status == 401) {
+        return "Invalid access token";
+    } else if (!response.ok) {
+        return "Failed to fetch products";
+    }
+    const data = await response.json();
+
+    return data.data as KrogerProductInfo[];
 }

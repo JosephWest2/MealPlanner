@@ -236,3 +236,7 @@ export type KrogerProductInfo = {
     }
 
 }
+
+export type IngredientProvider = null | KrogerProvider
+
+export type KrogerProvider = {providerName: "Kroger", locationId: string | null}

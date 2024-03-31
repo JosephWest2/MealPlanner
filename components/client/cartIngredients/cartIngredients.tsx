@@ -2,13 +2,13 @@
 
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
-import styles from "./cartIngredients.module.css";
-import { DynamicIngredients } from "@/types";
+import CartIngredient from "./cartIngredient";
+import type { IngredientProvider } from "@/types";
+import KrogerCartIngredient from "./krogerCartIngredient";
 
+export default function CartIngredients({provider} : {provider:IngredientProvider}) {
 
-export default function CartIngredients({mapped, mappedIngredients} : {mapped: boolean, mappedIngredients: DynamicIngredients | null}) {
-
-    const {cart, ToggleIngredientInclusion, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
+    const { cart } = useContext(CartContext);
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -19,38 +19,18 @@ export default function CartIngredients({mapped, mappedIngredients} : {mapped: b
         return null;
     }
 
+    const keys = Object.keys(cart.ingredients);
+
     return (
         <div className="column box">
             <h2>Ingredients</h2>
             <ol className="column">
-                {Object.keys(cart.ingredients).map((ingredientName: string, _key: number) => {
-
+                {keys.map((ingredientName: string) => {
                     const ingredient = cart.ingredients[ingredientName];
-
-                    function IngredientOverrideAction (formData : FormData) {
-                        const amount = formData.get("amount");
-                        if (amount) {
-                            OverrideIngredient(ingredientName, amount);
-                        } else {
-                            CancelIngredientOverride(ingredientName);
-                        }
-                        const element = document.getElementById("amount" + _key) as HTMLInputElement;
-                        if (element) {
-                            element.value = "";
-                        }
+                    if (provider && provider.providerName === "Kroger") {
+                        return <KrogerCartIngredient provider={provider} ingredient={ingredient} key={ingredientName}></KrogerCartIngredient>
                     }
-
-                    return (
-                        <li className={styles.ingredientItem} data-included={ingredient.included} key={_key}>
-                            <p>{ingredientName} <span {...(ingredient.override && {style:{color: "red"}})}>{ingredient.overrideValue || ingredient.totalAmount}</span> {ingredient.unit}</p>
-                            <form className="row" style={{gap: "0"}} action={IngredientOverrideAction}>
-                                <input className={styles.ingredientOverrideInput} id={"amount" + _key} name="amount" type="number" min="0" {...(ingredient.override && {"data-enabled":"false", disabled:true})}/>
-                                <input className={styles.ingredientOverrideSubmit} data-override={ingredient.override} type="submit" value={ingredient.override ? "Cancel" : "Override"} />
-                            </form>
-                            <label htmlFor="include">Include</label>
-                            <input className={styles.ingredientCheckbox} name="include" id="include" type="checkbox" onClick={() => ToggleIngredientInclusion(ingredientName)} defaultChecked={cart.ingredients[ingredientName].included}/>
-                        </li>
-                    )
+                    return <CartIngredient ingredient={ingredient} key={ingredientName}></CartIngredient>
                 })}
             </ol>
         </div>

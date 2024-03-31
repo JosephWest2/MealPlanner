@@ -28,6 +28,8 @@ export default async function GetNearestKrogerStores(latitude : number | undefin
 
     if (response.status == 401) {
         return "Invalid access token";
+    } else if (!response.ok) {
+        return "Failed to fetch stores";
     }
     const data = await response.json();
     return data.data.slice(0,5) as Array<KrogerLocation>;

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import { Providers } from "./providers";
 import Navbar from "@/components/server/navbar/navbar";
 
@@ -19,13 +17,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const session = await getServerSession(authOptions);
-
   return (
     <html lang="en" className={inter.className}>
       <Providers>
         <body>
-          <Navbar session={session}></Navbar>
+          <Navbar></Navbar>
           <main style={{minHeight: "80vh"}}>
             {children}
           </main>

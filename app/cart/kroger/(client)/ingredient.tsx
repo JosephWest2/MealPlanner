@@ -8,8 +8,11 @@ import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
 import type { KrogerProductInfo } from "@/types";
 import Image from "next/image";
 
-export default function KrogerCartIngredientClient({ingredient, locationId} : {ingredient: CartIngredient, locationId: string | null}) {
+export default function Ingredient({ingredient, locationId} : {ingredient: CartIngredient, locationId: string | null}) {
 
+    if (!ingredient) {
+        return null;
+    }
     const {ToggleIngredientInclusion, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
     const [overrideAmount, setOverrideAmount] = useState<number>(0);
     const [krogerProductInfo, setKrogerProductInfo] = useState<KrogerProductInfo[]>();

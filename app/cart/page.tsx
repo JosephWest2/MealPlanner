@@ -2,7 +2,6 @@
 
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
-import GetNearestKrogerStores from "@/app/actions/getNearestKrogerStores";
 import Link from "next/link";
 import type { CartRecipe, Cart } from "@/types";
 import CartIngredients from "@/components/client/cartIngredients/cartIngredients";
@@ -33,7 +32,7 @@ export default function Cart() {
                 ))}
             </ul>
         </div>
-        <CartIngredients mapped={false} mappedIngredients={null}></CartIngredients>
+        <CartIngredients></CartIngredients>
         <Link className="btn" href="/cart/kroger">Continue with Kroger</Link>
 
     </div>)

@@ -87,3 +87,23 @@ button:hover, .btn:hover {
   max-width: fit-content;
   gap: 0.5rem 1rem;
 }
+
+.conjoinedContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    height: 2.5rem;
+}
+
+.conjoinedLeft {
+    border-radius: var(--standard-border-radius) 0 0 var(--standard-border-radius);
+    margin-right: 0;
+    height: 100%;
+}
+.conjoinedRight {
+    border-radius: 0 var(--standard-border-radius) var(--standard-border-radius) 0;
+    margin-left: 0;
+    border-left: none;
+    height: 100%;
+}

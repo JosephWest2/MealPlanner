@@ -18,6 +18,7 @@ export default function Ingredient({ingredient, locationId} : {ingredient: CartI
     const [krogerProductInfo, setKrogerProductInfo] = useState<KrogerProductInfo[]>();
     const [selectedProductID, setSelectedProductID] = useState<string>();
     const [productImageURL, setProductImageURL] = useState<string | undefined>();
+    const [included, setIncluded] = useState(ingredient.included);
 
     useEffect(() => {
         GetKrogerProductInfo(ingredient, locationId).then(res => {
@@ -43,6 +44,11 @@ export default function Ingredient({ingredient, locationId} : {ingredient: CartI
         setProductImageURL(url);
         
     }, [selectedProductID])
+
+    function ToggleInclusion() {
+        setIncluded(!included);
+        ToggleIngredientInclusion(ingredient.name);
+    }
     
     function Override() {
         if (ingredient.override) {
@@ -54,7 +60,7 @@ export default function Ingredient({ingredient, locationId} : {ingredient: CartI
     }
 
     return (
-        <li className={styles.ingredientItem} data-included={ingredient.included}>
+        <li className={styles.ingredientItem} data-included={included}>
             <p>{ingredient.name} <span {...(ingredient.override && {style:{color: "red"}})}>{ingredient.overrideValue || ingredient.totalAmount}</span> {ingredient.unit}</p>
             <div className="row" style={{gap: "0"}}>
                 <input value={overrideAmount !== 0 ? overrideAmount : ""} onChange={(e) => setOverrideAmount(Number(e.target.value))} className={styles.ingredientOverrideInput} type="number" min="0" {...(ingredient.override && {"data-enabled":"false", disabled:true})}/>
@@ -67,7 +73,7 @@ export default function Ingredient({ingredient, locationId} : {ingredient: CartI
             </select>
             {productImageURL ? <Image src={productImageURL} alt="product image" width={100} height={80}/> : <div></div>}
             <label htmlFor="include">Include</label>
-            <input className={styles.ingredientCheckbox} type="checkbox" onClick={() => ToggleIngredientInclusion(ingredient.name)} defaultChecked={ingredient.included || false}/>
+            <input className={styles.ingredientCheckbox} type="checkbox" onClick={ToggleInclusion} defaultChecked={included || false}/>
         </li>
     )
 }

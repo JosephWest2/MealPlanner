@@ -4,13 +4,25 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 import KrogerCartIngredient from "../(client)/ingredient"
 
-async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySession, storeId?: string | undefined) {
+async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySession, storeId?: string | undefined, filters?: string[]) {
 
-    let url = `https://api.kroger.com/v1/products?filter.term=${ingredient.name}&filter.fulfillment=ais`;
+    let url = `https://api.kroger.com/v1/products?filter.term=${ingredient.name}`;
 
     if (storeId) {
         url += `&filter.locationId=${storeId}`;
     }
+    let fulfillment = ""
+    if (filters) {
+        filters.forEach(filter => {
+            if (fulfillment === "") {
+                fulfillment += "&filter.fulfillment=" + filter;
+            } else {
+                fulfillment += "," + filter
+            }
+        })
+        url += fulfillment;
+    }
+    
 
     const response = await fetch(url, {
         method: "GET",
@@ -23,11 +35,13 @@ async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySessi
     if (response.status == 401) {
         redirect("/auth/kroger/signin");
     }
+    console.log("fetch", url);
+    console.log(response.status)
 
     return response.json();
 }
 
-export default async function Ingredients({storeId, session} : {storeId: string | undefined, session: MySession}) {
+export default async function Ingredients({storeId, session, filters} : {storeId: string | undefined, session: MySession, filters: string[]}) {
 
     const cartCookie = cookies().get("cart");
 
@@ -48,7 +62,7 @@ export default async function Ingredients({storeId, session} : {storeId: string 
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const ingredient = cart.ingredients[key];
-        promises.push(GetKrogerProductInfo(ingredient, session, storeId));
+        promises.push(GetKrogerProductInfo(ingredient, session, storeId, filters));
     }
 
     const results = await Promise.all(promises);

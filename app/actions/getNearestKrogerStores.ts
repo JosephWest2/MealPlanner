@@ -2,12 +2,13 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { KrogerLocation, MySession } from "@/types";
+import { redirect } from "next/navigation";
 
 export default async function GetNearestKrogerStores(latitude : number | undefined, longitude : number | undefined, zipCode : string | undefined) {
 
     const session = await getServerSession(authOptions) as MySession;
     if (!session?.accessToken) {
-        return "Invalid access token";
+        redirect("/auth/kroger/signin");
     }
 
     let query = "";
@@ -27,10 +28,9 @@ export default async function GetNearestKrogerStores(latitude : number | undefin
     })
 
     if (response.status == 401) {
-        return "Invalid access token";
-    } else if (!response.ok) {
-        return "Failed to fetch stores";
+        redirect("/auth/kroger/signin");
     }
+
     const data = await response.json();
     return data.data.slice(0,5) as Array<KrogerLocation>;
 }

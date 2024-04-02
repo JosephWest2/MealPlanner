@@ -3,10 +3,10 @@
 import { useContext, useState, useEffect } from "react";
 import styles from "./addToCart.module.css";
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
-import { CartRecipe } from "@/types";
+import { CartRecipe, Recipe } from "@/types";
 
 
-export default function AddToCart({recipe}: {recipe: any}) {
+export default function AddToCart({recipe}: {recipe: Recipe}) {
 
     const {cart, AddRecipeToCart, RemoveRecipeFromCart} = useContext(CartContext);
 

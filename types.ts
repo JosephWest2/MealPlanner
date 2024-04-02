@@ -59,10 +59,18 @@ export type Recipe = {
     diets: [],
     occasions: [],
     instructions: string
-    analyzedInstructions: [],
+    analyzedInstructions: [{
+        name: string,
+        steps: Step[]
+    }],
     originalId: Number | null,
     spoonacularScore: Number,
     spoonacularSourceUrl: string
+}
+
+export type Step = {
+    number: Number,
+    step: string
 }
 
 export type Ingredient = {
@@ -107,6 +115,7 @@ export type CartRecipe = {
     name: string
     id: number
     guid: string
+    instructions: string[]
 }
 
 export type DynamicIngredients = {

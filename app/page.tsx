@@ -42,7 +42,6 @@ async function SearchRecipes(params: RecipeSearchParamStrings) {
 export default async function Home({searchParams} : {searchParams: RecipeSearchParamStrings}) {
 
     const recipes = await SearchRecipes(searchParams) as Array<Recipe>;
-    console.log(recipes[0]);
     let unitsArray = existsSync("./devData/units.json") ? JSON.parse(readFileSync("./devData/units.json", "utf8")) : null;
     let units = new Set<string>();
     if (unitsArray) {

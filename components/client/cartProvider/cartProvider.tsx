@@ -68,7 +68,12 @@ export default function CartProvider({ children } : any) {
                     recipeIngredients: [{amount: ingredient.amount, unit: ingredient.unit, recipeGUID: guid}]};
             }
         }
-        _cart.recipes.push({id: recipe.id, name: recipe.title, guid: guid});
+        const steps = [] as string[];
+      //  for (let i = 0; i < recipe.analyzedInstructions[0].steps.length; i++) {
+        //    steps.push(recipe.analyzedInstructions[0].steps[i].step);
+       //     console.log(recipe.analyzedInstructions[0].steps[i].step);
+       // }
+        _cart.recipes.push({id: recipe.id, name: recipe.title, guid: guid, instructions: steps});
         _cart.count++;
         setCart(_cart);
     }

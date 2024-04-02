@@ -13,8 +13,6 @@ export default async function RecipeDetails({params} : {params: any}) {
         const fileData = existsSync("./devData/devRecipe.json") ? readFileSync("./devData/devRecipe.json", "utf8") : null;
         if (process.env.NODE_ENV === "development" && fileData) {
             const _recipe = JSON.parse(fileData);
-            console.log(_recipe);
-            console.log(_recipe.nutrition.ingredients[0])
             return JSON.parse(fileData);
         } else {
             const apiKey = process.env.SPOONACULAR_API_KEY;
@@ -23,7 +21,6 @@ export default async function RecipeDetails({params} : {params: any}) {
                 throw new Error("Failed to fetch recipes.");
             }
             const _recipe = await response.json();
-            console.log(_recipe);
             writeFileSync("./devData/devRecipe.json", JSON.stringify(_recipe), "utf8");
             return _recipe;
         }

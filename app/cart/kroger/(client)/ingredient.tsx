@@ -1,44 +1,25 @@
 "use client";
 
-import type { CartIngredient } from "@/types";
-import { useContext, useEffect, useState } from "react";
+import type { MappedIngredient } from "@/types";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { CartContext } from "@/components/client/cartProvider/cartProvider";
 import styles from "./krogerIngredient.module.css";
-import GetKrogerProductInfo from "@/app/actions/getKrogerProductInfo";
-import type { KrogerProductInfo } from "@/types";
 import Image from "next/image";
 
-export default function Ingredient({ingredient, locationId} : {ingredient: CartIngredient, locationId: string | null}) {
+export default function Ingredient({mappedIngredient, UpdateSelectionCallback, ToggleInclusionCallback} : {mappedIngredient: MappedIngredient, UpdateSelectionCallback: (ingredientName: string, productId: string) => void, ToggleInclusionCallback: (ingredientName: string) => void}) {
 
-    if (!ingredient) {
-        return null;
-    }
     const {ToggleIngredientInclusion, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
     const [overrideAmount, setOverrideAmount] = useState<number>(0);
-    const [krogerProductInfo, setKrogerProductInfo] = useState<KrogerProductInfo[]>();
-    const [selectedProductID, setSelectedProductID] = useState<string>();
-    const [productImageURL, setProductImageURL] = useState<string | undefined>();
-    const [included, setIncluded] = useState(ingredient.included);
+    const [overrideBuffer, setOverrideBuffer] = useState<number>(0);
+    const [selectedProductID, setSelectedProductID] = useState<string>(mappedIngredient.productOptions[0].productId);
+    const [productImageURL, setProductImageURL] = useState<string | undefined>(mappedIngredient.productOptions[0].images.find(image => image.perspective == "front")?.sizes[0].url);
+    const [included, setIncluded] = useState(mappedIngredient.cartIngredient.included);
+    const [overrided, setOverrided] = useState(mappedIngredient.cartIngredient.override);
+
+    const cartIngredient = mappedIngredient.cartIngredient;
 
     useEffect(() => {
-        GetKrogerProductInfo(ingredient, locationId).then(res => {
-            res.promise.then(data => {
-                console.log(data);
-                if (data == "Invalid access token") {
-                    return;
-                } else if (data == "Failed to fetch products") {
-                    return;
-                }
-                setKrogerProductInfo(data);
-                setSelectedProductID(data[0].productId);
-            })
-            
-        });
-    }, []);
-
-    useEffect(() => {
-
-        const product = krogerProductInfo?.find(product => product.productId === selectedProductID);
+        const product = mappedIngredient.productOptions.find(product => product.productId === selectedProductID);
         if (!product) {return;}
         const url = product.images.find(image => image.perspective == "front")?.sizes[0].url;
         setProductImageURL(url);
@@ -47,27 +28,36 @@ export default function Ingredient({ingredient, locationId} : {ingredient: CartI
 
     function ToggleInclusion() {
         setIncluded(!included);
-        ToggleIngredientInclusion(ingredient.name);
+        ToggleInclusionCallback(cartIngredient.name);
+        ToggleIngredientInclusion(cartIngredient.name);
+    }
+
+    function UpdateSelection(e : ChangeEvent<HTMLSelectElement>) {
+        const newID = e.target.value;
+        setSelectedProductID(newID);
+        UpdateSelectionCallback(cartIngredient.name, newID);
     }
     
     function Override() {
-        if (ingredient.override) {
-            CancelIngredientOverride(ingredient.name);
+        if (overrided) {
+            CancelIngredientOverride(cartIngredient.name);
         } else {
-            OverrideIngredient(ingredient.name, overrideAmount);
+            OverrideIngredient(cartIngredient.name, overrideAmount);
         }
-        setOverrideAmount(0);
+        setOverrideAmount(overrideBuffer);
+        setOverrideBuffer(0);
+        setOverrided(!overrided);
     }
 
     return (
         <li className={styles.ingredientItem} data-included={included}>
-            <p>{ingredient.name} <span {...(ingredient.override && {style:{color: "red"}})}>{ingredient.overrideValue || ingredient.totalAmount}</span> {ingredient.unit}</p>
+            <p>{cartIngredient.name} <span {...(overrided && {style:{color: "red"}})}>{overrideAmount || cartIngredient.totalAmount}</span> {cartIngredient.unit}</p>
             <div className="row" style={{gap: "0"}}>
-                <input value={overrideAmount !== 0 ? overrideAmount : ""} onChange={(e) => setOverrideAmount(Number(e.target.value))} className={styles.ingredientOverrideInput} type="number" min="0" {...(ingredient.override && {"data-enabled":"false", disabled:true})}/>
-                <button onClick={Override} className={styles.ingredientOverrideSubmit} data-override={ingredient.override}>{ingredient.override ? "Cancel" : "Override"}</button>
+                <input value={overrideBuffer === 0 ? "" : overrideBuffer} onChange={(e) => setOverrideBuffer(Number(e.target.value))} className={styles.ingredientOverrideInput} type="number" min="0" {...(overrided && {"data-enabled":"false", disabled:true})}/>
+                <button onClick={Override} className={styles.ingredientOverrideSubmit} data-override={overrided}>{overrided ? "Cancel" : "Override"}</button>
             </div>
-            <select style={{maxWidth: "20rem"}} value={selectedProductID || ""} onChange={(e) => setSelectedProductID(e.target.value)}>
-                {krogerProductInfo?.map((product) => {
+            <select style={{maxWidth: "20rem"}} value={selectedProductID || ""} onChange={UpdateSelection}>
+                {mappedIngredient.productOptions.map((product) => {
                     return <option key={product.productId} value={product.productId}>{product.description}</option>
                 })}
             </select>

@@ -2,7 +2,7 @@ import type { MySession, Cart, CartIngredient, MappedIngredients } from "@/types
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
-import KrogerCartIngredient from "../(client)/ingredient"
+import IngredientsClient from "../(client)/ingredientsClient";
 
 async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySession, storeId?: string | undefined, filters?: string[]) {
 
@@ -23,7 +23,6 @@ async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySessi
         url += fulfillment;
     }
     
-
     const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -35,8 +34,6 @@ async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySessi
     if (response.status == 401) {
         redirect("/auth/kroger/signin");
     }
-    console.log("fetch", url);
-    console.log(response.status)
 
     return response.json();
 }
@@ -75,12 +72,7 @@ export default async function Ingredients({storeId, session, filters} : {storeId
     return <div className="column box">
         <h2>Ingredients</h2>
         <Suspense fallback={<p>Loading Ingredients...</p>}>
-            <ol className="column">
-                {Object.keys(mappedIngredients).map((ingredientName: string) => {
-                    const ingredient = mappedIngredients[ingredientName];
-                    return <KrogerCartIngredient locationId={null} ingredient={ingredient.cartIngredient} key={ingredientName}></KrogerCartIngredient>
-                })}
-            </ol>
+            <IngredientsClient mappedIngredients={mappedIngredients}></IngredientsClient>
         </Suspense>
     </div>
 

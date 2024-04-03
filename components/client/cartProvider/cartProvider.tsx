@@ -1,19 +1,27 @@
 "use client";
 
 import { createContext, useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
 import type { Recipe, NormalizedUnitType, Cart, CartRecipe } from "@/types";
 import { Guid } from "js-guid";
 
 export const CartContext = createContext({cart: null as Cart | null, AddRecipeToCart: null as any, RemoveRecipeFromCart: null as any, ClearCart: null as any, ToggleIngredientInclusion: null as any, OverrideIngredient: null as any, CancelIngredientOverride: null as any});
 
 export default function CartProvider({ children } : any) {
-    const [cookies, setCookie] = useCookies(["cart"]);
-    const [cart, setCart] = useState(cookies.cart as Cart || {count: 0, recipes: [], ingredients: {}} as Cart);
+
+    let cartInit = undefined;
+    if (window) {
+        const mtccart = window.localStorage.getItem("mtccart") as string;
+        cartInit = JSON.parse(mtccart) as Cart;
+    }
+    
+    const [cart, setCart] = useState(cartInit || {count: 0, recipes: [], ingredients: {}} as Cart);
 
     useEffect(() => {
-        setCookie("cart", JSON.stringify(cart), {maxAge: 3600});
-        console.log(cart);
+        if (window) {
+            let cookieString = `mtccart=${JSON.stringify(cart)}; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 *30).toUTCString()}; path=/`;
+            document.cookie = cookieString;
+            window.localStorage.setItem("mtccart", JSON.stringify(cart));
+        }
     }, [cart])
 
     function NormalizeUnit(amount: number, unit: string) {
@@ -69,11 +77,11 @@ export default function CartProvider({ children } : any) {
             }
         }
         const steps = [] as string[];
-      //  for (let i = 0; i < recipe.analyzedInstructions[0].steps.length; i++) {
-        //    steps.push(recipe.analyzedInstructions[0].steps[i].step);
-       //     console.log(recipe.analyzedInstructions[0].steps[i].step);
-       // }
-        _cart.recipes.push({id: recipe.id, name: recipe.title, guid: guid, instructions: steps});
+        for (let i = 0; i < recipe.analyzedInstructions[0].steps.length; i++) {
+            steps.push(recipe.analyzedInstructions[0].steps[i].step);
+            console.log(recipe.analyzedInstructions[0].steps[i].step);
+        }
+        _cart.recipes.push({id: recipe.id, name: recipe.title, guid: guid, instructions: steps, imageURL: recipe.image});
         _cart.count++;
         setCart(_cart);
     }

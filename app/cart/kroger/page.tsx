@@ -10,7 +10,7 @@ import { Suspense } from "react";
 
 export default async function KrogerCart({searchParams}: {searchParams: {storeId: string | undefined, ais: boolean | undefined, dth: boolean | undefined, csp: boolean | undefined}}) {
 
-    const cartCookie = cookies().get("cart");
+    const cartCookie = cookies().get("mtccart");
 
     let cart;
     if (cartCookie && cartCookie.value) {

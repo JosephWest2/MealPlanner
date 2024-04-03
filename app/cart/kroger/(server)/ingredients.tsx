@@ -40,7 +40,7 @@ async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySessi
 
 export default async function Ingredients({storeId, session, filters} : {storeId: string | undefined, session: MySession, filters: string[]}) {
 
-    const cartCookie = cookies().get("cart");
+    const cartCookie = cookies().get("mtccart");
 
     let cart;
     if (cartCookie && cartCookie.value) {

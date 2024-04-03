@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { MappedIngredients } from "@/types";
 import Ingredient from "./ingredient";
 import AddToKrogerCart from "@/app/actions/addToKrogerCart";
 import { useRouter } from "next/navigation";
+import { CartContext } from "@/components/client/cartProvider/cartProvider";
+
 
 export default function IngredientsClient({mappedIngredients} : {mappedIngredients: MappedIngredients}) {
 
+    const {cart} = useContext(CartContext);
     type KPTA = {
         [ingrdientName: string]: {
             productId: string
@@ -43,7 +46,9 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
         setKrogerProductsToAddToCart(_krogerProductIdsToAddToCart);
     }
 
+    
     function AddToSmithsCart() {
+
         const output = []
         for (const ingredientName in krogerProductsToAddToCart) {
             if (krogerProductsToAddToCart[ingredientName].included) {
@@ -51,9 +56,16 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
             }
         }
 
-        AddToKrogerCart(output).then((success) => {
-            if (success) {
-                router.push("https://www.kroger.com/cart");
+        AddToKrogerCart(output).then((res) => {
+            if (res.success) {
+                console.log(res.pdf);
+                if (res.pdf) {
+                    const link = document.createElement('a');
+                    link.href = res.pdf;
+                    link.download = "MTC Order.pdf";
+                    link.click();
+                }
+                // router.push("https://www.kroger.com/cart");
             } else {
                 alert("failed to add to cart");
             }
@@ -68,5 +80,6 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
             })}
         </ol>
         <button onClick={AddToSmithsCart}>Add to Kroger Cart</button>
+        <button>Generate PDF</button>
     </>
 }

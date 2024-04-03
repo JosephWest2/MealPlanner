@@ -115,6 +115,7 @@ export type CartRecipe = {
     name: string
     id: number
     guid: string
+    imageURL: string
     instructions: string[]
 }
 

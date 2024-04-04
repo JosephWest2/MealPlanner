@@ -51,11 +51,7 @@ export default function Ingredient({mappedIngredient, UpdateSelectionCallback, T
 
     return (
         <li className={styles.ingredientItem} data-included={included}>
-            <p>{cartIngredient.name} <span {...(overrided && {style:{color: "red"}})}>{overrideAmount || cartIngredient.totalAmount}</span> {cartIngredient.unit}</p>
-            <div className="row" style={{gap: "0"}}>
-                <input value={overrideBuffer === 0 ? "" : overrideBuffer} onChange={(e) => setOverrideBuffer(Number(e.target.value))} className={styles.ingredientOverrideInput} type="number" min="0" {...(overrided && {"data-enabled":"false", disabled:true})}/>
-                <button onClick={Override} className={styles.ingredientOverrideSubmit} data-override={overrided}>{overrided ? "Cancel" : "Override"}</button>
-            </div>
+            <p>{cartIngredient.name} <span {...(overrided && {style:{color: "red"}})}>{overrideAmount || Math.round(cartIngredient.totalAmount*10)/10}</span> {cartIngredient.unit}</p>
             <select style={{maxWidth: "20rem"}} value={selectedProductID || ""} onChange={UpdateSelection}>
                 {mappedIngredient.productOptions.map((product) => {
                     return <option key={product.productId} value={product.productId}>{product.description}</option>

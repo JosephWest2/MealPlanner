@@ -21,7 +21,7 @@ export default function CartIngredients() {
 
     return (
         <div className="column box">
-            <h2>Ingredients</h2>
+            <h2>Shopping List</h2>
             <ol className="column">
                 {keys.map((ingredientName: string) => {
                     const ingredient = cart.ingredients[ingredientName];

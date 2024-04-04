@@ -9,10 +9,15 @@ export const CartContext = createContext({cart: null as Cart | null, AddRecipeTo
 export default function CartProvider({ children } : any) {
 
     let cartInit = undefined;
-    if (window) {
-        const mtccart = window.localStorage.getItem("mtccart") as string;
-        cartInit = JSON.parse(mtccart) as Cart;
+    try {
+        if (window) {
+            const mtccart = window.localStorage.getItem("mtccart") as string;
+            cartInit = JSON.parse(mtccart) as Cart;
+        }
+    } catch (error) {
+        console.log("window null");
     }
+    
     
     const [cart, setCart] = useState(cartInit || {count: 0, recipes: [], ingredients: {}} as Cart);
 

@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import type { MappedIngredients } from "@/types";
 import Ingredient from "./ingredient";
 import AddToKrogerCart from "@/app/actions/addToKrogerCart";
 import { useRouter } from "next/navigation";
-import { CartContext } from "@/components/client/cartProvider/cartProvider";
 
 
 export default function IngredientsClient({mappedIngredients} : {mappedIngredients: MappedIngredients}) {
 
-    const {cart} = useContext(CartContext);
     type KPTA = {
         [ingrdientName: string]: {
             productId: string
@@ -18,6 +16,9 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
         }
     }
     const [krogerProductsToAddToCart, setKrogerProductsToAddToCart] = useState<KPTA>({});
+    const [requireEmail, setRequireEmail] = useState(true);
+    const [email, setEmail] = useState<string>();
+    const [savePDF, setSavePDF] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
@@ -49,6 +50,11 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
     
     function AddToSmithsCart() {
 
+        if (requireEmail && !email) {
+            alert("Please enter an email, or uncheck to receive an email.");
+            return;
+        }
+
         const output = []
         for (const ingredientName in krogerProductsToAddToCart) {
             if (krogerProductsToAddToCart[ingredientName].included) {
@@ -56,16 +62,15 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
             }
         }
 
-        AddToKrogerCart(output).then((res) => {
+        AddToKrogerCart(output, savePDF, email).then((res) => {
             if (res.success) {
-                console.log(res.pdf);
                 if (res.pdf) {
                     const link = document.createElement('a');
                     link.href = res.pdf;
                     link.download = "MTC Order.pdf";
                     link.click();
                 }
-                // router.push("https://www.kroger.com/cart");
+                router.push("https://www.kroger.com/cart");
             } else {
                 alert("failed to add to cart");
             }
@@ -79,7 +84,22 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
                 return <Ingredient key={key} mappedIngredient={ingredient} UpdateSelectionCallback={UpdateProdudctSelection} ToggleInclusionCallback={ToggleInclusion}></Ingredient>
             })}
         </ol>
+        <div className="column">
+            <div className="row">
+                <p style={{fontWeight: "600"}}>Email:</p>
+                <input type="email" placeholder="YourEmail@example.com" onChange={(e) => setEmail(e.target.value)} value={email}/>
+            </div>
+            <div className="row">
+                <input type="checkbox" checked={requireEmail} onChange={e => {setRequireEmail(!requireEmail)}}/>
+                <p>Receive email with your recipes and shopping list.</p>
+            </div>
+            <div className="row">
+                <input type="checkbox" checked={savePDF} onChange={e => {setSavePDF(!savePDF)}}/>
+                <p>Save PDF with your recipes and shopping list.</p>
+            </div>
+        </div>
+        
+        
         <button onClick={AddToSmithsCart}>Add to Kroger Cart</button>
-        <button>Generate PDF</button>
     </>
 }

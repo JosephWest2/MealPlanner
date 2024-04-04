@@ -70,7 +70,7 @@ export default async function Ingredients({storeId, session, filters} : {storeId
     }
 
     return <div className="column box">
-        <h2>Ingredients</h2>
+        <h2>Shopping List</h2>
         <Suspense fallback={<p>Loading Ingredients...</p>}>
             <IngredientsClient mappedIngredients={mappedIngredients}></IngredientsClient>
         </Suspense>

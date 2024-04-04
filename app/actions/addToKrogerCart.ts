@@ -6,9 +6,9 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { GeneratePDF } from "@/lib/pdfGenerator/pdfGenerator";
+import { SendEmail } from "./sendEmail";
 
-
-export default async function AddToKrogerCart(productIds: string[]) {
+export default async function AddToKrogerCart(productIds: string[], downloadPDF: boolean, emailAddress?: string) {
     const session = await getServerSession(authOptions) as MySession;
     if (!session?.accessToken) {
         redirect("/auth/kroger/signin");
@@ -32,10 +32,13 @@ export default async function AddToKrogerCart(productIds: string[]) {
     }
 
     const cartCookie = cookies().get("mtccart");
-    let pdf = null;
-    if (cartCookie && cartCookie.value) {
+    let pdf;
+    if (downloadPDF && cartCookie && cartCookie.value) {
         const cart = JSON.parse(cartCookie.value) as Cart;
         pdf = await GeneratePDF(cart);
+    }
+    if (emailAddress) {
+        SendEmail(emailAddress, pdf);
     }
 
     return {success: response.status === 204, pdf: pdf};

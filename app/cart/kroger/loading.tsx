@@ -1,7 +1,7 @@
 export default function Loading() {
     return (
         <div className="column">
-            <h3>Loading...</h3>
+            <p style={{color: "grey", fontSize: "2rem"}}>Loading...</p>
         </div>
     )
 }

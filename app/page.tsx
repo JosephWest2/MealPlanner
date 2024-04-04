@@ -14,7 +14,7 @@ async function SearchRecipes(params: RecipeSearchParamStrings) {
         return JSON.parse(fileData);
     } else {
         const apiKey = process.env.SPOONACULAR_API_KEY;
-        let searchParamString = `?apiKey=${apiKey}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=50`;
+        let searchParamString = `?apiKey=${apiKey}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=20`;
         params.query ? searchParamString += `&query=${params.query}` : "";
         params.mealType ? searchParamString += `&type=${params.mealType}` : "&type=main course";
         params.maxReadyTime ? searchParamString += `&maxReadyTime=${params.maxReadyTime}` : "&maxReadyTime=30";

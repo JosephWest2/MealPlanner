@@ -57,25 +57,17 @@ export const unitMapping = {
 
 export default function RecipeSearch() {
 
-    let preferences = null as RecipeSearchParams | null;
-
-    if (typeof window !== undefined) {
-        //preferences = JSON.parse(localStorage.getItem("mpjw-preferences") || "{}");
-    }
-
     const [showMoreOptions, setShowMoreOptions] = useState(false);
-
     const [query, setQuery] = useState("");
-    const [mealType, setMealType] = useState(preferences? preferences.mealType : "main course");
-    const [cuisine, setCuisine] = useState(preferences? preferences.cuisine : "");
-    const [diet, setDiet] = useState(preferences? preferences.diet : "");
-    const [intolerances, setIntolerances] = useState(preferences? preferences.intolerances : []);
-    const [maxReadyTime, setMaxReadyTime] = useState(preferences? preferences.maxReadyTime : 45);
-    const [nutrientLimits, setNutrientLimits] = useState(preferences && preferences.nutrientLimits ? preferences.nutrientLimits : {} as NutrientLimits);
+    const [mealType, setMealType] = useState("main course");
+    const [cuisine, setCuisine] = useState("");
+    const [diet, setDiet] = useState("");
+    const [intolerances, setIntolerances] = useState<string[]>([]);
+    const [maxReadyTime, setMaxReadyTime] = useState(90);
+    const [nutrientLimits, setNutrientLimits] = useState<NutrientLimits>({});
     const [onlyFavorites, setOnlyFavorites] = useState(false);
-
-    const [nutrientLimit, setNutrientLimit] = useState("minCarbs" as string | null);
-    const [nutrientLimitValue, setNutrientLimitValue] = useState(null as number | null);
+    const [nutrientLimit, setNutrientLimit] = useState("minCarbs");
+    const [nutrientLimitValue, setNutrientLimitValue] = useState<number | null>(null);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -154,13 +146,13 @@ export default function RecipeSearch() {
 
     return (<div className="box column">
                 <div className="row">
-                    <input style={{width: "100%"}} type="text" name="search" id="search" placeholder="Search..." defaultValue={query}/>
+                    <input type="text" placeholder="Search..." style={{width: "100%"}} onChange={e => setQuery(e.target.value)} value={query}/>
                     <button onClick={Search}>Search</button>
                 </div>
                 <div className="column toggleable" data-enabled={showMoreOptions.toString()}>
                     <div className="optionsGrid">
                         <label htmlFor="mealType">Meal type</label>
-                        <select onChange={(e) => setMealType(e.target.value)} id="mealType" defaultValue={mealType ? mealType : "main course"}>
+                        <select onChange={(e) => setMealType(e.target.value)} id="mealType" value={mealType}>
                             <option value="main course">Main Course</option>
                             <option value="side dish">Side Dish</option>
                             <option value="dessert">Dessert</option>
@@ -177,9 +169,9 @@ export default function RecipeSearch() {
                             <option value="drink">Drink</option>
                         </select>
                         <label htmlFor="maxReadyTime">Max time to prepare (minutes)</label>
-                        <input id="maxReadyTime" onChange={(e) => setMaxReadyTime(Number(e.target.value))} type="number" placeholder="Max Ready Time..." defaultValue={maxReadyTime ? maxReadyTime : 30}/>
+                        <input id="maxReadyTime" onChange={(e) => setMaxReadyTime(Number(e.target.value))} type="number" placeholder="Max Ready Time..." value={maxReadyTime}/>
                         <label htmlFor="diet">Cuisine</label>
-                        <select onChange={(e) => setCuisine(e.target.value)} id="cuisine" defaultValue={cuisine ? cuisine : ""}>
+                        <select onChange={(e) => setCuisine(e.target.value)} id="cuisine" value={cuisine}>
                             <option value="">N/A</option>
                             <option value="African">African</option>
                             <option value="Asian">Asian</option>
@@ -210,7 +202,7 @@ export default function RecipeSearch() {
                             <option value="Vietnamese">Vietnamese</option>
                         </select>
                         <label htmlFor="diet">Diet type</label>
-                        <select onChange={(e) => setDiet(e.target.value)} id="diet" defaultValue={diet ? diet : ""}>
+                        <select onChange={(e) => setDiet(e.target.value)} id="diet" value={diet}>
                             <option value="">N/A</option>
                             <option value="Gluten Free">Gluten free</option>
                             <option value="Vegetarian">Vegetarian</option>
@@ -228,29 +220,29 @@ export default function RecipeSearch() {
                     <div className="intolerances">
                         <h4 className="subHeader" style={{marginBottom: "0.5rem"}}>Intolerances</h4>
                         <label htmlFor="dairy">Dairy</label>
-                        <input type="checkbox" id="dairy" onChange={e => ToggleIntolerance("Dairy", e.target.checked)} value="Dairy" defaultChecked={intolerances.includes("Dairy")}/>
+                        <input type="checkbox" id="dairy" onChange={e => ToggleIntolerance("Dairy", e.target.checked)} value="Dairy" checked={intolerances.includes("Dairy")}/>
                         <label htmlFor="egg">Egg</label>
-                        <input type="checkbox" id="egg" onChange={e => ToggleIntolerance("Egg", e.target.checked)} value="Egg" defaultChecked={intolerances.includes("Egg")}/>
+                        <input type="checkbox" id="egg" onChange={e => ToggleIntolerance("Egg", e.target.checked)} value="Egg" checked={intolerances.includes("Egg")}/>
                         <label htmlFor="gluten">Gluten</label>
-                        <input type="checkbox" id="gluten" onChange={e => ToggleIntolerance("Gluten", e.target.checked)} value="Gluten" defaultChecked={intolerances.includes("Gluten")}/>
+                        <input type="checkbox" id="gluten" onChange={e => ToggleIntolerance("Gluten", e.target.checked)} value="Gluten" checked={intolerances.includes("Gluten")}/>
                         <label htmlFor="grain">Grain</label>
-                        <input type="checkbox" id="grain" onChange={e => ToggleIntolerance("Grain", e.target.checked)} value="Grain" defaultChecked={intolerances.includes("Grain")}/>
+                        <input type="checkbox" id="grain" onChange={e => ToggleIntolerance("Grain", e.target.checked)} value="Grain" checked={intolerances.includes("Grain")}/>
                         <label htmlFor="peanut">Peanut</label>
-                        <input type="checkbox" id="peanut" onChange={e => ToggleIntolerance("Peanut", e.target.checked)} value="Peanut" defaultChecked={intolerances.includes("Peanut")}/>
+                        <input type="checkbox" id="peanut" onChange={e => ToggleIntolerance("Peanut", e.target.checked)} value="Peanut" checked={intolerances.includes("Peanut")}/>
                         <label htmlFor="seafood">Seafood</label>
-                        <input type="checkbox" id="seafood" onChange={e => ToggleIntolerance("Seafood", e.target.checked)} value="Seafood" defaultChecked={intolerances.includes("Seafood")}/>
+                        <input type="checkbox" id="seafood" onChange={e => ToggleIntolerance("Seafood", e.target.checked)} value="Seafood" checked={intolerances.includes("Seafood")}/>
                         <label htmlFor="sesame">Sesame</label>
-                        <input type="checkbox" id="sesame" onChange={e => ToggleIntolerance("Sesame", e.target.checked)} value="Sesame" defaultChecked={intolerances.includes("Sesame")}/>
+                        <input type="checkbox" id="sesame" onChange={e => ToggleIntolerance("Sesame", e.target.checked)} value="Sesame" checked={intolerances.includes("Sesame")}/>
                         <label htmlFor="shellfish">Shellfish</label>
-                        <input type="checkbox" id="shellfish" onChange={e => ToggleIntolerance("Shellfish", e.target.checked)} value="Shellfish" defaultChecked={intolerances.includes("Shellfish")}/>
+                        <input type="checkbox" id="shellfish" onChange={e => ToggleIntolerance("Shellfish", e.target.checked)} value="Shellfish" checked={intolerances.includes("Shellfish")}/>
                         <label htmlFor="soy">Soy</label>
-                        <input type="checkbox" id="soy" onChange={e => ToggleIntolerance("Soy", e.target.checked)} value="Soy" defaultChecked={intolerances.includes("Soy")}/>
+                        <input type="checkbox" id="soy" onChange={e => ToggleIntolerance("Soy", e.target.checked)} value="Soy" checked={intolerances.includes("Soy")}/>
                         <label htmlFor="sulfite">Sulfite</label>
-                        <input type="checkbox" id="sulfite" onChange={e => ToggleIntolerance("Sulfite", e.target.checked)} value="Sulfite" defaultChecked={intolerances.includes("Sulfite")}/>
+                        <input type="checkbox" id="sulfite" onChange={e => ToggleIntolerance("Sulfite", e.target.checked)} value="Sulfite" checked={intolerances.includes("Sulfite")}/>
                         <label htmlFor="tree-nut">Tree Nut</label>
-                        <input type="checkbox" id="tree-nut" onChange={e => ToggleIntolerance("Tree Nut", e.target.checked)} value="Tree Nut" defaultChecked={intolerances.includes("Tree Nut")}/>
+                        <input type="checkbox" id="tree-nut" onChange={e => ToggleIntolerance("Tree Nut", e.target.checked)} value="Tree Nut" checked={intolerances.includes("Tree Nut")}/>
                         <label htmlFor="wheat">Wheat</label>
-                        <input type="checkbox" id="wheat" onChange={e => ToggleIntolerance("Wheat", e.target.checked)} value="Wheat" defaultChecked={intolerances.includes("Wheat")}/>
+                        <input type="checkbox" id="wheat" onChange={e => ToggleIntolerance("Wheat", e.target.checked)} value="Wheat" checked={intolerances.includes("Wheat")}/>
                     </div>
                     <div className="row" style={{gap: "0", height: "2.2rem"}}>
                         <h4 style={{paddingRight: "1rem"}}>Nutrient Limits <span style={{color: "gray"}}>(per serving)</span></h4>

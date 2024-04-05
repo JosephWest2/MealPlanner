@@ -58,6 +58,7 @@ export default function Ingredient({mappedIngredient, UpdateSelectionCallback, T
                 })}
             </select>
             {productImageURL ? <Image src={productImageURL} alt="product image" width={100} height={80}/> : <div></div>}
+            <p>{mappedIngredient.productOptions.find(product => product.productId === selectedProductID)?.items[0].size}</p>
             <label htmlFor="include">Include</label>
             <input className={styles.ingredientCheckbox} type="checkbox" onClick={ToggleInclusion} defaultChecked={included || false}/>
         </li>

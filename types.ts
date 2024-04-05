@@ -103,7 +103,7 @@ export type NutritionIngredient = {
     nutrients: []
 }
 
-export type NormalizedUnitType = "g" | "mL" | "count" | "pack" | undefined;
+export type NormalizedUnitType = "g" | "mL" | "ct" | "unknown";
 
 export type Cart = {
     count: number,

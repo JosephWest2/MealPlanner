@@ -30,6 +30,10 @@ input[type="text"], input[type="password"] {
   width: 20rem;
   padding: 0.8rem
 }
+input[type="email"] {
+  width: 15rem;
+  padding: 0.5rem
+}
 input[type="checkbox"] {
   width: 1.5rem;
   height: 1.5rem;

@@ -4,4 +4,6 @@ a meal planner integrated with Kroger to allow quick seraching of meals, and add
 
 ## Install Instructions
 
-For first time install, run `install.sh`
+npm install
+npm run build
+npm run start

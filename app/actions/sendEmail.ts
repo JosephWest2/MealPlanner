@@ -2,7 +2,9 @@
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: "zoho",
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.MTC_EMAIL_ADDRESS,
         pass: process.env.MTC_EMAIL_PASSWORD

@@ -18,7 +18,8 @@ export default function CartIngredients() {
     }
 
     const keys = Object.keys(cart.ingredients);
-
+    keys.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    
     return (
         <div className="column box">
             <h2>Shopping List</h2>

@@ -77,9 +77,12 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
         });
     }
 
+    const keys = Object.keys(mappedIngredients);
+    keys.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
     return <>
         <ol className="column">
-            {Object.keys(mappedIngredients).map((key) => {
+            {keys.map((key) => {
                 const ingredient = mappedIngredients[key];
                 return <Ingredient key={key} mappedIngredient={ingredient} UpdateSelectionCallback={UpdateProdudctSelection} ToggleInclusionCallback={ToggleInclusion}></Ingredient>
             })}

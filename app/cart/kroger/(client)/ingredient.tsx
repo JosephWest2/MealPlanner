@@ -8,13 +8,10 @@ import Image from "next/image";
 
 export default function Ingredient({mappedIngredient, UpdateSelectionCallback, ToggleInclusionCallback} : {mappedIngredient: MappedIngredient, UpdateSelectionCallback: (ingredientName: string, productId: string) => void, ToggleInclusionCallback: (ingredientName: string) => void}) {
 
-    const {ToggleIngredientInclusion, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
-    const [overrideAmount, setOverrideAmount] = useState<number>(0);
-    const [overrideBuffer, setOverrideBuffer] = useState<number>(0);
+    const {ToggleIngredientInclusion} = useContext(CartContext);
     const [selectedProductID, setSelectedProductID] = useState<string>(mappedIngredient.productOptions[0].productId);
     const [productImageURL, setProductImageURL] = useState<string | undefined>(mappedIngredient.productOptions[0].images.find(image => image.perspective == "front")?.sizes[0].url);
     const [included, setIncluded] = useState(mappedIngredient.cartIngredient.included);
-    const [overrided, setOverrided] = useState(mappedIngredient.cartIngredient.override);
 
     const cartIngredient = mappedIngredient.cartIngredient;
 
@@ -37,21 +34,19 @@ export default function Ingredient({mappedIngredient, UpdateSelectionCallback, T
         setSelectedProductID(newID);
         UpdateSelectionCallback(cartIngredient.name, newID);
     }
-    
-    function Override() {
-        if (overrided) {
-            CancelIngredientOverride(cartIngredient.name);
+
+    const recipeIngredeints = cartIngredient.recipeIngredients.map((ri, i) => {
+        if (i === 0) {
+            return ri.amount + " " + ri.unit
         } else {
-            OverrideIngredient(cartIngredient.name, overrideAmount);
+            return " + " + ri.amount + " " + ri.unit
         }
-        setOverrideAmount(overrideBuffer);
-        setOverrideBuffer(0);
-        setOverrided(!overrided);
-    }
+    })
 
     return (
         <li className={styles.ingredientItem} data-included={included}>
-            <p>{cartIngredient.name} <span {...(overrided && {style:{color: "red"}})}>{overrideAmount || Math.round(cartIngredient.totalAmount*10)/10}</span> {cartIngredient.unit}</p>
+            <p>{cartIngredient.name}</p>
+            <p {...(mappedIngredient.cartIngredient.override && {style:{color: "steelblue"}})}>{mappedIngredient.cartIngredient.overrideValue || recipeIngredeints}</p>
             <select style={{maxWidth: "20rem"}} value={selectedProductID || ""} onChange={UpdateSelection}>
                 {mappedIngredient.productOptions.map((product) => {
                     return <option key={product.productId} value={product.productId}>{product.description}</option>

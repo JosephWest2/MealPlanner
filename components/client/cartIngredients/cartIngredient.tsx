@@ -8,22 +8,32 @@ import styles from "./cartIngredients.module.css";
 export default function CartIngredient({ingredient} : {ingredient: CartIngredient}) {
 
     const {ToggleIngredientInclusion, OverrideIngredient, CancelIngredientOverride} = useContext(CartContext);
-    const [overrideAmount, setOverrideAmount] = useState<number>(0);
+    const [overrideValue, setOverrideValue] = useState<string>();
 
     function Override() {
         if (ingredient.override) {
             CancelIngredientOverride(ingredient.name);
         } else {
-            OverrideIngredient(ingredient.name, overrideAmount);
+            OverrideIngredient(ingredient.name, overrideValue);
         }
-        setOverrideAmount(0);
+        setOverrideValue("");
     }
+
+    const recipeIngredeints = ingredient.recipeIngredients.map((ri, i) => {
+        if (i === 0) {
+            return ri.amount + " " + ri.unit
+        } else {
+            return " + " + ri.amount + " " + ri.unit
+        }
+    })
+
 
     return (
         <li className={styles.ingredientItem} data-included={ingredient.included}>
-            <p>{ingredient.name} <span {...(ingredient.override && {style:{color: "red"}})}>{ingredient.overrideValue || Math.round(ingredient.totalAmount*10)/10}</span> {ingredient.unit}</p>
+            <p>{ingredient.name}</p>
+            <p {...(ingredient.override && {style:{color: "steelblue"}})}>{ingredient.overrideValue || recipeIngredeints}</p>
             <div className="row" style={{gap: "0"}}>
-                <input value={overrideAmount !== 0 ? overrideAmount : ""} onChange={(e) => setOverrideAmount(Number(e.target.value))} className={styles.ingredientOverrideInput}  type="number" min="0" {...(ingredient.override && {"data-enabled":"false", disabled:true})}/>
+                <input value={overrideValue} onChange={(e) => setOverrideValue(e.target.value)} className={styles.ingredientOverrideInput} style={{width: "7rem"}}  type="text" min="0" {...(ingredient.override && {"data-enabled":"false", disabled:true})}/>
                 <button onClick={Override} className={styles.ingredientOverrideSubmit} data-override={ingredient.override}>{ingredient.override ? "Cancel" : "Edit"}</button>
             </div>
             <label htmlFor="include">Include</label>

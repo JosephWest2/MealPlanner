@@ -18,7 +18,6 @@ export default function CartProvider({ children } : any) {
         console.log("window null");
     }
     
-    
     const [cart, setCart] = useState(cartInit || {count: 0, recipes: [], ingredients: {}} as Cart);
 
     useEffect(() => {
@@ -33,7 +32,7 @@ export default function CartProvider({ children } : any) {
         
         const masses = {"g": 1, "mg": 0.001, "lb": 453.592, "oz": 28.3495, "pounds": 453.592, "kg": 1000, "grams": 1, "ounce": 28.3495, "gram": 1, "ounces": 28.3495, "ozs": 28.3495, "gms": 1, "pound": 453.592} as any;
         const volumes = {"ml": 1, "l": 1000, "cup": 236.588, "cups": 236.588, "fl oz": 29.5735, "liters": 1000, "pint": 473.176, "quart": 946.353, "gallon": 3785.41, "milliliters": 1, "deciliters": 100, "deciliter": 100, "quarts": 946.353, "pints": 473.176, "T": 15, "t": 5, "tsps": 5, "C": 240, "tbs": 15, "tbsp": 15, "tbsps": 15, "mls": 1} as any;
-        const count = {"": 1} as any;
+        const count = {"": 1}  as any;
 
         let unitType: NormalizedUnitType;
         let outputAmount: number;
@@ -61,21 +60,16 @@ export default function CartProvider({ children } : any) {
             const ingredient = recipe.extendedIngredients[i];
             if (ingredient.name in _cart.ingredients) {
                 const ingredientInCart = _cart.ingredients[ingredient.name];
-                ingredientInCart.recipeIngredients.push({amount: ingredient.amount, unit: ingredient.unit, recipeGUID: guid});
                 const normalized = NormalizeUnit(ingredient.amount, ingredient.unit);
-                ingredientInCart.totalAmount += normalized.amount;
-                ingredientInCart.totalAmount = Math.round(ingredientInCart.totalAmount);
-                ingredientInCart.unit = normalized.unitType || "";
+                ingredientInCart.recipeIngredients.push({amount: ingredient.amount, unit: ingredient.unit, recipeGUID: guid, unitType: normalized.unitType, normalizedAmount: normalized.amount});
             } else {
                 const normalized = NormalizeUnit(ingredient.amount, ingredient.unit);
                 _cart.ingredients[ingredient.name] = {
                     name: ingredient.name,
-                    totalAmount: normalized.amount,
-                    unit: normalized.unitType || "",
                     included: true,
                     override: false,
                     overrideValue: null,
-                    recipeIngredients: [{amount: ingredient.amount, unit: ingredient.unit, recipeGUID: guid}]};
+                    recipeIngredients: [{amount: ingredient.amount, unit: ingredient.unit, recipeGUID: guid, unitType: normalized.unitType, normalizedAmount: normalized.amount}]};
             }
         }
         const steps = [] as string[];
@@ -104,9 +98,6 @@ export default function CartProvider({ children } : any) {
                 let i = 0;
                 while (i < ingredient.recipeIngredients.length) {
                     if (ingredient.recipeIngredients[i].recipeGUID === guid) {
-                        const normalized = NormalizeUnit(ingredient.recipeIngredients[i].amount, ingredient.recipeIngredients[i].unit);
-                        ingredient.totalAmount -= normalized.amount;
-                        ingredient.totalAmount = Math.round(ingredient.totalAmount);
                         ingredient.recipeIngredients.splice(i, 1);
                     } else {
                         i++;
@@ -130,7 +121,7 @@ export default function CartProvider({ children } : any) {
         }
     }
 
-    function OverrideIngredient(ingredientName: string, value: number) {
+    function OverrideIngredient(ingredientName: string, value: string) {
         let _cart = {...cart};
         if (ingredientName in _cart.ingredients) {
             _cart.ingredients[ingredientName].override = true;

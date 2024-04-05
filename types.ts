@@ -125,17 +125,17 @@ export type DynamicIngredients = {
 
 export type CartIngredient = {
     name: string
-    totalAmount: number
-    unit: string
     included: boolean
     override: boolean
-    overrideValue: number | null
+    overrideValue: string | null
     recipeIngredients: RecipeIngredient[]
 }
 
 export type RecipeIngredient = {
     amount: number
     unit: string
+    normalizedAmount: number
+    unitType: string
     recipeGUID: string
 }
 

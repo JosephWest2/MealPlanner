@@ -122,14 +122,26 @@ export async function GeneratePDF(cart: Cart) {
     h1();
     NewPageCheck();
     verticalOffset += newLine;
-    doc.text("All Ingredients", horizontalOffset, verticalOffset);
+    doc.text("Shopping List", horizontalOffset, verticalOffset);
     verticalOffset += 1.25*newLine;
 
     for (const ingredientName in cart.ingredients) {
         p();
         horizontalOffset = 30;
         const ingredient = cart.ingredients[ingredientName];
-        doc.text("• " + ingredientName + ": " + Math.round(ingredient.totalAmount) + " " + ingredient.unit, horizontalOffset, verticalOffset);
+        if (!ingredient.included) {
+            continue;
+        }
+        let amountsAndUnits = "";
+        for (let i = 0; i < ingredient.recipeIngredients.length; i++) {
+            const ri = ingredient.recipeIngredients[i];
+            if (i === 0) {
+                amountsAndUnits += Math.round(ri.amount) + " " + ri.unit;
+            } else {
+                amountsAndUnits += " +" + Math.round(ri.amount) + " " + ri.unit;
+            }
+        }
+        doc.text("• " + ingredientName + ": " + amountsAndUnits, horizontalOffset, verticalOffset);
         verticalOffset += newLine;
         NewPageCheck();
     }

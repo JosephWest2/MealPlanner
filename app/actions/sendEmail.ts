@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function SendEmail(receivingEmail: string, pdf?: string) {
-    
+
     await transporter.sendMail({
         from: process.env.MTC_EMAIL_ADDRESS,
         to: receivingEmail,

@@ -5,10 +5,33 @@ import { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import type { CartRecipe, Cart } from "@/types";
 import CartIngredients from "@/components/client/cartIngredients/cartIngredients";
+import { SendPDF } from "@/app/actions/sendPDF";
+import { GetPDF } from "@/app/actions/getPDF";
 
 export default function Cart() {
 
     const [isClient, setIsClient] = useState(false);
+    const [email, setEmail] = useState<string>();
+
+    function _SendPDF() {
+        if (email) {
+            SendPDF(email);
+            alert("Email Sent to " + email)
+        } else {
+            alert("Please enter your email.")
+        }
+    }
+
+    function DownloadPDF() {
+        GetPDF().then((res) => {
+            if (res) {
+                const link = document.createElement('a');
+                link.href = res;
+                link.download = "MTC Order.pdf";
+                link.click();
+            }
+        })
+    }
     
     useEffect(() => {
         setIsClient(true);
@@ -34,6 +57,12 @@ export default function Cart() {
         </div>
         <CartIngredients></CartIngredients>
         <Link className="btn" href="/cart/kroger">Continue with Kroger</Link>
+        <button onClick={DownloadPDF}>Download list and recipes</button>
+        <div className="conjoinedContainer">
+            <input className="conjoinedLeft" type="email" placeholder="YourEmail@example.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <button className="conjoinedRight" style={{width: "100%"}} onClick={_SendPDF}>Email list and recipes</button>
+        </div>
+        
 
     </div>)
 

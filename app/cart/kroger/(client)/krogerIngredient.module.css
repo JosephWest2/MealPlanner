@@ -1,6 +1,6 @@
 .ingredientItem {
     display: grid;
-    grid-template-columns: 17rem 20rem 1fr 1fr 0.25fr 0.25fr;
+    grid-template-columns: 10rem 8rem 20rem 7rem 6rem auto auto;
     grid-template-rows: auto;
     gap: 1rem;
     align-items: center;
@@ -30,7 +30,7 @@
     height: 2.5rem;
 }
 .ingredientOverrideSubmit[data-override="true"] {
-    color: red;
+    color: steelblue;
 }
 .ingredientOverrideSubmit:hover {
     cursor: pointer;

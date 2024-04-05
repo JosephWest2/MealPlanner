@@ -15,7 +15,7 @@ export const authOptions: AuthOptions = {
             type: "oauth",
             clientId: process.env.KROGER_CLIENT_ID,
             clientSecret: process.env.KROGER_CLIENT_SECRET,
-            authorization: { url: "https://api.kroger.com/v1/connect/oauth2/authorize", params: { scope: "profile.compact product.compact cart.basic:write" } },
+            authorization: { url: "https://api.kroger.com/v1/connect/oauth2/authorize", params: { scope: "profile.compact product.compact cart.basic:write", redirect_uri: "https://meal2cart.com/api/auth/kroger/callback" } },
             token: "https://api.kroger.com/v1/connect/oauth2/token",
             userinfo: "https://api.kroger.com/v1/identity/profile",
             profile(profile: KrogerProfile) {

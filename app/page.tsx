@@ -2,7 +2,7 @@ import type { Key } from "react";
 import RecipeComponent from "@/components/server/recipe/recipe";
 import RecipeSearch from "@/components/client/recipeSearch/recipeSearch";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "./api/auth/[...nextauth]/authOptions";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import type { RecipeSearchParamStrings, Recipe, MySession } from "@/types";
 import { DecodeNutrientLimits } from "@/lib/nutrientLimits";

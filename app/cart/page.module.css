@@ -45,3 +45,9 @@
     display: flex;
     flex-direction: row;
 }
+
+@media screen and (max-width: 650px) {
+    .ingredientItem {
+        grid-template-columns: 1fr 1fr;
+    }
+}

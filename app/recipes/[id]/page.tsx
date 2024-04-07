@@ -36,17 +36,17 @@ export default async function RecipeDetails({params} : {params: any}) {
                     <h2>{recipe.title}</h2>
                 </div>
                 
-                <img className={styles.image} src={recipe.image} alt="recipeImage" />
+                <img className={styles.image + " box"} src={recipe.image} alt="recipeImage" />
                 
 
-                <div className={styles.info}>
+                <div className={styles.info + " box"}>
                     <p><b>Preparation time:</b> {recipe.readyInMinutes.toString()} minutes</p>
                     <p><b>Servings:</b> {recipe.servings.toString()}</p>
                     <div className={styles.summary} dangerouslySetInnerHTML={{__html: ProcessSummary(recipe.summary)}}></div>
                 </div>
                 
                 
-                <ul className={styles.nutrition}>
+                <ul className={styles.nutrition + " box"}>
                     <li className={styles.calories}>
                         Calories per serving: {Math.round(recipe.nutrition.nutrients[0].amount)} {recipe.nutrition.nutrients[0].unit}
                     </li>
@@ -59,13 +59,13 @@ export default async function RecipeDetails({params} : {params: any}) {
                     })}
                 </ul>
                 
-                <ul className={styles.ingredients}>
+                <ul className={styles.ingredients + " box"}>
                     <h2>Ingredients</h2>
                     {recipe.extendedIngredients.map((ingredient: any, i : number) => {
                         return <li className={styles.ingredient} key={i}>{ingredient.original}</li>
                     })}
                 </ul>
-                <ol className={styles.instructions}>
+                <ol className={styles.instructions + " box"}>
                     <h2>Instructions</h2>
                     {recipe.analyzedInstructions[0].steps.map((step: any, i : number) => {
                         return <li className={styles.instruction} key={i}>{step.step}</li>

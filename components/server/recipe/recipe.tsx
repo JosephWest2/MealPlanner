@@ -11,7 +11,7 @@ export default async function RecipeComponent({recipeData} : {recipeData: Recipe
 
     return <div className={styles.recipeGrid + " box"}>
             <h2 className={styles.header}>{recipeData.title}</h2>
-            <Image width={312} height={231} className={styles.image} src={recipeData.image} alt="recipeImage" />
+            <img className={styles.image} src={recipeData.image} alt="recipeImage" />
             
             
             <div className={styles.info + " column"}>
@@ -21,7 +21,7 @@ export default async function RecipeComponent({recipeData} : {recipeData: Recipe
                 <p><b>Calories per serving:</b> {Math.round(recipeData.nutrition.nutrients[0].amount)}</p>
             </div>
             
-            <div className={styles.summary} dangerouslySetInnerHTML={{__html: ProcessSummary(recipeData.summary)}}></div>
+            <div className={styles.summary} >{ProcessSummary(recipeData.summary)}</div>
             <Link className={styles.link + " btn"} href={`/recipes/${recipeData.id}`}>View Recipe</Link>
         </div>
     

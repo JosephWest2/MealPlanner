@@ -61,7 +61,6 @@ button:hover, .btn:hover {
 .row {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
 }
@@ -97,6 +96,9 @@ button:hover, .btn:hover {
   .intolerances {
       grid-template-columns: repeat(2, 1fr);
   }
+  .row {
+	  flex-wrap: wrap;
+  }
   .optionsGrid {
       display: flex;
       flex-direction: column;
@@ -121,4 +123,16 @@ button:hover, .btn:hover {
     border-left: none;
     height: 100%;
     padding: 0 1rem;
+}
+@media screen and (max-width: 650px) {
+  .elongating {
+    width: 100%;
+  }
+  main {
+    padding: 0;
+  }
+  .box {
+    box-shadow: none;
+    border-bottom: 1px solid rgb(211, 211, 211);
+  }
 }

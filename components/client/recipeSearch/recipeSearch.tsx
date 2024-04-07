@@ -147,7 +147,7 @@ export default function RecipeSearch() {
     return (<div className="box column">
                 <div className="row">
                     <input type="text" placeholder="Search..." style={{width: "100%"}} onChange={e => setQuery(e.target.value)} value={query}/>
-                    <button onClick={Search}>Search</button>
+                    <button className="elongating" onClick={Search}>Search</button>
                 </div>
                 <div className="column toggleable" data-enabled={showMoreOptions.toString()}>
                     <div className="optionsGrid">

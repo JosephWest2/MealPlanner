@@ -16,7 +16,8 @@
 }
 .image {
     grid-area: image;
-    position: relative;
+    width: 312px;
+    height: 231px;
 }
 .info {
     align-self: center;
@@ -24,6 +25,7 @@
 }
 .summary {
     grid-area: summary;
+    text-indent: 2em;
 }
 .link {
     grid-area: link;

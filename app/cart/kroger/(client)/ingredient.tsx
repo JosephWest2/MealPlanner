@@ -11,8 +11,8 @@ export default function Ingredient({mappedIngredient, UpdateSelectionCallback, T
     const cartIngredient = mappedIngredient.cartIngredient;
 
     const {ToggleIngredientInclusion} = useContext(CartContext);
-    const [selectedProductID, setSelectedProductID] = useState<string | null>(mappedIngredient.productOptions[0]?.productId || null);
-    const [productImageURL, setProductImageURL] = useState<string | null>(mappedIngredient.productOptions[0]?.images.find(image => image.perspective == "front")?.sizes[0].url || null);
+    const [selectedProductID, setSelectedProductID] = useState<string | null>(mappedIngredient?.productOptions[0]?.productId || null);
+    const [productImageURL, setProductImageURL] = useState<string | null>(mappedIngredient?.productOptions[0]?.images.find(image => image.perspective == "front")?.sizes[0].url || null);
     const [included, setIncluded] = useState(mappedIngredient.cartIngredient.included);
 
 

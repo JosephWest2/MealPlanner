@@ -25,7 +25,7 @@ export default function IngredientsClient({mappedIngredients} : {mappedIngredien
         const init = {} as KPTA;
         for (const key in mappedIngredients) {
             if (mappedIngredients[key].cartIngredient.included) {
-                init[key] = {productId: mappedIngredients[key].productOptions[0].productId, included: true};
+                init[key] = {productId: mappedIngredients[key]?.productOptions[0]?.productId || "", included: true};
             }
         }
         setKrogerProductsToAddToCart(init);

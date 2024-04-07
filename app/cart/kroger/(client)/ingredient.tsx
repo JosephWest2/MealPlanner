@@ -9,7 +9,7 @@ import Image from "next/image";
 export default function Ingredient({mappedIngredient, UpdateSelectionCallback, ToggleInclusionCallback} : {mappedIngredient: MappedIngredient, UpdateSelectionCallback: (ingredientName: string, productId: string) => void, ToggleInclusionCallback: (ingredientName: string) => void}) {
 
     const {ToggleIngredientInclusion} = useContext(CartContext);
-    const [selectedProductID, setSelectedProductID] = useState<string>(mappedIngredient.productOptions[0].productId);
+    const [selectedProductID, setSelectedProductID] = useState<string>(mappedIngredient.productOptions[0]?.productId || "");
     const [productImageURL, setProductImageURL] = useState<string | undefined>(mappedIngredient.productOptions[0].images.find(image => image.perspective == "front")?.sizes[0].url);
     const [included, setIncluded] = useState(mappedIngredient.cartIngredient.included);
 

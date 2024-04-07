@@ -9,6 +9,10 @@ import { useRouter } from "next/navigation";
 
 export default function IngredientsClient({mappedIngredients} : {mappedIngredients: MappedIngredients}) {
 
+    if (!mappedIngredients || Object.keys(mappedIngredients).length === 0) {
+        return null
+    }
+
     type KPTA = {
         [ingrdientName: string]: {
             productId: string

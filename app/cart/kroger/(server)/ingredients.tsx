@@ -31,6 +31,8 @@ async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySessi
         }
     });
 
+    console.log("product fetch", response.status);
+
     if (response.status == 401) {
         redirect("/auth/kroger/signin");
     }
@@ -68,6 +70,7 @@ export default async function Ingredients({storeId, session, filters} : {storeId
         const result = results[i];
         mappedIngredients[keys[i]] = {cartIngredient: cart.ingredients[keys[i]], productOptions: result.data};
     }
+    console.log("mappedIngredients", mappedIngredients);
 
     return <div className="column box">
         <h2>Shopping List</h2>

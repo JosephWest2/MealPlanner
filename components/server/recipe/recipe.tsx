@@ -1,6 +1,7 @@
 import type { Recipe } from "@/types";
 import { ProcessSummary } from "@/lib/processSummary";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./recipe.module.css";
 
 
@@ -10,8 +11,8 @@ export default async function RecipeComponent({recipeData} : {recipeData: Recipe
 
     return <div className={styles.recipeGrid + " box"}>
             <h2 className={styles.header}>{recipeData.title}</h2>
+            <Image width={312} height={231} className={styles.image} src={recipeData.image} alt="recipeImage" />
             
-            <img className={styles.image} src={recipeData.image} alt="recipeImage" />
             
             <div className={styles.info + " column"}>
                 <p><b>Preparation time:</b> {recipeData.readyInMinutes.toString()} minutes</p>

@@ -1,4 +1,4 @@
-import type { MySession, Cart, CartIngredient, MappedIngredients } from "@/types";
+import type { MySession, Cart, CartIngredient, MappedIngredients, KrogerProductInfo } from "@/types";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
@@ -66,7 +66,7 @@ export default async function Ingredients({storeId, session, filters} : {storeId
     let mappedIngredients = {} as MappedIngredients;
     for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        mappedIngredients[keys[i]] = {cartIngredient: cart.ingredients[keys[i]], productOptions: result.data};
+        mappedIngredients[keys[i]] = {cartIngredient: cart.ingredients[keys[i]], productOptions: result.data as KrogerProductInfo[]};
     }
 
     return <div className="column box">

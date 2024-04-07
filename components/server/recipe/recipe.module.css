@@ -1,8 +1,8 @@
 .recipeGrid {
     max-width: 800px;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
     gap: 1.5rem;
     grid-template-areas: 
         "header header"
@@ -16,6 +16,7 @@
 }
 .image {
     grid-area: image;
+    position: relative;
 }
 .info {
     align-self: center;
@@ -26,4 +27,16 @@
 }
 .link {
     grid-area: link;
+}
+
+@media screen and (max-width: 650px) {
+    .recipeGrid {
+        grid-template-columns: auto;
+        grid-template-areas: 
+            "header"
+            "image"
+            "info"
+            "summary"
+            "link";
+    }
 }

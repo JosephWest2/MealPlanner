@@ -7,18 +7,17 @@ import { Guid } from "js-guid";
 export const CartContext = createContext({cart: null as Cart | null, AddRecipeToCart: null as any, RemoveRecipeFromCart: null as any, ClearCart: null as any, ToggleIngredientInclusion: null as any, OverrideIngredient: null as any, CancelIngredientOverride: null as any});
 
 export default function CartProvider({ children } : any) {
-
-    let cartInit = undefined;
-    try {
-        if (window) {
-            const mtccart = window.localStorage.getItem("mtccart") as string;
-            cartInit = JSON.parse(mtccart) as Cart;
-        }
-    } catch (error) {
-        console.log("window null");
-    }
     
-    const [cart, setCart] = useState(cartInit || {count: 0, recipes: [], ingredients: {}} as Cart);
+    const [cart, setCart] = useState({count: 0, recipes: [], ingredients: {}} as Cart);
+
+    useEffect(() => {
+        let cartInit = undefined;
+        const mtccart = window.localStorage.getItem("mtccart") as string;
+        cartInit = JSON.parse(mtccart) as Cart;
+        if (cartInit) {
+            setCart(cartInit)
+        }
+    }, [])
 
     useEffect(() => {
         if (window) {

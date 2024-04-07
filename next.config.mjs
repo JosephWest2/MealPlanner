@@ -6,6 +6,14 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'www.kroger.com',
+            },
+            {
+                protocol: "https",
+                hostname: "www.spoonacular.com"
+            },
+            {
+                protocol: "https",
+                hostname: "img.spoonacular.com"
             }
         ]
     }

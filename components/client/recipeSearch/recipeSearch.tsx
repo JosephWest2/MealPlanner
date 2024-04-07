@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import type { RecipeSearchParams, NutrientLimits } from "@/types";
+import type { NutrientLimits } from "@/types";
 import { EncodeNutrientLimits } from "@/lib/nutrientLimits";
 
 export const optionMapping = {

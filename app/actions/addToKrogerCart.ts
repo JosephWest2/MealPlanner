@@ -14,9 +14,13 @@ export default async function AddToKrogerCart(productIds: string[], downloadPDF:
         redirect("/auth/kroger/signin");
     }
 
-    const productArray = productIds.map(productId => {
-        return {quantity: 1, upc: productId};
-    })
+    const productArray = [];
+    for (let i=0; i < productIds.length; i++) {
+        const productId = productIds[i];
+        if (productId !== "") {
+            productArray.push({quantity: 1, upc: productId});
+        }
+    }
 
     const response = await fetch("https://api.kroger.com/v1/cart/add", {
         method: "PUT",

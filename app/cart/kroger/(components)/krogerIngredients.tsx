@@ -8,7 +8,7 @@ import type {
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
-import IngredientsClient from "./ingredientsClient";
+import KrogerIngredientsClient from "./krogerIngredientsClient";
 
 async function GetKrogerProductInfo(
     ingredient: CartIngredient,
@@ -95,9 +95,9 @@ export default async function Ingredients({
         <div className="column box">
             <h2>Shopping List</h2>
             <Suspense fallback={<p>Loading Ingredients...</p>}>
-                <IngredientsClient
+                <KrogerIngredientsClient
                     mappedIngredients={mappedIngredients}
-                ></IngredientsClient>
+                ></KrogerIngredientsClient>
             </Suspense>
         </div>
     );

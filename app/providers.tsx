@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import CartProvider from "@/sharedComponents/cartProvider/cartProvider";
 

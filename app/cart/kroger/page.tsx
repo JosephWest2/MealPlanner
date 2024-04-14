@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import Location from "./(components)/location";
-import Ingredients from "./(components)/ingredients";
+import KrogerIngredients from "./(components)/krogerIngredients";
 import { Suspense } from "react";
 
 export default async function KrogerCart({
@@ -57,11 +57,11 @@ export default async function KrogerCart({
             <Suspense fallback={<div className="box">Loading Location...</div>}>
                 <Location></Location>
             </Suspense>
-            <Ingredients
+            <KrogerIngredients
                 storeId={searchParams.storeId}
                 filters={filters}
                 session={session}
-            ></Ingredients>
+            ></KrogerIngredients>
         </div>
     );
 }

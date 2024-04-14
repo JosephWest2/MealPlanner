@@ -37,7 +37,7 @@ export default function CartProvider({ children }: any) {
                 cart
             )}; expires=${new Date(
                 Date.now() + 1000 * 60 * 60 * 24 * 30
-            ).toUTCString()}; path=/; SameSite=Strict`;
+            ).toUTCString()}; path=/;`;
             document.cookie = cookieString;
             window.localStorage.setItem("mtccart", JSON.stringify(cart));
         }

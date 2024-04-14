@@ -26,11 +26,20 @@ export default function CartIngredient({
         setOverrideValue("");
     }
 
-    const recipeIngredeints = ingredient.recipeIngredients.map((ri, i) => {
-        if (i === 0) {
-            return ri.amount + " " + ri.unit;
+    const _ingredients = {} as any;
+    ingredient.recipeIngredients.forEach((i) => {
+        if (_ingredients[i.unit]) {
+            _ingredients[i.unit] += i.amount;
         } else {
-            return " + " + ri.amount + " " + ri.unit;
+            _ingredients[i.unit] = i.amount;
+        }
+    })
+
+    const recipeIngredients = Object.keys(_ingredients).map((unit, i) => {
+        if (i === 0) {
+            return _ingredients[unit] + " " + unit;
+        } else {
+            return " + " + _ingredients[unit] + " " + unit;
         }
     });
 
@@ -44,7 +53,7 @@ export default function CartIngredient({
                 className={styles.amount}
                 data-override={ingredient.override}
             >
-                {ingredient.overrideValue || recipeIngredeints}
+                {ingredient.overrideValue || recipeIngredients}
             </p>
             <div
                 className={styles.override}

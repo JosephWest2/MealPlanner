@@ -56,27 +56,37 @@ export default function Cart() {
         );
     }
 
+    const _recipes = {} as {[id : string]: {recipe: CartRecipe, count : number}};
+    cart.recipes.forEach((r) => {
+        if (_recipes[r.id]) {
+            _recipes[r.id].count++
+        } else {
+            _recipes[r.id] = {recipe: r, count: 1}
+        }
+    })
     return (
         <div className="column">
             <div className="column box">
                 <h2>Recipes</h2>
                 <ul className="column">
-                    {cart.recipes.map((recipe: CartRecipe, _key: number) => (
-                        <li
+                    {Object.keys(_recipes).map((recipeId, _key) => {
+                        const recipe = _recipes[recipeId].recipe;
+                        return (<li
                             className={styles.recipeRow + " row no-wrap"}
                             key={_key}
                         >
                             <Link href={`/recipes/${recipe.id}`}>
                                 • {recipe.name}
                             </Link>{" "}
+                            {_recipes[recipeId].count > 1 ? <p>x{_recipes[recipeId].count}</p> : <></>}
                             <button
                                 className={styles.remove}
                                 onClick={() => RemoveRecipeFromCart(recipe)}
                             >
                                 remove
                             </button>
-                        </li>
-                    ))}
+                        </li>)
+                    })}
                 </ul>
             </div>
             <CartIngredients></CartIngredients>
@@ -84,6 +94,7 @@ export default function Cart() {
                 <Link className="btn" href="/cart/kroger">
                     Continue with Kroger
                 </Link>
+                <div className={styles.underline}></div>
                 <button onClick={DownloadPDF}>Download list and recipes</button>
                 <div className="conjoinedContainer">
                     <input

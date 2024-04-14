@@ -36,9 +36,7 @@ export default async function RecipeDetails({ params }: { params: any }) {
     return (
         <>
             <div className={styles.recipe}>
-                <div className={styles.header}>
-                    <h2>{recipe.title}</h2>
-                </div>
+                <h2 className={styles.header}>{recipe.title}</h2>
 
                 <img
                     className={styles.image + " box"}
@@ -62,7 +60,8 @@ export default async function RecipeDetails({ params }: { params: any }) {
                 <div className={styles.nutrition + " box column"}>
                     <h3 className={styles.calories}>
                         Calories:{" "}
-                        {Math.round(recipe.nutrition.nutrients[0].amount)} <span style={{color: "grey"}}>per serving</span>
+                        {Math.round(recipe.nutrition.nutrients[0].amount)}{" "}
+                        <span style={{ color: "grey" }}>per serving</span>
                     </h3>
                     <h4 className={styles.servingSize}>
                         Serving size: {recipe.nutrition.weightPerServing.amount}{" "}

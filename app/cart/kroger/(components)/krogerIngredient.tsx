@@ -66,9 +66,10 @@ export default function Ingredient({
     });
 
     return (
-        <li className={styles.ingredientItem} data-included={included}>
-            <p>{cartIngredient.name}</p>
+        <li className={styles.ingredient} data-included={included}>
+            <p className={styles.name}>{cartIngredient.name}</p>
             <p
+                className={styles.amount}
                 {...(mappedIngredient.cartIngredient.override && {
                     style: { color: "steelblue" },
                 })}
@@ -78,6 +79,7 @@ export default function Ingredient({
             </p>
             {selectedProductID ? (
                 <select
+                    className={styles.options}
                     style={{ maxWidth: "20rem" }}
                     value={selectedProductID || ""}
                     onChange={UpdateSelection}
@@ -94,28 +96,28 @@ export default function Ingredient({
                     })}
                 </select>
             ) : (
-                <p>Unable to find product</p>
+                <h4>Unable to find product</h4>
             )}
             {productImageURL ? (
                 <Image
+                    className={styles.image}
                     src={productImageURL}
                     alt="product image"
                     width={100}
                     height={80}
                 />
             ) : (
-                <div></div>
+                <div className={styles.image}></div>
             )}
-            <p>
+            <p className={styles.selectedOptionSize}>
                 {
                     mappedIngredient.productOptions?.find(
                         (product) => product.productId === selectedProductID
                     )?.items[0].size
                 }
             </p>
-            <label htmlFor="include">Include</label>
             <input
-                className={styles.ingredientCheckbox}
+                className={styles.checkbox}
                 type="checkbox"
                 onClick={ToggleInclusion}
                 defaultChecked={included || false}

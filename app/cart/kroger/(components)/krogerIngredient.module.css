@@ -1,38 +1,52 @@
-.ingredientItem {
+.ingredient {
     display: grid;
-    grid-template-columns: 10rem 8rem 20rem 7rem 6rem auto auto;
+    grid-template-columns: repeat(6, 1fr);
     grid-template-rows: auto;
+    grid-template-areas:
+        "checkbox name amount options image selectedOptionSize";
     gap: 1rem;
     align-items: center;
 }
-.ingredientItem[data-included="false"] {
+.ingredient[data-included="false"] {
     opacity: 0.6;
 }
-.ingredientCheckbox {
+.checkbox {
     height: 1.2rem;
     width: 1.2rem;
     margin: 0.5rem;
 }
-.ingredientOverrideInput {
-    padding: 0.2rem 0.5rem;
-    border: 1px solid grey;
-    border-right: none;
-    border-radius: 1rem 0 0 1rem;
-    height: 2.5rem;
+.amount {
+    grid-area: amount
 }
-.ingredientOverrideInput[data-enabled="false"] {
-    background-color: lightgrey;
+.name {
+    grid-area: name;
 }
-.ingredientOverrideSubmit {
-    padding: 0.5rem;
-    border: 1px solid grey;
-    border-radius: 0 1rem 1rem 0;
-    height: 2.5rem;
+.options {
+    grid-area: options;
 }
-.ingredientOverrideSubmit[data-override="true"] {
+.image {
+    grid-area: image;
+} 
+.selectedOptionSize {
+    grid-area: selectedOptionSize;
+}
+.amount[data-override="true"] {
     color: steelblue;
 }
-.ingredientOverrideSubmit:hover {
-    cursor: pointer;
-    background-color: lightgray;
+@media screen and (max-width: 650px) {
+    .ingredient {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas: 
+            "checkbox name amount"
+            "options image selectedOptionSize";
+        border: 1px solid grey;
+        padding: 0.5rem;
+        gap: 0.5rem;
+        border-radius: 0.5rem;
+        justify-content: space-between;
+        place-items: center;
+    }
+    .options {
+        width: 8rem;
+    }
 }

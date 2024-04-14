@@ -28,10 +28,7 @@
 }
 .header {
     grid-area: header;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
+    padding: 1rem;
 }
 .image {
     grid-area: image;
@@ -42,14 +39,11 @@
 .calories {
     grid-column-start: 1;
     grid-column-end: 3;
-    font-size: 2em;
-
     text-decoration: none;
 }
 .servingSize {
     grid-column-start: 1;
     grid-column-end: 3;
-    font-size: 1.5em;
     padding-bottom: 1em;
 }
 .ingredients {

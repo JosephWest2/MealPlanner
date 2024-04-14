@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import type { MappedIngredients } from "@/types";
-import Ingredient from "./ingredient";
+import KrogerIngredient from "./krogerIngredient";
 import AddToKrogerCart from "@/app/actions/addToKrogerCart";
 import { useRouter } from "next/navigation";
 
-export default function IngredientsClient({
+export default function KrogerIngredientsClient({
     mappedIngredients,
 }: {
     mappedIngredients: MappedIngredients;
@@ -104,12 +104,12 @@ export default function IngredientsClient({
                 {keys.map((key) => {
                     const ingredient = mappedIngredients[key];
                     return (
-                        <Ingredient
+                        <KrogerIngredient
                             key={key}
                             mappedIngredient={ingredient}
                             UpdateSelectionCallback={UpdateProdudctSelection}
                             ToggleInclusionCallback={ToggleInclusion}
-                        ></Ingredient>
+                        ></KrogerIngredient>
                     );
                 })}
             </ol>

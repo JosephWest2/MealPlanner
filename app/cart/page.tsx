@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./page.module.css";
 import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
 import Link from "next/link";
@@ -61,43 +62,45 @@ export default function Cart() {
                 <h2>Recipes</h2>
                 <ul className="column">
                     {cart.recipes.map((recipe: CartRecipe, _key: number) => (
-                        <li className="row" key={_key}>
-                            <p>• {recipe.name}</p>
-                            <Link
-                                className="btn"
-                                href={`/recipes/${recipe.id}`}
-                            >
-                                View Recipe
+                        <li
+                            className={styles.recipeRow + " row no-wrap"}
+                            key={_key}
+                        >
+                            <Link href={`/recipes/${recipe.id}`}>
+                                • {recipe.name}
                             </Link>{" "}
                             <button
+                                className={styles.remove}
                                 onClick={() => RemoveRecipeFromCart(recipe)}
                             >
-                                Remove
+                                remove
                             </button>
                         </li>
                     ))}
                 </ul>
             </div>
             <CartIngredients></CartIngredients>
-            <Link className="btn" href="/cart/kroger">
-                Continue with Kroger
-            </Link>
-            <button onClick={DownloadPDF}>Download list and recipes</button>
-            <div className="conjoinedContainer">
-                <input
-                    className="conjoinedLeft"
-                    type="email"
-                    placeholder="YourEmail@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <button
-                    className="conjoinedRight"
-                    style={{ width: "100%" }}
-                    onClick={_SendPDF}
-                >
-                    Email list and recipes
-                </button>
+            <div className={styles.buttonContainer}>
+                <Link className="btn" href="/cart/kroger">
+                    Continue with Kroger
+                </Link>
+                <button onClick={DownloadPDF}>Download list and recipes</button>
+                <div className="conjoinedContainer">
+                    <input
+                        className="conjoinedLeft"
+                        type="email"
+                        placeholder="YourEmail@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <button
+                        className="conjoinedRight"
+                        style={{ width: "100%" }}
+                        onClick={_SendPDF}
+                    >
+                        Email list and recipes
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -1,0 +1,9 @@
+.ingredientsGrid {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    grid-template-areas:
+        "checkbox name amount override"
+}
+
+@media screen and (max-width: 650px) {
+}

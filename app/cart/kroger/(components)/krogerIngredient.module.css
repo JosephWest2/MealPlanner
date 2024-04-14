@@ -17,11 +17,11 @@
     padding: 0.2rem 0.5rem;
     border: 1px solid grey;
     border-right: none;
-    border-radius: 1rem 0 0 1rem;  
-    height: 2.5rem;  
+    border-radius: 1rem 0 0 1rem;
+    height: 2.5rem;
 }
 .ingredientOverrideInput[data-enabled="false"] {
-    background-color: lightgrey;  
+    background-color: lightgrey;
 }
 .ingredientOverrideSubmit {
     padding: 0.5rem;

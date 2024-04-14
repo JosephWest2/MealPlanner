@@ -36,25 +36,24 @@ export default function CartIngredient({
 
     return (
         <li
-            className={styles.ingredientItem}
+            className={styles.ingredient}
             data-included={ingredient.included}
         >
             <p className={styles.name}>{ingredient.name}</p>
             <p
                 className={styles.amount}
-                {...(ingredient.override && { style: { color: "steelblue" } })}
+                data-override={ingredient.override}
             >
                 {ingredient.overrideValue || recipeIngredeints}
             </p>
             <div
-                className={styles.inputContainer + " row"}
-                style={{ gap: "0" }}
+                className={styles.override}
+                data-override={ingredient.override}
             >
                 <input
                     value={overrideValue}
                     onChange={(e) => setOverrideValue(e.target.value)}
                     className={styles.ingredientOverrideInput}
-                    style={{ width: "7rem" }}
                     type="text"
                     min="0"
                     {...(ingredient.override && {
@@ -70,11 +69,8 @@ export default function CartIngredient({
                     {ingredient.override ? "Cancel" : "Edit"}
                 </button>
             </div>
-            <label className={styles.include} htmlFor="include">
-                Include
-            </label>
             <input
-                className={styles.ingredientCheckbox}
+                className={styles.checkbox}
                 name="include"
                 id="include"
                 type="checkbox"

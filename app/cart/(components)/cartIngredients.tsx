@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./cartIngredients.module.css"
 import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
 import CartIngredient from "./cartIngredient";
@@ -22,7 +23,7 @@ export default function CartIngredients() {
     return (
         <div className="column box">
             <h2>Shopping List</h2>
-            <ol className="column">
+            <ol className={styles.ingrdeintsGrid + " column"}>
                 {keys.map((ingredientName: string) => {
                     const ingredient = cart.ingredients[ingredientName];
                     return (

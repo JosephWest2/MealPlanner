@@ -1,34 +1,44 @@
-import type { MySession, Cart, CartIngredient, MappedIngredients, KrogerProductInfo } from "@/types";
+import type {
+    MySession,
+    Cart,
+    CartIngredient,
+    MappedIngredients,
+    KrogerProductInfo,
+} from "@/types";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
 import IngredientsClient from "./ingredientsClient";
 
-async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySession, storeId?: string | undefined, filters?: string[]) {
-
+async function GetKrogerProductInfo(
+    ingredient: CartIngredient,
+    session: MySession,
+    storeId?: string | undefined,
+    filters?: string[]
+) {
     let url = `https://api.kroger.com/v1/products?filter.term=${ingredient.name}`;
 
     if (storeId) {
         url += `&filter.locationId=${storeId}`;
     }
-    let fulfillment = ""
+    let fulfillment = "";
     if (filters) {
-        filters.forEach(filter => {
+        filters.forEach((filter) => {
             if (fulfillment === "") {
                 fulfillment += "&filter.fulfillment=" + filter;
             } else {
-                fulfillment += "," + filter
+                fulfillment += "," + filter;
             }
-        })
+        });
         url += fulfillment;
     }
-    
+
     const response = await fetch(url, {
         method: "GET",
         headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer " + session.accessToken
-        }
+            Accept: "application/json",
+            Authorization: "Bearer " + session.accessToken,
+        },
     });
 
     if (response.status == 401) {
@@ -38,42 +48,57 @@ async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySessi
     return response.json();
 }
 
-export default async function Ingredients({storeId, session, filters} : {storeId: string | undefined, session: MySession, filters: string[]}) {
-
+export default async function Ingredients({
+    storeId,
+    session,
+    filters,
+}: {
+    storeId: string | undefined;
+    session: MySession;
+    filters: string[];
+}) {
     const cartCookie = cookies().get("mtccart");
 
     let cart;
     if (cartCookie && cartCookie.value) {
-        cart = JSON.parse(cartCookie.value) as Cart
+        cart = JSON.parse(cartCookie.value) as Cart;
     } else {
         cart = undefined;
     }
 
     if (!cart) {
-        return null
+        return null;
     }
-    
+
     const promises = [];
     const keys = Object.keys(cart.ingredients);
 
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const ingredient = cart.ingredients[key];
-        promises.push(GetKrogerProductInfo(ingredient, session, storeId, filters));
+        promises.push(
+            GetKrogerProductInfo(ingredient, session, storeId, filters)
+        );
     }
 
     const results = await Promise.all(promises);
     let mappedIngredients = {} as MappedIngredients;
     for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        mappedIngredients[keys[i]] = {cartIngredient: cart.ingredients[keys[i]], productOptions: result.data as KrogerProductInfo[]};
+        mappedIngredients[keys[i]] = {
+            cartIngredient: cart.ingredients[keys[i]],
+            productOptions: result.data as KrogerProductInfo[],
+        };
     }
 
-    return <div className="column box">
-        <h2>Shopping List</h2>
-        <Suspense fallback={<p>Loading Ingredients...</p>}>
-            <IngredientsClient mappedIngredients={mappedIngredients}></IngredientsClient>
-        </Suspense>
-    </div>
-
+    return (
+        <div className="column box">
+            <h2>Shopping List</h2>
+            <Suspense fallback={<p>Loading Ingredients...</p>}>
+                <IngredientsClient
+                    mappedIngredients={mappedIngredients}
+                ></IngredientsClient>
+            </Suspense>
+        </div>
+    );
 }

@@ -10,9 +10,8 @@ export function ProcessSummary(summary: string) {
     }
     i = output.lastIndexOf(".");
     if (i !== -1) {
-        output = output.substring(0, i+1);
+        output = output.substring(0, i + 1);
     }
     output = output.replaceAll(/<\/?b>/g, "");
-    console.log(output);
     return output;
 }

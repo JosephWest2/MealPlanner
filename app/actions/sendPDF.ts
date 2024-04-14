@@ -6,7 +6,6 @@ import { GeneratePDF } from "@/lib/pdfGenerator/pdfGenerator";
 import { SendEmail } from "./sendEmail";
 
 export async function SendPDF(emailAddress: string) {
-
     const cartCookie = cookies().get("mtccart");
     let pdf;
     if (cartCookie && cartCookie.value) {

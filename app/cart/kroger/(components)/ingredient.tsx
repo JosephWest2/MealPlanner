@@ -2,7 +2,7 @@
 
 import type { MappedIngredient } from "@/types";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { CartContext } from "@/components/client/cartProvider/cartProvider";
+import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
 import styles from "./krogerIngredient.module.css";
 import Image from "next/image";
 

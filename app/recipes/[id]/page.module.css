@@ -6,7 +6,7 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
     max-width: 1400px;
-    grid-template-areas: 
+    grid-template-areas:
         "header header"
         "image nutrition"
         "info info"
@@ -83,13 +83,13 @@
 }
 @media screen and (max-width: 650px) {
     .recipe {
-        grid-template-areas: 
-        "header header"
-        "image image"
-        "nutrition nutrition"
-        "info info"
-        "ingredients ingredients"
-        "instructions instructions";
+        grid-template-areas:
+            "header header"
+            "image image"
+            "nutrition nutrition"
+            "info info"
+            "ingredients ingredients"
+            "instructions instructions";
     }
     .header {
         text-align: center;

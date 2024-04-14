@@ -1,4 +1,3 @@
-
 .ingredientContainer {
     display: flex;
     flex-direction: column;
@@ -24,10 +23,10 @@
     padding: 0.2rem 0.5rem;
     border: 1px solid grey;
     border-right: none;
-    border-radius: 1rem 0 0 1rem;    
+    border-radius: 1rem 0 0 1rem;
 }
 .ingredientOverrideInput[data-enabled="false"] {
-    background-color: lightgrey;  
+    background-color: lightgrey;
 }
 .ingredientOverrideSubmit {
     padding: 0.5rem;

@@ -5,7 +5,6 @@ import type { Cart } from "@/types";
 import { GeneratePDF } from "@/lib/pdfGenerator/pdfGenerator";
 
 export async function GetPDF() {
-
     const cartCookie = cookies().get("mtccart");
     let cart;
 

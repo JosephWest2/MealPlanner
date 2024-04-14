@@ -2,7 +2,7 @@ import type { MySession, Cart, CartIngredient, MappedIngredients, KrogerProductI
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
-import IngredientsClient from "../(client)/ingredientsClient";
+import IngredientsClient from "./ingredientsClient";
 
 async function GetKrogerProductInfo(ingredient: CartIngredient, session: MySession, storeId?: string | undefined, filters?: string[]) {
 

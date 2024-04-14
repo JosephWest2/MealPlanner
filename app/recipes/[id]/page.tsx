@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { ProcessSummary } from "@/lib/processSummary";
 import styles from "./page.module.css";
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import AddToCart from "@/components/client/addToCart/addToCart";
+import AddToCart from "@/sharedComponents/client/addToCart/addToCart";
 import type { MySession } from "@/types";
 
 export default async function RecipeDetails({params} : {params: any}) {

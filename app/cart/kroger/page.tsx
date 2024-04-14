@@ -4,8 +4,8 @@ import type { MySession, Cart } from "@/types";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import Location from "./(client)/location";
-import Ingredients from "./(server)/ingredients";
+import Location from "./(components)/location";
+import Ingredients from "./(components)/ingredients";
 import { Suspense } from "react";
 
 export default async function KrogerCart({searchParams}: {searchParams: {storeId: string | undefined, ais: boolean | undefined, dth: boolean | undefined, csp: boolean | undefined}}) {

@@ -4,7 +4,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
-    grid-template-areas: 
+    grid-template-areas:
         "header header"
         "image info"
         "summary summary"
@@ -34,7 +34,7 @@
 @media screen and (max-width: 650px) {
     .recipeGrid {
         grid-template-columns: auto;
-        grid-template-areas: 
+        grid-template-areas:
             "header"
             "image"
             "info"

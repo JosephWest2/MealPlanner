@@ -5,7 +5,7 @@ export const authOptions: AuthOptions = {
     pages: {
         signIn: "/login",
         newUser: "/register",
-        signOut: "/signout"
+        signOut: "/signout",
     },
     session: { strategy: "jwt" },
     providers: [
@@ -15,15 +15,20 @@ export const authOptions: AuthOptions = {
             type: "oauth",
             clientId: process.env.KROGER_CLIENT_ID,
             clientSecret: process.env.KROGER_CLIENT_SECRET,
-            authorization: { url: "https://api.kroger.com/v1/connect/oauth2/authorize", params: { scope: "profile.compact product.compact cart.basic:write" } },
+            authorization: {
+                url: "https://api.kroger.com/v1/connect/oauth2/authorize",
+                params: {
+                    scope: "profile.compact product.compact cart.basic:write",
+                },
+            },
             token: "https://api.kroger.com/v1/connect/oauth2/token",
             userinfo: "https://api.kroger.com/v1/identity/profile",
             profile(profile: KrogerProfile) {
                 return {
-                    id: profile.data.id
+                    id: profile.data.id,
                 };
             },
-        }
+        },
     ],
     callbacks: {
         async signIn({ profile }) {
@@ -44,16 +49,16 @@ export const authOptions: AuthOptions = {
                 },
                 accessToken: token.accessToken,
                 refreshToken: token.refreshToken,
-                expiresAt: token.expiresAt
+                expiresAt: token.expiresAt,
             };
         },
         jwt: ({ token, account }) => {
             if (account) {
-                token.accessToken = account.access_token,
-                    token.refreshToken = account.refresh_token,
-                    token.expiresAt = Date.now() + 1800 * 1000;
+                (token.accessToken = account.access_token),
+                    (token.refreshToken = account.refresh_token),
+                    (token.expiresAt = Date.now() + 1800 * 1000);
             }
             return token;
-        }
-    }
+        },
+    },
 };

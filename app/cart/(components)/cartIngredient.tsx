@@ -2,7 +2,7 @@
 
 import type { CartIngredient } from "@/types";
 import { useContext, useState } from "react";
-import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
+import { CartContext } from "@/sharedComponents/cartProvider/cartProvider";
 import styles from "./cartIngredient.module.css";
 
 export default function CartIngredient({

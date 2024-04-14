@@ -1,7 +1,6 @@
 import type { Recipe } from "@/types";
 import { ProcessSummary } from "@/lib/processSummary";
 import Link from "next/link";
-import Image from "next/image";
 import styles from "./recipe.module.css";
 
 export default async function RecipeComponent({

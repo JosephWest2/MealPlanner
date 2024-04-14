@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect } from "react";
 import styles from "./addToCart.module.css";
-import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
+import { CartContext } from "@/sharedComponents/cartProvider/cartProvider"
 import { CartRecipe, Recipe } from "@/types";
 
 export default function AddToCart({ recipe }: { recipe: Recipe }) {

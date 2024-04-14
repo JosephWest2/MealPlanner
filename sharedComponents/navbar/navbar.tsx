@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import NavCart from "@/sharedComponents/client/navCart/navCart";
+import NavCart from "../navCart/navCart";
 import styles from "./navbar.module.css";
 import { useState, useEffect } from "react";
 

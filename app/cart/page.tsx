@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./page.module.css";
-import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
+import { CartContext } from "@/sharedComponents/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import type { CartRecipe, Cart } from "@/types";

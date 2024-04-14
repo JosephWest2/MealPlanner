@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./cartIngredients.module.css"
-import { CartContext } from "@/sharedComponents/client/cartProvider/cartProvider";
+import { CartContext } from "@/sharedComponents/cartProvider/cartProvider";
 import { useContext, useState, useEffect } from "react";
 import CartIngredient from "./cartIngredient";
 

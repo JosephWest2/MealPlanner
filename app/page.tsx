@@ -1,8 +1,8 @@
 import type { Key } from "react";
-import RecipeComponent from "@/sharedComponents/server/recipe/recipe";
-import RecipeSearch from "@/sharedComponents/client/recipeSearch/recipeSearch";
+import RecipeComponent from "./(components)/recipe";
+import RecipeSearch from "./(components)/recipeSearch";
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import type { RecipeSearchParamStrings, Recipe, MySession } from "@/types";
+import type { RecipeSearchParamStrings, Recipe } from "@/types";
 import { DecodeNutrientLimits } from "@/lib/nutrientLimits";
 
 async function SearchRecipes(params: RecipeSearchParamStrings) {

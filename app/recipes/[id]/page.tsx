@@ -1,10 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import { getServerSession } from "next-auth";
 import { ProcessSummary } from "@/lib/processSummary";
 import styles from "./page.module.css";
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import AddToCart from "@/sharedComponents/client/addToCart/addToCart";
-import type { MySession } from "@/types";
+import AddToCart from "./(components)/addToCart";
 
 export default async function RecipeDetails({ params }: { params: any }) {
     async function GetRecipe() {
@@ -64,9 +61,8 @@ export default async function RecipeDetails({ params }: { params: any }) {
 
                 <div className={styles.nutrition + " box column"}>
                     <h3 className={styles.calories}>
-                        Calories per serving:{" "}
-                        {Math.round(recipe.nutrition.nutrients[0].amount)}{" "}
-                        {recipe.nutrition.nutrients[0].unit}
+                        Calories:{" "}
+                        {Math.round(recipe.nutrition.nutrients[0].amount)} <span style={{color: "grey"}}>per serving</span>
                     </h3>
                     <h4 className={styles.servingSize}>
                         Serving size: {recipe.nutrition.weightPerServing.amount}{" "}

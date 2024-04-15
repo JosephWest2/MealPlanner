@@ -75,8 +75,8 @@ export default async function RecipeDetails({ params }: { params: any }) {
                                 }
                                 return (
                                     <>
-                                        <p>{nutrient.name}</p>
-                                        <p>
+                                        <p key={nutrient.name + 1}>{nutrient.name}</p>
+                                        <p key={nutrient.name + 2}>
                                             {nutrient.amount} {nutrient.unit}
                                         </p>
                                     </>

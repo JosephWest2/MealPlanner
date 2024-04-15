@@ -8,8 +8,15 @@ import type { Cart } from "@/types";
 import CartIngredients from "./(components)/cartIngredients";
 import { SendPDF } from "@/app/actions/sendPDF";
 import { GetPDF } from "@/app/actions/getPDF";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react"
+import type { MySession } from "@/types";
 
 export default function Cart() {
+    const router = useRouter();
+    const {data: session} = useSession();
+    const _session = session as MySession | undefined
+
     const [isClient, setIsClient] = useState(false);
     const [email, setEmail] = useState<string>();
 
@@ -25,7 +32,9 @@ export default function Cart() {
     }
 
     function DownloadPDF() {
-        if (!cart) {return;}
+        if (!cart) {
+            return;
+        }
         GetPDF(cart).then((res) => {
             if (res) {
                 const link = document.createElement("a");
@@ -39,8 +48,6 @@ export default function Cart() {
     useEffect(() => {
         setIsClient(true);
     }, []);
-
-    
 
     if (
         !cart ||
@@ -59,6 +66,14 @@ export default function Cart() {
         );
     }
 
+    function ContinueWithKroger() {
+        if (_session && _session.user && _session.expiresAt > Date.now()) {
+            router.push("/cart/kroger");
+        } else {
+            signIn("kroger", {redirectUrl: "/cart/kroger"});
+        }
+    }
+
     return (
         <div className="column">
             <div className="column box">
@@ -67,29 +82,39 @@ export default function Cart() {
                     {Object.keys(cart.recipes).map((recipeId, _key) => {
                         const recipeRef = cart.recipes[recipeId];
                         const recipe = recipeRef.recipe;
-                        return (<li
-                            className={styles.recipeRow + " row no-wrap"}
-                            key={_key}
-                        >
-                            <Link href={`/recipes/${recipeId}`}>
-                                • {recipe.name}
-                            </Link>{" "}
-                            {recipeRef.count > 1 ? <p>x{recipeRef.count}</p> : <></>}
-                            <button
-                                className={styles.remove}
-                                onClick={() => {RemoveRecipeFromCart ? RemoveRecipeFromCart(recipeId) : null}}
+                        return (
+                            <li
+                                className={styles.recipeRow + " row no-wrap"}
+                                key={_key}
                             >
-                                remove
-                            </button>
-                        </li>)
+                                <Link href={`/recipes/${recipeId}`}>
+                                    • {recipe.name}
+                                </Link>{" "}
+                                {recipeRef.count > 1 ? (
+                                    <p>x{recipeRef.count}</p>
+                                ) : (
+                                    <></>
+                                )}
+                                <button
+                                    className={styles.remove}
+                                    onClick={() => {
+                                        RemoveRecipeFromCart
+                                            ? RemoveRecipeFromCart(recipeId)
+                                            : null;
+                                    }}
+                                >
+                                    remove
+                                </button>
+                            </li>
+                        );
                     })}
                 </ul>
             </div>
             <CartIngredients></CartIngredients>
             <div className={styles.buttonContainer}>
-                <Link className="btn" href="/cart/kroger">
+                <button onClick={ContinueWithKroger}>
                     Continue with Kroger
-                </Link>
+                </button>
                 <p>or</p>
                 <button onClick={DownloadPDF}>Download list and recipes</button>
                 <div className="conjoinedContainer">

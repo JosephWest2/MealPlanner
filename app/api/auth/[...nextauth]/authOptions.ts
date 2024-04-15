@@ -2,11 +2,6 @@ import { AuthOptions } from "next-auth";
 import type { KrogerProfile } from "@/types";
 
 export const authOptions: AuthOptions = {
-    pages: {
-        signIn: "/login",
-        newUser: "/register",
-        signOut: "/signout",
-    },
     session: { strategy: "jwt" },
     providers: [
         {

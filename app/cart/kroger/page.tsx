@@ -18,18 +18,20 @@ export default async function KrogerCart({
         csp: boolean | undefined;
     };
 }) {
+    const session = (await getServerSession(authOptions)) as MySession;
+    if (!session || !session.accessToken || session.expiresAt < Date.now()) {
+        redirect("/auth/kroger/signin");
+    }
+
     const cookieIngredientsCookie = cookies().get("mtcingredients");
 
     let cookieIngredients;
     if (cookieIngredientsCookie && cookieIngredientsCookie.value) {
-        cookieIngredients = JSON.parse(cookieIngredientsCookie.value) as CookieIngredients;
+        cookieIngredients = JSON.parse(
+            cookieIngredientsCookie.value
+        ) as CookieIngredients;
     } else {
         cookieIngredients = undefined;
-    }
-
-    const session = (await getServerSession(authOptions)) as MySession;
-    if (!session || !session.accessToken || session.expiresAt < Date.now()) {
-        redirect("/auth/kroger/signin");
     }
 
     if (!cookieIngredients) {

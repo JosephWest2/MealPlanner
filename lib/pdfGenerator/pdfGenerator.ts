@@ -74,8 +74,7 @@ export async function GeneratePDF(cart: Cart) {
         }
     }
 
-    for (const recipeId in cart.recipes) {
-        const id = Number(recipeId);
+    for (const id in cart.recipes) {
         const recipe = cart.recipes[id].recipe;
         h1();
         NewPageCheck();
@@ -146,14 +145,21 @@ export async function GeneratePDF(cart: Cart) {
         Underline("Nutrition");
         verticalOffset += newLine;
 
+        let nutritionString = " Serving Size: " + recipe.nutrition.weightPerServing.amount + " " + recipe.nutrition.weightPerServing.unit + ", ";
         for (let j = 0; j < recipe.nutrition.nutrients.length; j++) {
-            console.log("yo");
             const nutrient = recipe.nutrition.nutrients[j];
-            p();
-            AddText(nutrient.name + " " + nutrient.amount + " " + nutrient.unit);
-            verticalOffset += 0.5 * newLine;
-            NewPageCheck();
+            nutritionString +=
+                nutrient.name +
+                " " +
+                nutrient.amount +
+                " " +
+                nutrient.unit +
+                ", ";
         }
+        p();
+        AddText(nutritionString);
+        verticalOffset += 0.5 * newLine;
+        NewPageCheck();
     }
 
     h1();
@@ -169,13 +175,23 @@ export async function GeneratePDF(cart: Cart) {
         if (!ingredient.included) {
             continue;
         }
-        let amountsAndUnits = "";
-        for (let i = 0; i < ingredient.recipeIngredients.length; i++) {
-            const ri = ingredient.recipeIngredients[i];
-            if (i === 0) {
-                amountsAndUnits += Math.round(ri.amount) + " " + ri.unit;
+
+        const _ingredients = {} as { [unit: string]: number };
+        cart.ingredients[ingredientName].recipeIngredients.forEach((ri) => {
+            if (ri.unit in _ingredients) {
+                _ingredients[ri.unit] += ri.amount;
             } else {
-                amountsAndUnits += " +" + Math.round(ri.amount) + " " + ri.unit;
+                _ingredients[ri.unit] = ri.amount;
+            }
+        });
+
+        let amountsAndUnits = "";
+        for (const unit in _ingredients) {
+            if (amountsAndUnits === "") {
+                amountsAndUnits += Math.round(_ingredients[unit]) + " " + unit;
+            } else {
+                amountsAndUnits +=
+                    ", " + Math.round(_ingredients[unit]) + " " + unit;
             }
         }
         doc.text(

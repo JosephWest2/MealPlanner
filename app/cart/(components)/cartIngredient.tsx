@@ -28,7 +28,7 @@ export default function CartIngredient({
         setOverrideValue("");
     }
 
-    const _ingredients = {} as any;
+    const _ingredients = {} as {[unit: string]: number};
     ingredient.recipeIngredients.forEach((i) => {
         if (_ingredients[i.unit]) {
             _ingredients[i.unit] += i.amount;

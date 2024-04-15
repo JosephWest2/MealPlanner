@@ -65,11 +65,8 @@ export default function Cart() {
                 <h2>Recipes</h2>
                 <ul className="column">
                     {Object.keys(cart.recipes).map((recipeId, _key) => {
-                        console.log(cart.recipes);
-                        console.log(Object.keys(cart.recipes));
-                        const recipeRef = cart.recipes[Number(recipeId)];
+                        const recipeRef = cart.recipes[recipeId];
                         const recipe = recipeRef.recipe;
-                        console.log(recipe);
                         return (<li
                             className={styles.recipeRow + " row no-wrap"}
                             key={_key}
@@ -80,7 +77,7 @@ export default function Cart() {
                             {recipeRef.count > 1 ? <p>x{recipeRef.count}</p> : <></>}
                             <button
                                 className={styles.remove}
-                                onClick={() => {RemoveRecipeFromCart ? RemoveRecipeFromCart(Number(recipeId)) : null}}
+                                onClick={() => {RemoveRecipeFromCart ? RemoveRecipeFromCart(recipeId) : null}}
                             >
                                 remove
                             </button>

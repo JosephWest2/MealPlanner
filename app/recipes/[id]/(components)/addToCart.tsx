@@ -3,7 +3,7 @@
 import { useContext, useState, useEffect } from "react";
 import styles from "./addToCart.module.css";
 import { CartContext } from "@/sharedComponents/cartProvider/cartProvider"
-import { CartRecipe, Recipe } from "@/types";
+import { Recipe } from "@/types";
 
 export default function AddToCart({ recipe }: { recipe: Recipe }) {
     const { cart, AddRecipeToCart, RemoveRecipeFromCart } =
@@ -22,11 +22,11 @@ export default function AddToCart({ recipe }: { recipe: Recipe }) {
     }, [cart]);
 
     function Add() {
-        AddRecipeToCart(recipe);
+        AddRecipeToCart && AddRecipeToCart(recipe);
     }
 
     function Remove() {
-        RemoveRecipeFromCart(recipe);
+        RemoveRecipeFromCart && RemoveRecipeFromCart(recipe.id.toString());
     }
 
     function CheckShowRemoveButton() {
@@ -34,11 +34,10 @@ export default function AddToCart({ recipe }: { recipe: Recipe }) {
             return;
         }
         let count = 0;
-        cart.recipes.forEach((_recipe: CartRecipe) => {
-            if (recipe.id == _recipe.id) {
-                count += 1;
-            }
-        });
+        const _id = recipe.id.toString();
+        if (_id in cart.recipes) {
+            count = cart.recipes[_id].count;
+        }
         if (count > 0) {
             setShowRemoveButton(true);
         } else {

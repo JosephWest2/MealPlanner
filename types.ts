@@ -76,12 +76,20 @@ export type Step = {
 
 export type CookieIngredients = {
     [ingredientName: string] : {
-        [unit: string] : number
+        included: boolean;
+        override: string | null;
+        units: {
+            [unit: string] : number
+        }
+        
     }
 }
 
 export type CookieIngredient = {
-    ingredientName: {
+    name: string;
+    included: boolean;
+    override: string | null;
+    units: {
         [unit: string]: number
     }
 }
@@ -121,7 +129,7 @@ export type NormalizedUnitType = "g" | "mL" | "ct" | "unknown";
 export type Cart = {
     count: number;
     recipes: {
-        [id : number] : {
+        [id : string] : {
             recipe: CartRecipe,
             count: number
         }
@@ -142,6 +150,7 @@ export type SPNutrition = {
 }
 
 export type Nutrient = {
+    name: string;
     amount: string;
     unit: string;
 }
@@ -159,7 +168,7 @@ export type CartIngredient = {
 export type RecipeIngredient = {
     amount: number;
     unit: string;
-    recipeId: number;
+    recipeId: string;
 };
 
 export type MySession = Session & {
@@ -198,10 +207,12 @@ export type KrogerProfile = {
 
 export type MappedIngredient = {
     name: string;
+    included: boolean;
+    override: string | null;
     units: {
         [unit: string]: number;
     }
-    productOptions: KrogerProductInfo[];
+    productOptions: KrogerProductInfo[] | undefined;
 };
 
 export type KrogerLocation = {

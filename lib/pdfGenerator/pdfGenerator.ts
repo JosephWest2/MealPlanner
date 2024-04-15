@@ -74,17 +74,12 @@ export async function GeneratePDF(cart: Cart) {
         }
     }
 
-    const found = new Set<number>();
-
-    for (let i = 0; i < cart.recipes.length; i++) {
-        if (found.has(cart.recipes[i].id)) {
-            continue;
-        } else {
-            found.add(cart.recipes[i].id);
-        }
+    for (const recipeId in cart.recipes) {
+        const id = Number(recipeId);
+        const recipe = cart.recipes[id].recipe;
         h1();
         NewPageCheck();
-        doc.text(cart.recipes[i].name, horizontalOffset, verticalOffset);
+        doc.text(recipe.name, horizontalOffset, verticalOffset);
         verticalOffset += 1.25 * newLine;
 
         h2();
@@ -93,7 +88,7 @@ export async function GeneratePDF(cart: Cart) {
         Underline("Ingredients");
         verticalOffset += newLine;
         try {
-            const imageResponse = await fetch(cart.recipes[i].imageURL);
+            const imageResponse = await fetch(recipe.imageURL);
             const buffer = await imageResponse.arrayBuffer();
             const imageURL = Buffer.from(buffer).toString("base64");
             doc.addImage(imageURL, "JPEG", 110, verticalOffset - 5, 80, 50);
@@ -103,7 +98,7 @@ export async function GeneratePDF(cart: Cart) {
         let accumulation = 0;
         for (const ingredientName in cart.ingredients) {
             let ing = cart.ingredients[ingredientName].recipeIngredients.find(
-                (ri) => ri.recipeGUID === cart.recipes[i].guid
+                (ri) => ri.recipeId == id
             );
             if (!ing) {
                 continue;
@@ -134,9 +129,9 @@ export async function GeneratePDF(cart: Cart) {
         Underline("Directions");
         verticalOffset += newLine;
 
-        for (let j = 0; j < cart.recipes[i].instructions.length; j++) {
+        for (let j = 0; j < recipe.instructions.length; j++) {
             p();
-            AddText(j + 1 + ". " + cart.recipes[i].instructions[j]);
+            AddText(j + 1 + ". " + recipe.instructions[j]);
             verticalOffset += 0.5 * newLine;
             NewPageCheck();
         }
@@ -151,9 +146,9 @@ export async function GeneratePDF(cart: Cart) {
         Underline("Nutrition");
         verticalOffset += newLine;
 
-        for (let j = 0; j < cart.recipes[i].nutrition.nutrients.length; j++) {
+        for (let j = 0; j < recipe.nutrition.nutrients.length; j++) {
             console.log("yo");
-            const nutrient = cart.recipes[i].nutrition.nutrients[j];
+            const nutrient = recipe.nutrition.nutrients[j];
             p();
             AddText(nutrient.name + " " + nutrient.amount + " " + nutrient.unit);
             verticalOffset += 0.5 * newLine;

@@ -1,6 +1,5 @@
 import type {
     MySession,
-    CartIngredient,
     MappedIngredient,
     KrogerProductInfo,
     CookieIngredients,
@@ -11,12 +10,12 @@ import { Suspense } from "react";
 import KrogerIngredientsClient from "./krogerIngredientsClient";
 
 async function GetKrogerProductInfo(
-    ingredient: CartIngredient,
+    ingredientName: string,
     session: MySession,
     storeId?: string | undefined,
     filters?: string[]
 ) {
-    let url = `https://api.kroger.com/v1/products?filter.term=${ingredient.name}`;
+    let url = `https://api.kroger.com/v1/products?filter.term=${ingredientName}`;
 
     if (storeId) {
         url += `&filter.locationId=${storeId}`;
@@ -61,7 +60,9 @@ export default async function Ingredients({
 
     let cookieIngredients;
     if (cookieIngredientsCookie && cookieIngredientsCookie.value) {
-        cookieIngredients = JSON.parse(cookieIngredientsCookie.value) as CookieIngredients;
+        cookieIngredients = JSON.parse(
+            cookieIngredientsCookie.value
+        ) as CookieIngredients;
     } else {
         cookieIngredients = undefined;
     }
@@ -71,13 +72,12 @@ export default async function Ingredients({
     }
 
     const promises = [];
-    const keys = Object.keys(cookieIngredients.ingredients);
+    const ingredientNames = Object.keys(cookieIngredients.ingredients);
 
-    for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const ingredient = cookieIngredients.ingredients[key];
+    for (let i = 0; i < ingredientNames.length; i++) {
+        const ingredientName = ingredientNames[i];
         promises.push(
-            GetKrogerProductInfo(ingredient, session, storeId, filters)
+            GetKrogerProductInfo(ingredientName, session, storeId, filters)
         );
     }
 
@@ -85,10 +85,13 @@ export default async function Ingredients({
     let mappedIngredients = [] as MappedIngredient[];
     for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        mappedIngredients[keys[i]] = {
-            cookieIngredient: cookieIngredients.ingredients[keys[i]],
-            productOptions: result.data as KrogerProductInfo[],
-        };
+        mappedIngredients.push({
+            name: ingredientNames[i],
+            included: cookieIngredients[i].included,
+            override: cookieIngredients[i].override,
+            units: cookieIngredients[i].units,
+            productOptions: result.data as KrogerProductInfo[] | undefined,
+        })
     }
 
     return (

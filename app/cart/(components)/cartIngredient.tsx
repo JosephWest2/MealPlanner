@@ -7,8 +7,10 @@ import styles from "./cartIngredient.module.css";
 
 export default function CartIngredient({
     ingredient,
+    ingredientName,
 }: {
     ingredient: CartIngredient;
+    ingredientName: string;
 }) {
     const {
         ToggleIngredientInclusion,
@@ -18,10 +20,10 @@ export default function CartIngredient({
     const [overrideValue, setOverrideValue] = useState<string>();
 
     function Override() {
-        if (ingredient.override) {
-            CancelIngredientOverride(ingredient.name);
-        } else {
-            OverrideIngredient(ingredient.name, overrideValue);
+        if (ingredient.override && CancelIngredientOverride) {
+            CancelIngredientOverride(ingredientName);
+        } else if (OverrideIngredient && overrideValue) {
+            OverrideIngredient(ingredientName, overrideValue);
         }
         setOverrideValue("");
     }
@@ -48,7 +50,7 @@ export default function CartIngredient({
             className={styles.ingredient}
             data-included={ingredient.included}
         >
-            <p className={styles.name}>{ingredient.name}</p>
+            <p className={styles.name}>{ingredientName}</p>
             <p
                 className={styles.amount}
                 data-override={ingredient.override}
@@ -83,7 +85,7 @@ export default function CartIngredient({
                 name="include"
                 id="include"
                 type="checkbox"
-                onClick={() => ToggleIngredientInclusion(ingredient.name)}
+                onClick={() => ToggleIngredientInclusion ? ToggleIngredientInclusion(ingredientName) : null}
                 defaultChecked={ingredient.included || false}
             />
         </li>

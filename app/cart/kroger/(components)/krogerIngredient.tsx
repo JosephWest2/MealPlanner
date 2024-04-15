@@ -18,19 +18,19 @@ export default function Ingredient({
     ) => void;
     ToggleInclusionCallback: (ingredientName: string) => void;
 }) {
-    const cartIngredient = mappedIngredient.cookieIngredient;
 
     const { ToggleIngredientInclusion } = useContext(CartContext);
     const [selectedProductID, setSelectedProductID] = useState<string | null>(
-        mappedIngredient?.productOptions[0]?.productId || null
+        mappedIngredient.productOptions && mappedIngredient.productOptions.length && mappedIngredient.productOptions.length > 0 ? mappedIngredient.productOptions[0].productId : null
     );
     const [productImageURL, setProductImageURL] = useState<string | null>(
-        mappedIngredient?.productOptions[0]?.images.find(
+        mappedIngredient.productOptions && mappedIngredient.productOptions.length && mappedIngredient.productOptions.length > 0 ?
+        mappedIngredient.productOptions[0].images.find(
             (image) => image.perspective == "front"
-        )?.sizes[0].url || null
+        )?.sizes[0].url || null : null
     );
     const [included, setIncluded] = useState(
-        mappedIngredient.cookieIngredient.included
+        mappedIngredient.included
     );
 
     useEffect(() => {
@@ -47,35 +47,35 @@ export default function Ingredient({
 
     function ToggleInclusion() {
         setIncluded(!included);
-        ToggleInclusionCallback(cartIngredient.name);
-        ToggleIngredientInclusion(cartIngredient.name);
+        ToggleInclusionCallback(mappedIngredient.name);
+        ToggleIngredientInclusion && ToggleIngredientInclusion(mappedIngredient.name);
     }
 
     function UpdateSelection(e: ChangeEvent<HTMLSelectElement>) {
         const newID = e.target.value;
         setSelectedProductID(newID);
-        UpdateSelectionCallback(cartIngredient.name, newID);
+        UpdateSelectionCallback && UpdateSelectionCallback(mappedIngredient.name, newID);
     }
 
-    const recipeIngredeints = cartIngredient.recipeIngredients.map((ri, i) => {
+    const recipeIngredients = Object.keys(mappedIngredient.units).map((unit, i) => {
         if (i === 0) {
-            return ri.amount + " " + ri.unit;
+            return mappedIngredient.units[unit] + " " + unit;
         } else {
-            return " + " + ri.amount + " " + ri.unit;
+            return " + " + mappedIngredient.units[unit]  + " " + unit;
         }
     });
 
     return (
         <li className={styles.ingredient} data-included={included}>
-            <p className={styles.name}>{cartIngredient.name}</p>
+            <p className={styles.name}>{mappedIngredient.name}</p>
             <p
                 className={styles.amount}
-                {...(mappedIngredient.cookieIngredient.override && {
+                {...(mappedIngredient.override && {
                     style: { color: "steelblue" },
                 })}
             >
-                {mappedIngredient.cookieIngredient.overrideValue ||
-                    recipeIngredeints}
+                {mappedIngredient.override ||
+                    recipeIngredients}
             </p>
             {selectedProductID ? (
                 <select
@@ -84,7 +84,7 @@ export default function Ingredient({
                     value={selectedProductID || ""}
                     onChange={UpdateSelection}
                 >
-                    {mappedIngredient.productOptions.map((product) => {
+                    {mappedIngredient.productOptions?.map((product) => {
                         return (
                             <option
                                 key={product.productId}

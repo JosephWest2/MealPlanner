@@ -28,6 +28,7 @@ export default function CartIngredients() {
                     const ingredient = cart.ingredients[ingredientName];
                     return (
                         <CartIngredient
+                            ingredientName={ingredientName}
                             ingredient={ingredient}
                             key={ingredientName}
                         ></CartIngredient>

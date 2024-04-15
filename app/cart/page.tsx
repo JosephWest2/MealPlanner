@@ -13,6 +13,8 @@ export default function Cart() {
     const [isClient, setIsClient] = useState(false);
     const [email, setEmail] = useState<string>();
 
+    const { cart, RemoveRecipeFromCart } = useContext(CartContext);
+
     function _SendPDF() {
         if (email) {
             SendPDF(email);
@@ -23,7 +25,8 @@ export default function Cart() {
     }
 
     function DownloadPDF() {
-        GetPDF().then((res) => {
+        if (!cart) {return;}
+        GetPDF(cart).then((res) => {
             if (res) {
                 const link = document.createElement("a");
                 link.href = res;
@@ -37,7 +40,7 @@ export default function Cart() {
         setIsClient(true);
     }, []);
 
-    const { cart, RemoveRecipeFromCart } = useContext(CartContext);
+    
 
     if (
         !cart ||
@@ -62,8 +65,11 @@ export default function Cart() {
                 <h2>Recipes</h2>
                 <ul className="column">
                     {Object.keys(cart.recipes).map((recipeId, _key) => {
+                        console.log(cart.recipes);
+                        console.log(Object.keys(cart.recipes));
                         const recipeRef = cart.recipes[Number(recipeId)];
                         const recipe = recipeRef.recipe;
+                        console.log(recipe);
                         return (<li
                             className={styles.recipeRow + " row no-wrap"}
                             key={_key}

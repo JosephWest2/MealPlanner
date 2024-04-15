@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { MappedIngredient } from "@/types";
 import KrogerIngredient from "./krogerIngredient";
 import AddToKrogerCart from "@/app/actions/addToKrogerCart";
 import { useRouter } from "next/navigation";
+import { CartContext } from "@/sharedComponents/cartProvider/cartProvider";
 
 export default function KrogerIngredientsClient({
     mappedIngredients,
@@ -17,6 +18,8 @@ export default function KrogerIngredientsClient({
             included: boolean;
         };
     };
+    const {cart} = useContext(CartContext);
+
     const [krogerProductsToAddToCart, setKrogerProductsToAddToCart] =
         useState<KPTA>({});
     const [requireEmail, setRequireEmail] = useState(true);
@@ -26,15 +29,16 @@ export default function KrogerIngredientsClient({
 
     useEffect(() => {
         const init = {} as KPTA;
-        for (const key in mappedIngredients) {
+        for (let i = 0; i < mappedIngredients.length; i++) {
+            const mi = mappedIngredients[i];
             if (
-                mappedIngredients[key].cookieIngredient.included &&
-                mappedIngredients[key]?.productOptions.length > 0 &&
-                mappedIngredients[key].productOptions[0].productId
+                mi.included &&
+                mi.productOptions &&
+                mi.productOptions.length > 0 &&
+                mi.productOptions[0].productId
             ) {
-                init[key] = {
-                    productId:
-                        mappedIngredients[key]?.productOptions[0].productId,
+                init[mi.name] = {
+                    productId: mi.productOptions[0].productId,
                     included: true,
                 };
             }
@@ -80,7 +84,12 @@ export default function KrogerIngredientsClient({
             }
         }
 
-        AddToKrogerCart(output, savePDF, email).then((res) => {
+        if (!cart) {
+            alert("cart empty or not found.");
+            return;
+        }
+
+        AddToKrogerCart(output, savePDF, cart, email).then((res) => {
             if (res.success) {
                 if (res.pdf) {
                     const link = document.createElement("a");
@@ -95,18 +104,18 @@ export default function KrogerIngredientsClient({
         });
     }
 
-    const keys = Object.keys(mappedIngredients);
-    keys.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    mappedIngredients.sort((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+    );
 
     return (
         <>
             <ol className="column">
-                {keys.map((key) => {
-                    const ingredient = mappedIngredients[key];
+                {mappedIngredients.map((mi) => {
                     return (
                         <KrogerIngredient
-                            key={key}
-                            mappedIngredient={ingredient}
+                            key={mi.name}
+                            mappedIngredient={mi}
                             UpdateSelectionCallback={UpdateProdudctSelection}
                             ToggleInclusionCallback={ToggleInclusion}
                         ></KrogerIngredient>

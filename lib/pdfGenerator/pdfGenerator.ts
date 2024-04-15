@@ -74,7 +74,14 @@ export async function GeneratePDF(cart: Cart) {
         }
     }
 
+    const found = new Set<number>();
+
     for (let i = 0; i < cart.recipes.length; i++) {
+        if (found.has(cart.recipes[i].id)) {
+            continue;
+        } else {
+            found.add(cart.recipes[i].id);
+        }
         h1();
         NewPageCheck();
         doc.text(cart.recipes[i].name, horizontalOffset, verticalOffset);
@@ -130,6 +137,25 @@ export async function GeneratePDF(cart: Cart) {
         for (let j = 0; j < cart.recipes[i].instructions.length; j++) {
             p();
             AddText(j + 1 + ". " + cart.recipes[i].instructions[j]);
+            verticalOffset += 0.5 * newLine;
+            NewPageCheck();
+        }
+
+        h2();
+        NewPageCheck();
+        if (accumulation < 40) {
+            verticalOffset += 30;
+        }
+        verticalOffset += 0.5 * newLine;
+        doc.text("Nutrition", horizontalOffset, verticalOffset);
+        Underline("Nutrition");
+        verticalOffset += newLine;
+
+        for (let j = 0; j < cart.recipes[i].nutrition.nutrients.length; j++) {
+            console.log("yo");
+            const nutrient = cart.recipes[i].nutrition.nutrients[j];
+            p();
+            AddText(nutrient.name + " " + nutrient.amount + " " + nutrient.unit);
             verticalOffset += 0.5 * newLine;
             NewPageCheck();
         }

@@ -18,7 +18,7 @@ export default function Ingredient({
     ) => void;
     ToggleInclusionCallback: (ingredientName: string) => void;
 }) {
-    const cartIngredient = mappedIngredient.cartIngredient;
+    const cartIngredient = mappedIngredient.cookieIngredient;
 
     const { ToggleIngredientInclusion } = useContext(CartContext);
     const [selectedProductID, setSelectedProductID] = useState<string | null>(
@@ -30,7 +30,7 @@ export default function Ingredient({
         )?.sizes[0].url || null
     );
     const [included, setIncluded] = useState(
-        mappedIngredient.cartIngredient.included
+        mappedIngredient.cookieIngredient.included
     );
 
     useEffect(() => {
@@ -70,11 +70,11 @@ export default function Ingredient({
             <p className={styles.name}>{cartIngredient.name}</p>
             <p
                 className={styles.amount}
-                {...(mappedIngredient.cartIngredient.override && {
+                {...(mappedIngredient.cookieIngredient.override && {
                     style: { color: "steelblue" },
                 })}
             >
-                {mappedIngredient.cartIngredient.overrideValue ||
+                {mappedIngredient.cookieIngredient.overrideValue ||
                     recipeIngredeints}
             </p>
             {selectedProductID ? (

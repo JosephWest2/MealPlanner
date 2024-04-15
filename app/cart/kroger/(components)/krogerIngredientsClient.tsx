@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { MappedIngredients } from "@/types";
+import type { MappedIngredient } from "@/types";
 import KrogerIngredient from "./krogerIngredient";
 import AddToKrogerCart from "@/app/actions/addToKrogerCart";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export default function KrogerIngredientsClient({
     mappedIngredients,
 }: {
-    mappedIngredients: MappedIngredients;
+    mappedIngredients: MappedIngredient[];
 }) {
     type KPTA = {
         [ingrdientName: string]: {
@@ -28,7 +28,7 @@ export default function KrogerIngredientsClient({
         const init = {} as KPTA;
         for (const key in mappedIngredients) {
             if (
-                mappedIngredients[key].cartIngredient.included &&
+                mappedIngredients[key].cookieIngredient.included &&
                 mappedIngredients[key]?.productOptions.length > 0 &&
                 mappedIngredients[key].productOptions[0].productId
             ) {

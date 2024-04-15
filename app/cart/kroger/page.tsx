@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import type { MySession, Cart } from "@/types";
+import type { MySession, Cart, CookieIngredients } from "@/types";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -18,13 +18,13 @@ export default async function KrogerCart({
         csp: boolean | undefined;
     };
 }) {
-    const cartCookie = cookies().get("mtccart");
+    const cookieIngredientsCookie = cookies().get("mtcingredients");
 
-    let cart;
-    if (cartCookie && cartCookie.value) {
-        cart = JSON.parse(cartCookie.value) as Cart;
+    let cookieIngredients;
+    if (cookieIngredientsCookie && cookieIngredientsCookie.value) {
+        cookieIngredients = JSON.parse(cookieIngredientsCookie.value) as CookieIngredients;
     } else {
-        cart = undefined;
+        cookieIngredients = undefined;
     }
 
     const session = (await getServerSession(authOptions)) as MySession;
@@ -32,7 +32,7 @@ export default async function KrogerCart({
         redirect("/auth/kroger/signin");
     }
 
-    if (!cart) {
+    if (!cookieIngredients) {
         return (
             <div className="box column">
                 <h3>Cart is empty</h3>

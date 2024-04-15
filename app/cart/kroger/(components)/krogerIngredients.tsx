@@ -1,9 +1,9 @@
 import type {
     MySession,
-    Cart,
     CartIngredient,
-    MappedIngredients,
+    MappedIngredient,
     KrogerProductInfo,
+    CookieIngredients,
 } from "@/types";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -57,36 +57,36 @@ export default async function Ingredients({
     session: MySession;
     filters: string[];
 }) {
-    const cartCookie = cookies().get("mtccart");
+    const cookieIngredientsCookie = cookies().get("mtcingredients");
 
-    let cart;
-    if (cartCookie && cartCookie.value) {
-        cart = JSON.parse(cartCookie.value) as Cart;
+    let cookieIngredients;
+    if (cookieIngredientsCookie && cookieIngredientsCookie.value) {
+        cookieIngredients = JSON.parse(cookieIngredientsCookie.value) as CookieIngredients;
     } else {
-        cart = undefined;
+        cookieIngredients = undefined;
     }
 
-    if (!cart) {
+    if (!cookieIngredients) {
         return null;
     }
 
     const promises = [];
-    const keys = Object.keys(cart.ingredients);
+    const keys = Object.keys(cookieIngredients.ingredients);
 
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
-        const ingredient = cart.ingredients[key];
+        const ingredient = cookieIngredients.ingredients[key];
         promises.push(
             GetKrogerProductInfo(ingredient, session, storeId, filters)
         );
     }
 
     const results = await Promise.all(promises);
-    let mappedIngredients = {} as MappedIngredients;
+    let mappedIngredients = [] as MappedIngredient[];
     for (let i = 0; i < results.length; i++) {
         const result = results[i];
         mappedIngredients[keys[i]] = {
-            cartIngredient: cart.ingredients[keys[i]],
+            cookieIngredient: cookieIngredients.ingredients[keys[i]],
             productOptions: result.data as KrogerProductInfo[],
         };
     }

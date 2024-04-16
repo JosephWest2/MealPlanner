@@ -158,7 +158,8 @@ export type CartRecipe = {
 
 export type SPNutrition = {
     nutrients: Nutrient[];
-     weightPerServing: Nutrient
+    weightPerServing: Nutrient
+    ingredients: [{unit: string}]
 }
 
 export type Nutrient = {

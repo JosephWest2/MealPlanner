@@ -32,7 +32,7 @@ export default async function RecipeComponent({
                 </p>
                 <p>
                     <b>Calories per serving:</b>{" "}
-                    {Math.round(recipeData.nutrition.nutrients[0].amount)}
+                    {Math.round(Number(recipeData.nutrition.nutrients[0].amount))}
                 </p>
             </div>
 

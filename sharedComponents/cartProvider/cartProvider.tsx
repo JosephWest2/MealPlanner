@@ -174,10 +174,11 @@ export default function CartProvider({ children }: any) {
         for (let i = 0; i < recipe.analyzedInstructions[0].steps.length; i++) {
             steps.push(recipe.analyzedInstructions[0].steps[i].step);
         }
-        if (recipe.id in _cart.recipes) {
-            _cart.recipes[recipe.id].count++;
+        const _id = recipe.id.toString();
+        if (_id in _cart.recipes) {
+            _cart.recipes[_id].count++;
         } else {
-            _cart.recipes[recipe.id] = {
+            _cart.recipes[_id] = {
                 count: 1,
                 recipe: {
                     name: recipe.title,
@@ -199,7 +200,7 @@ export default function CartProvider({ children }: any) {
     function RemoveRecipeFromCart(recipeId: string) {
         let _cart = { ...cart };
         const cartRecipe = _cart.recipes[recipeId];
-        if (!cartRecipe) {
+        if (!(recipeId in _cart.recipes)) {
             return;
         }
         cartRecipe.count--;
@@ -213,12 +214,13 @@ export default function CartProvider({ children }: any) {
                     ingredient.recipeIngredients.splice(i, 1);
                     break;
                 }
+                i++;
             }
             if (ingredient.recipeIngredients.length === 0) {
                 delete _cart.ingredients[ingredientName];
             }
         });
-        if (_cart.recipes[recipeId].count === 0) {
+        if (_cart.recipes[recipeId].count <= 0) {
             delete _cart.recipes[recipeId];
         }
         setCart(_cart);

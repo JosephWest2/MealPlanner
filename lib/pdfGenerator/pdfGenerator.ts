@@ -165,7 +165,7 @@ export async function GeneratePDF(cart: Cart) {
     }
 
     h1();
-    NewPageCheck();
+    NewPage();
     verticalOffset += newLine;
     doc.text("Shopping List", horizontalOffset, verticalOffset);
     verticalOffset += 1.25 * newLine;

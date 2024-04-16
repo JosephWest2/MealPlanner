@@ -66,14 +66,6 @@ export default function Cart() {
         );
     }
 
-    function ContinueWithKroger() {
-        if (_session && _session.user && _session.expiresAt > Date.now()) {
-            router.push("/cart/kroger");
-        } else {
-            signIn("kroger", {redirectUrl: "/cart/kroger"});
-        }
-    }
-
     return (
         <div className="column">
             <div className="column box">
@@ -112,9 +104,9 @@ export default function Cart() {
             </div>
             <CartIngredients></CartIngredients>
             <div className={styles.buttonContainer}>
-                <button onClick={ContinueWithKroger}>
+                <Link href="/cart/kroger">
                     Continue with Kroger
-                </button>
+                </Link>
                 <p>or</p>
                 <button onClick={DownloadPDF}>Download list and recipes</button>
                 <div className="conjoinedContainer">

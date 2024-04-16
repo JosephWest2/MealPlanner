@@ -78,6 +78,29 @@ export async function GeneratePDF(cart: Cart) {
         }
     }
 
+    function AddTextHalfPage(text: string) {
+        let array = [];
+        while (text.length > 0) {
+            let i = 40;
+            if (i >= text.length) {
+                array.push(text);
+                break;
+            }
+            while (i < text.length) {
+                if (text[i] === " ") {
+                    array.push(text.substring(0, i));
+                    text = text.substring(i);
+                    break;
+                }
+                i++;
+            }
+        }
+        for (let i = 0; i < array.length; i++) {
+            doc.text(array[i], horizontalOffset, verticalOffset);
+            verticalOffset += 0.5 * newLine;
+        }
+    }
+
     let count = 0;
     for (const id in cart.recipes) {
         if (count > 0) {
@@ -105,11 +128,7 @@ export async function GeneratePDF(cart: Cart) {
         let accumulation = 0;
         recipe.originalIngredients.forEach(oi => {
             p();
-            doc.text(
-                "• " + oi,
-                horizontalOffset,
-                verticalOffset
-            );
+            AddTextHalfPage("• " + oi);
             verticalOffset += newLine;
             accumulation += newLine;
             NewPageCheck();

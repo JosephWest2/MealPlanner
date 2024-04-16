@@ -7,6 +7,7 @@ import Link from "next/link";
 import Location from "./(components)/location";
 import KrogerIngredients from "./(components)/krogerIngredients";
 import { Suspense } from "react";
+import KrogerSignIn from "./(components)/krogerSignIn";
 
 export default async function KrogerCart({
     searchParams,
@@ -20,7 +21,7 @@ export default async function KrogerCart({
 }) {
     const session = (await getServerSession(authOptions)) as MySession;
     if (!session || !session.accessToken || session.expiresAt < Date.now()) {
-        redirect("/auth/kroger/signin");
+        return <KrogerSignIn></KrogerSignIn>
     }
 
     const cookieIngredientsCookie = cookies().get("mtcingredients");

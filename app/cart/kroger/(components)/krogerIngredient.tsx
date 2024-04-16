@@ -70,9 +70,7 @@ export default function Ingredient({
             <p className={styles.name}>{mappedIngredient.name}</p>
             <p
                 className={styles.amount}
-                {...(mappedIngredient.override && {
-                    style: { color: "steelblue" },
-                })}
+                data-override={mappedIngredient.override}
             >
                 {mappedIngredient.override ||
                     recipeIngredients}
@@ -80,7 +78,6 @@ export default function Ingredient({
             {selectedProductID ? (
                 <select
                     className={styles.options}
-                    style={{ maxWidth: "20rem" }}
                     value={selectedProductID || ""}
                     onChange={UpdateSelection}
                 >

@@ -18,11 +18,15 @@
 .amount {
     grid-area: amount
 }
+.amount[data-override="true"] {
+    color: steelblue;
+}
 .name {
     grid-area: name;
 }
 .options {
     grid-area: options;
+    width: 19rem;
 }
 .image {
     grid-area: image;

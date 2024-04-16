@@ -17,10 +17,14 @@ export async function GeneratePDF(cart: Cart) {
 
     function NewPageCheck() {
         if (verticalOffset > 280) {
-            doc.addPage();
-            verticalOffset = 20;
-            horizontalOffset = 20;
+            NewPage();
         }
+    }
+
+    function NewPage() {
+        doc.addPage();
+        verticalOffset = 20;
+        horizontalOffset = 20;
     }
 
     function h1() {
@@ -74,7 +78,11 @@ export async function GeneratePDF(cart: Cart) {
         }
     }
 
+    let count = 0;
     for (const id in cart.recipes) {
+        if (count > 0) {
+            NewPage();
+        }
         const recipe = cart.recipes[id].recipe;
         h1();
         NewPageCheck();
@@ -145,7 +153,12 @@ export async function GeneratePDF(cart: Cart) {
         Underline("Nutrition");
         verticalOffset += newLine;
 
-        let nutritionString = " Serving Size: " + recipe.nutrition.weightPerServing.amount + " " + recipe.nutrition.weightPerServing.unit + ", ";
+        let nutritionString =
+            " Serving Size: " +
+            recipe.nutrition.weightPerServing.amount +
+            " " +
+            recipe.nutrition.weightPerServing.unit +
+            ", ";
         for (let j = 0; j < recipe.nutrition.nutrients.length; j++) {
             const nutrient = recipe.nutrition.nutrients[j];
             nutritionString +=
@@ -159,7 +172,7 @@ export async function GeneratePDF(cart: Cart) {
         p();
         AddText(nutritionString);
         verticalOffset += 0.5 * newLine;
-        NewPageCheck();
+        count ++;
     }
 
     h1();

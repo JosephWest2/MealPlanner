@@ -21,7 +21,11 @@ export default async function KrogerCart({
 }) {
     const session = (await getServerSession(authOptions)) as MySession;
     if (!session || !session.accessToken || session.expiresAt < Date.now()) {
-        return <KrogerSignIn></KrogerSignIn>
+        return (
+            <div className="box column" style={{ marginTop: "2rem" }}>
+                <KrogerSignIn></KrogerSignIn>
+            </div>
+        );
     }
 
     const cookieIngredientsCookie = cookies().get("mtcingredients");

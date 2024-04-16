@@ -104,7 +104,7 @@ export default function Cart() {
             </div>
             <CartIngredients></CartIngredients>
             <div className={styles.buttonContainer}>
-                <Link href="/cart/kroger">
+                <Link className="btn" href="/cart/kroger">
                     Continue with Kroger
                 </Link>
                 <p>or</p>

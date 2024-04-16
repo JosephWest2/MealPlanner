@@ -129,7 +129,7 @@ export async function GeneratePDF(cart: Cart) {
         recipe.originalIngredients.forEach(oi => {
             p();
             AddTextHalfPage("• " + oi);
-            verticalOffset += newLine;
+            verticalOffset += 0.5 * newLine;
             accumulation += newLine;
             NewPageCheck();
         })

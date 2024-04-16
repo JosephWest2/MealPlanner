@@ -8,14 +8,8 @@ import type { Cart } from "@/types";
 import CartIngredients from "./(components)/cartIngredients";
 import { SendPDF } from "@/app/actions/sendPDF";
 import { GetPDF } from "@/app/actions/getPDF";
-import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react"
-import type { MySession } from "@/types";
 
 export default function Cart() {
-    const router = useRouter();
-    const {data: session} = useSession();
-    const _session = session as MySession | undefined
 
     const [isClient, setIsClient] = useState(false);
     const [email, setEmail] = useState<string>();
@@ -23,11 +17,13 @@ export default function Cart() {
     const { cart, RemoveRecipeFromCart } = useContext(CartContext);
 
     function _SendPDF() {
-        if (email) {
-            SendPDF(email);
+        if (email && cart) {
+            SendPDF(email, cart);
             alert("Email Sent to " + email);
-        } else {
+        } else if (!email) {
             alert("Please enter your email.");
+        } else {
+            alert("Cart is empty.");
         }
     }
 

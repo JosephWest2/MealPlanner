@@ -110,7 +110,7 @@ export default function KrogerIngredientsClient({
 
     return (
         <>
-            <ol className="column">
+            <ol className="column" style={{maxWidth: "75rem"}}>
                 {mappedIngredients.map((mi) => {
                     return (
                         <KrogerIngredient

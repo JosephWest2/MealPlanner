@@ -41,7 +41,7 @@ export type Recipe = {
     healthScore: Number;
     creditsText: string;
     license: string;
-    nutrition: any;
+    nutrition: SPNutrition;
     sourceName: string;
     pricePerServing: Number;
     extendedIngredients: Ingredient[];
@@ -106,7 +106,18 @@ export type Ingredient = {
     amount: number;
     unit: string;
     meta: [];
-    measures: [Object];
+    measures: {
+        metric: {
+            amount: number;
+            unitLong: string;
+            unitShort: string;
+        },
+        us: {
+            amount: number;
+            unitLong: string;
+            unitShort: string;
+        }
+    };
 };
 
 export type Nutrition = {
@@ -142,6 +153,7 @@ export type CartRecipe = {
     imageURL: string;
     nutrition: SPNutrition;
     instructions: string[];
+    originalIngredients: string[];
 };
 
 export type SPNutrition = {

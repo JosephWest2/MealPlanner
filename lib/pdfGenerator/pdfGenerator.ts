@@ -103,28 +103,17 @@ export async function GeneratePDF(cart: Cart) {
             console.log(e);
         }
         let accumulation = 0;
-        for (const ingredientName in cart.ingredients) {
-            let ing = cart.ingredients[ingredientName].recipeIngredients.find(
-                (ri) => ri.recipeId == id
-            );
-            if (!ing) {
-                continue;
-            }
+        recipe.originalIngredients.forEach(oi => {
             p();
             doc.text(
-                "• " +
-                    ingredientName +
-                    ": " +
-                    Math.round(ing.amount) +
-                    " " +
-                    ing.unit,
+                "• " + oi,
                 horizontalOffset,
                 verticalOffset
             );
             verticalOffset += newLine;
             accumulation += newLine;
             NewPageCheck();
-        }
+        })
 
         h2();
         NewPageCheck();

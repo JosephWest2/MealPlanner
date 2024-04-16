@@ -1,15 +1,24 @@
 "use client";
 
 import { createContext, useState, useEffect } from "react";
-import type { Recipe, NormalizedUnitType, Cart, CookieIngredients } from "@/types";
+import type {
+    Recipe,
+    NormalizedUnitType,
+    Cart,
+    CookieIngredients,
+} from "@/types";
 
 export const CartContext = createContext({
     cart: null as Cart | null,
     AddRecipeToCart: null as null | ((r: Recipe) => void),
     RemoveRecipeFromCart: null as null | ((recipeId: string) => void),
     ClearCart: null as null | (() => void),
-    ToggleIngredientInclusion: null as null | ((ingredientName: string) => void),
-    OverrideIngredient: null as null | ((ingrdientName: string, overrideValue: string) => void),
+    ToggleIngredientInclusion: null as
+        | null
+        | ((ingredientName: string) => void),
+    OverrideIngredient: null as
+        | null
+        | ((ingrdientName: string, overrideValue: string) => void),
     CancelIngredientOverride: null as null | ((ingredientName: string) => void),
 });
 
@@ -33,20 +42,28 @@ export default function CartProvider({ children }: any) {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const cookieIngredients = {} as CookieIngredients;
-            Object.keys(cart.ingredients).forEach(ingredientName => {
+            Object.keys(cart.ingredients).forEach((ingredientName) => {
                 const ingredient = cart.ingredients[ingredientName];
-                const ci = {units: {}} as {units: {[unit: string] : number}, included: boolean, override: string | null};
-                ingredient.recipeIngredients.forEach(recipeIngredient => {
+                const ci = { units: {} } as {
+                    units: { [unit: string]: number };
+                    included: boolean;
+                    override: string | null;
+                };
+                ingredient.recipeIngredients.forEach((recipeIngredient) => {
                     if (ci.units[recipeIngredient.unit]) {
-                        ci.units[recipeIngredient.unit] += recipeIngredient.amount;
+                        ci.units[recipeIngredient.unit] +=
+                            recipeIngredient.amount;
                     } else {
-                        ci.units[recipeIngredient.unit] = recipeIngredient.amount;
+                        ci.units[recipeIngredient.unit] =
+                            recipeIngredient.amount;
                     }
-                })
+                });
                 ci.included = ingredient.included;
-                ingredient.override && ingredient.overrideValue !== null ? ci.override = ingredient.overrideValue : ci.override = null;
+                ingredient.override && ingredient.overrideValue !== null
+                    ? (ci.override = ingredient.overrideValue)
+                    : (ci.override = null);
                 cookieIngredients[ingredientName] = ci;
-            })
+            });
             let cookieString = `mtcingredients=${JSON.stringify(
                 cookieIngredients
             )}; expires=${new Date(
@@ -122,15 +139,24 @@ export default function CartProvider({ children }: any) {
         let _cart = { ...cart };
         for (let i = 0; i < recipe.extendedIngredients.length; i++) {
             const ingredient = recipe.extendedIngredients[i];
-            if (ingredient.name in _cart.ingredients) {
-                const ingredientInCart = _cart.ingredients[ingredient.name];
+            const levenshtein = require('js-levenshtein');
+            const distanceNormalized = (ingredient.name.length - levenshtein(ingredient.name, ingredient.nameClean)) / ingredient.name.length;
+            let usedName;
+            if (distanceNormalized < 0.5) {
+                usedName = ingredient.name;
+            } else {
+                usedName = ingredient.nameClean;
+            }
+            if (usedName in _cart.ingredients) {
+                const ingredientInCart =
+                    _cart.ingredients[usedName];
                 ingredientInCart.recipeIngredients.push({
                     amount: ingredient.amount,
                     unit: ingredient.unit,
                     recipeId: recipe.id.toString(),
                 });
             } else {
-                _cart.ingredients[ingredient.name] = {
+                _cart.ingredients[usedName] = {
                     included: true,
                     override: false,
                     overrideValue: null,
@@ -149,7 +175,7 @@ export default function CartProvider({ children }: any) {
             steps.push(recipe.analyzedInstructions[0].steps[i].step);
         }
         if (recipe.id in _cart.recipes) {
-            _cart.recipes[recipe.id].count ++;
+            _cart.recipes[recipe.id].count++;
         } else {
             _cart.recipes[recipe.id] = {
                 count: 1,
@@ -157,10 +183,14 @@ export default function CartProvider({ children }: any) {
                     name: recipe.title,
                     imageURL: recipe.image,
                     instructions: steps,
-                    nutrition: recipe.nutrition
-                }
-
-            }
+                    nutrition: recipe.nutrition,
+                    originalIngredients: recipe.extendedIngredients.map(
+                        (ei) => {
+                            return ei.original;
+                        }
+                    ),
+                },
+            };
         }
         _cart.count++;
         setCart(_cart);
@@ -169,10 +199,12 @@ export default function CartProvider({ children }: any) {
     function RemoveRecipeFromCart(recipeId: string) {
         let _cart = { ...cart };
         const cartRecipe = _cart.recipes[recipeId];
-        if (!cartRecipe) {return}
+        if (!cartRecipe) {
+            return;
+        }
         cartRecipe.count--;
         _cart.count--;
-        Object.keys(_cart.ingredients).forEach(ingredientName => {
+        Object.keys(_cart.ingredients).forEach((ingredientName) => {
             const ingredient = _cart.ingredients[ingredientName];
             let i = 0;
             while (i < ingredient.recipeIngredients.length) {
@@ -185,7 +217,10 @@ export default function CartProvider({ children }: any) {
             if (ingredient.recipeIngredients.length === 0) {
                 delete _cart.ingredients[ingredientName];
             }
-        })
+        });
+        if (_cart.recipes[recipeId].count === 0) {
+            delete _cart.recipes[recipeId];
+        }
         setCart(_cart);
     }
 

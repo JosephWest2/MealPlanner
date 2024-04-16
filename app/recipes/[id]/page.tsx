@@ -2,8 +2,9 @@ import { ProcessSummary } from "@/lib/processSummary";
 import styles from "./page.module.css";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import AddToCart from "./(components)/addToCart";
+import { Recipe } from "@/types";
 
-export default async function RecipeDetails({ params }: { params: any }) {
+export default async function RecipeDetails({ params }: { params: {id: string} }) {
     async function GetRecipe() {
         const id = params.id;
         const fileData = existsSync("./devData/devRecipe.json")
@@ -27,11 +28,14 @@ export default async function RecipeDetails({ params }: { params: any }) {
                 JSON.stringify(_recipe),
                 "utf8"
             );
-            return _recipe;
+            return _recipe as Recipe;
         }
     }
 
-    const recipe = await GetRecipe();
+    const recipe = await GetRecipe() as Recipe | undefined;
+    if (!recipe ||  recipe.id === undefined) {
+        return <h2 className="box column">Unable to fetch recipe</h2>
+    }
 
     return (
         <>
@@ -60,7 +64,7 @@ export default async function RecipeDetails({ params }: { params: any }) {
                 <div className={styles.nutrition + " box column"}>
                     <h3 className={styles.calories}>
                         Calories:{" "}
-                        {Math.round(recipe.nutrition.nutrients[0].amount)}{" "}
+                        {Math.round(Number(recipe.nutrition.nutrients[0].amount))}{" "}
                         <span style={{ color: "grey" }}>per serving</span>
                     </h3>
                     <h4 className={styles.servingSize}>
@@ -69,7 +73,7 @@ export default async function RecipeDetails({ params }: { params: any }) {
                     </h4>
                     <div className={styles.nutrient}>
                         {recipe.nutrition.nutrients.map(
-                            (nutrient: any, i: number) => {
+                            (nutrient, i) => {
                                 if (nutrient.name == "Calories") {
                                     return <></>;
                                 }
@@ -89,7 +93,7 @@ export default async function RecipeDetails({ params }: { params: any }) {
                 <ul className={styles.ingredients + " box"}>
                     <h2>Ingredients</h2>
                     {recipe.extendedIngredients.map(
-                        (ingredient: any, i: number) => {
+                        (ingredient, i) => {
                             return (
                                 <li className={styles.ingredient} key={i}>
                                     {ingredient.original}
@@ -101,7 +105,7 @@ export default async function RecipeDetails({ params }: { params: any }) {
                 <ol className={styles.instructions + " box"}>
                     <h2>Instructions</h2>
                     {recipe.analyzedInstructions[0].steps.map(
-                        (step: any, i: number) => {
+                        (step, i) => {
                             return (
                                 <li className={styles.instruction} key={i}>
                                     {step.step}

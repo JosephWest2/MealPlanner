@@ -58,7 +58,7 @@ export default async function Ingredients({
 }) {
     const cookieIngredientsCookie = cookies().get("mtcingredients");
 
-    let cookieIngredients;
+    let cookieIngredients = undefined as CookieIngredients | undefined;
     if (cookieIngredientsCookie && cookieIngredientsCookie.value) {
         cookieIngredients = JSON.parse(
             cookieIngredientsCookie.value
@@ -72,7 +72,7 @@ export default async function Ingredients({
     }
 
     const promises = [];
-    const ingredientNames = Object.keys(cookieIngredients.ingredients);
+    const ingredientNames = Object.keys(cookieIngredients);
 
     for (let i = 0; i < ingredientNames.length; i++) {
         const ingredientName = ingredientNames[i];
@@ -85,11 +85,13 @@ export default async function Ingredients({
     let mappedIngredients = [] as MappedIngredient[];
     for (let i = 0; i < results.length; i++) {
         const result = results[i];
+        const ingredientName = ingredientNames[i];
+        const ingredient = cookieIngredients[ingredientName];
         mappedIngredients.push({
-            name: ingredientNames[i],
-            included: cookieIngredients[i].included,
-            override: cookieIngredients[i].override,
-            units: cookieIngredients[i].units,
+            name: ingredientName,
+            included: ingredient.included,
+            override: ingredient.override,
+            units: ingredient.units,
             productOptions: result.data as KrogerProductInfo[] | undefined,
         })
     }

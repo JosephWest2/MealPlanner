@@ -20,7 +20,7 @@ export default async function KrogerCart({
 }) {
     const session = (await getServerSession(authOptions)) as MySession;
     if (!session || !session.accessToken || session.expiresAt < Date.now()) {
-        redirect("/auth/kroger/signin");
+        redirect("/cart");
     }
 
     const cookieIngredientsCookie = cookies().get("mtcingredients");

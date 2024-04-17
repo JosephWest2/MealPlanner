@@ -1,17 +1,11 @@
 import type { Key } from "react";
 import RecipeComponent from "./(components)/recipe";
 import RecipeSearch from "./(components)/recipeSearch";
-import { readFileSync, writeFileSync, existsSync } from "fs";
 import type { RecipeSearchParamStrings, Recipe } from "@/types";
 import { DecodeNutrientLimits } from "@/lib/nutrientLimits";
 
 async function SearchRecipes(params: RecipeSearchParamStrings) {
-    const fileData = existsSync("./devData/devRecipes.json")
-        ? readFileSync("./devData/devRecipes.json", "utf8")
-        : null;
-    if (process.env.NODE_ENV === "development" && fileData) {
-        return JSON.parse(fileData);
-    } else {
+    
         const apiKey = process.env.SPOONACULAR_API_KEY;
         let searchParamString = `?apiKey=${apiKey}&instructionsRequired=true&sort=popularity&addRecipeInformation=true&addRecipeNutrition=true&number=20`;
         params.query ? (searchParamString += `&query=${params.query}`) : "";
@@ -39,17 +33,10 @@ async function SearchRecipes(params: RecipeSearchParamStrings) {
             { next: { revalidate: 3600 } }
         );
         if (!response.ok) {
-            console.log(response.status);
-            throw new Error("Failed to fetch recipes.");
+            return "Failed to fetch recipes.";
         }
         const data = await response.json();
-        writeFileSync(
-            "./devData/devRecipes.json",
-            JSON.stringify(data.results),
-            "utf8"
-        );
-        return data?.results;
-    }
+        return data?.results as Array<Recipe> | undefined;
 }
 
 export default async function Home({
@@ -57,26 +44,20 @@ export default async function Home({
 }: {
     searchParams: RecipeSearchParamStrings;
 }) {
-    const recipes = (await SearchRecipes(searchParams)) as Array<Recipe>;
-    let unitsArray = existsSync("./devData/units.json")
-        ? JSON.parse(readFileSync("./devData/units.json", "utf8"))
-        : null;
-    let units = new Set<string>();
-    if (unitsArray) {
-        units = new Set<string>(unitsArray);
+
+    const recipes = await SearchRecipes(searchParams);
+
+    if (!recipes || recipes == "Failed to fetch recipes." || recipes.length == 0) {
+        return <div className="column">
+            <RecipeSearch></RecipeSearch>
+            <h2>Unable to fetch recipes.</h2>
+        </div>
     }
-    recipes.forEach((recipe: Recipe) => {
-        for (let i = 0; i < recipe.nutrition.ingredients.length; i++) {
-            units.add(recipe.nutrition.ingredients[i].unit);
-        }
-    });
-    unitsArray = Array.from(units.values());
-    writeFileSync("./devData/units.json", JSON.stringify(unitsArray), "utf8");
 
     return (
         <div className="column">
             <RecipeSearch></RecipeSearch>
-            {recipes?.map((recipe: Recipe, _key: Key) => {
+            {recipes.map((recipe: Recipe, _key: Key) => {
                 return (
                     <div key={_key}>
                         <RecipeComponent recipeData={recipe}></RecipeComponent>

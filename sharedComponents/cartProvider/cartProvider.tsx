@@ -171,9 +171,16 @@ export default function CartProvider({ children }: any) {
             }
         }
         const steps = [] as string[];
-        for (let i = 0; i < recipe.analyzedInstructions[0].steps.length; i++) {
-            steps.push(recipe.analyzedInstructions[0].steps[i].step);
+        if (recipe.analyzedInstructions.length > 0) {
+            for (let i = 0; i < recipe.analyzedInstructions[0].steps.length; i++) {
+                steps.push(recipe.analyzedInstructions[0].steps[i].step);
+            }
+        } else if (recipe.instructions) {
+            steps.push(recipe.instructions);
+        } else {
+            steps.push("Instructions not found.");
         }
+        
         const _id = recipe.id.toString();
         if (_id in _cart.recipes) {
             _cart.recipes[_id].count++;

@@ -27,6 +27,22 @@ export default async function RecipeDetails({
         return <h2 className="box column">Unable to fetch recipe</h2>;
     }
 
+    let instructions = <p>Instructions not found</p>;
+    if (recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0) {
+        instructions = <>{recipe.analyzedInstructions[0].steps.map((step, i) => {
+            return (
+                <li className={styles.instruction} key={i}>
+                    {step.step}
+                </li>
+            );
+        })}
+        </>
+    } else if (recipe.instructions) {
+        instructions = <p>{recipe.instructions}</p>
+    } else {
+        console.log(recipe);
+    }
+
     return (
         <>
             <div className={styles.recipe}>
@@ -94,13 +110,7 @@ export default async function RecipeDetails({
                 </ul>
                 <ol className={styles.instructions + " box"}>
                     <h2>Instructions</h2>
-                    {recipe.analyzedInstructions[0].steps.map((step, i) => {
-                        return (
-                            <li className={styles.instruction} key={i}>
-                                {step.step}
-                            </li>
-                        );
-                    })}
+                    {instructions}
                 </ol>
             </div>
             <AddToCart recipe={recipe}></AddToCart>

@@ -39,8 +39,6 @@ export default async function RecipeDetails({
         </>
     } else if (recipe.instructions) {
         instructions = <p>{recipe.instructions}</p>
-    } else {
-        console.log(recipe);
     }
 
     return (

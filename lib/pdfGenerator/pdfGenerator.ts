@@ -57,21 +57,21 @@ export async function GeneratePDF(cart: Cart) {
 
     function AddText(text: string) {
         let array = [];
-        while (text.length > 0) {
+        while (text.length > 90) {
             let i = 90;
-            if (i >= text.length) {
-                array.push(text);
-                break;
-            }
-            while (i < text.length) {
+            while (i > 0) {
                 if (text[i] === " ") {
                     array.push(text.substring(0, i));
                     text = text.substring(i);
                     break;
                 }
-                i++;
+                i--;
+            }
+            if ( i == 0) {
+                break;
             }
         }
+        array.push(text);
         for (let i = 0; i < array.length; i++) {
             doc.text(array[i], horizontalOffset, verticalOffset);
             verticalOffset += 0.5 * newLine;
@@ -80,21 +80,21 @@ export async function GeneratePDF(cart: Cart) {
 
     function AddTextHalfPage(text: string) {
         let array = [];
-        while (text.length > 0) {
+        while (text.length > 40) {
             let i = 40;
-            if (i >= text.length) {
-                array.push(text);
-                break;
-            }
-            while (i < text.length) {
+            while (i > 0) {
                 if (text[i] === " ") {
                     array.push(text.substring(0, i));
                     text = text.substring(i);
                     break;
                 }
-                i++;
+                i--;
+            }
+            if ( i == 0) {
+                break;
             }
         }
+        array.push(text);
         for (let i = 0; i < array.length; i++) {
             doc.text(array[i], horizontalOffset, verticalOffset);
             verticalOffset += 0.5 * newLine;
@@ -224,5 +224,5 @@ export async function GeneratePDF(cart: Cart) {
         NewPageCheck();
     }
 
-    return doc.output("dataurlstring", { filename: "MTCOrder" });
+    return doc.output("dataurlstring", { filename: "M2COrder" });
 }

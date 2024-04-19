@@ -1,12 +1,12 @@
 "use server";
 
 
-const crypto = require('node:crypto');
+import { createHmac } from "crypto";
 
 export async function VerifyJWT(jwt: string) {
     const parts = jwt.split(".");
 
-    const hmac = crypto.createHmac("sha256", process.env.AUTH_SECRET);
+    const hmac = createHmac("sha256", process.env.AUTH_SECRET!);
     hmac.setEncoding("base64");
     hmac.update(parts[0] + "." + parts[1]);
     const digest = hmac.digest('base64');
@@ -18,7 +18,7 @@ export async function VerifyJWT(jwt: string) {
 
 export async function GenerateJWT(params: { name: string, value: string }[]) {
 
-    const hmac = crypto.createHmac("sha256", process.env.AUTH_SECRET);
+    const hmac = createHmac("sha256", process.env.AUTH_SECRET!);
     hmac.setEncoding("base64");
 
     const header = {

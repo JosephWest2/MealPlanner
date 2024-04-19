@@ -1,8 +1,6 @@
 "use server";
 
-import type { MySession, Cart } from "@/types";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/authOptions";
+import type { Cart, KrogerJWT } from "@/types";
 import { redirect } from "next/navigation";
 import { GeneratePDF } from "@/lib/pdfGenerator/pdfGenerator";
 import { SendEmail } from "./sendEmail";
@@ -11,13 +9,13 @@ export default async function AddToKrogerCart(
     productIds: string[],
     downloadPDF: boolean,
     cart: Cart,
+    session: KrogerJWT,
     emailAddress?: string
 ) {
-    const session = (await getServerSession(authOptions)) as MySession;
-    if (!session?.accessToken) {
-        redirect("/auth/kroger/signin");
-    }
 
+    if (!session.payload || !session.payload.krogerAccessToken || !session.payload.krogerId) {
+        return {success: false, pdf: null}
+    }
     const productArray = [];
     for (let i = 0; i < productIds.length; i++) {
         const productId = productIds[i];
@@ -30,7 +28,7 @@ export default async function AddToKrogerCart(
         method: "PUT",
         headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + session.accessToken,
+            Authorization: "Bearer " + session.payload.krogerAccessToken,
         },
         body: JSON.stringify({ items: productArray }),
     });

@@ -1,17 +1,15 @@
 "use server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/authOptions";
-import { KrogerLocation, MySession } from "@/types";
+import { KrogerJWT, KrogerLocation } from "@/types";
 import { redirect } from "next/navigation";
 
 export default async function GetNearestKrogerStores(
     latitude: number | undefined,
     longitude: number | undefined,
-    zipCode: string | undefined
+    zipCode: string | undefined,
+    session: KrogerJWT
 ) {
-    const session = (await getServerSession(authOptions)) as MySession;
-    if (!session?.accessToken) {
-        redirect("/auth/kroger/signin");
+    if (!session.payload.krogerAccessToken) {
+        return [];
     }
 
     let query = "";

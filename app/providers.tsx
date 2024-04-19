@@ -1,6 +1,7 @@
 "use client";
 
 import CartProvider from "@/sharedComponents/cartProvider/cartProvider";
+import SessionProvider from "@/sharedComponents/sessionProvider/sessionProvider";
 
 type Props = {
     children?: React.ReactNode;
@@ -9,7 +10,9 @@ type Props = {
 export const Providers = ({ children }: Props) => {
     return (
         <SessionProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+                {children}
+            </CartProvider>
         </SessionProvider>
     );
 };

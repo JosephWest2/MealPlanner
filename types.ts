@@ -1,5 +1,3 @@
-import type { Session, User } from "next-auth";
-
 export type RecipeSearchParams = {
     diet: string | null;
     mealType: string | null;
@@ -75,14 +73,26 @@ export type Step = {
 };
 
 export type CookieIngredients = {
-    [ingredientName: string] : {
+    [ingredientName: string]: {
         included: boolean;
         override: string | null;
         units: {
-            [unit: string] : number
-        }
-        
-    }
+            [unit: string]: number;
+        };
+    };
+};
+
+export interface JWT {
+    header: any;
+    payload: any;
+    signature: any;
+}
+
+export interface KrogerJWT extends JWT {
+    payload: {
+        krogerId: string;
+        krogerAccessToken: string;
+    };
 }
 
 export type CookieIngredient = {
@@ -90,9 +100,9 @@ export type CookieIngredient = {
     included: boolean;
     override: string | null;
     units: {
-        [unit: string]: number
-    }
-}
+        [unit: string]: number;
+    };
+};
 
 export type Ingredient = {
     id: number;
@@ -111,12 +121,12 @@ export type Ingredient = {
             amount: number;
             unitLong: string;
             unitShort: string;
-        },
+        };
         us: {
             amount: number;
             unitLong: string;
             unitShort: string;
-        }
+        };
     };
 };
 
@@ -140,10 +150,10 @@ export type NormalizedUnitType = "g" | "mL" | "ct" | "unknown";
 export type Cart = {
     count: number;
     recipes: {
-        [id : string] : {
-            recipe: CartRecipe,
-            count: number
-        }
+        [id: string]: {
+            recipe: CartRecipe;
+            count: number;
+        };
     };
     ingredients: DynamicIngredients;
 };
@@ -158,15 +168,15 @@ export type CartRecipe = {
 
 export type SPNutrition = {
     nutrients: Nutrient[];
-    weightPerServing: Nutrient
-    ingredients: [{unit: string}]
-}
+    weightPerServing: Nutrient;
+    ingredients: [{ unit: string }];
+};
 
 export type Nutrient = {
     name: string;
     amount: string;
     unit: string;
-}
+};
 export type DynamicIngredients = {
     [ingredientName: string]: CartIngredient;
 };
@@ -184,14 +194,14 @@ export type RecipeIngredient = {
     recipeId: string;
 };
 
-export type MySession = Session & {
+export type MySession = {
     user: MyUser;
     accessToken: string | undefined;
     refreshToken: string | undefined;
     expiresAt: number;
 };
 
-export type MyUser = User & {
+export type MyUser = {
     id: number;
 };
 
@@ -224,7 +234,7 @@ export type MappedIngredient = {
     override: string | null;
     units: {
         [unit: string]: number;
-    }
+    };
     productOptions: KrogerProductInfo[] | undefined;
 };
 

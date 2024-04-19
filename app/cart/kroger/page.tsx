@@ -1,13 +1,11 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import type { MySession, Cart, CookieIngredients } from "@/types";
-import { redirect } from "next/navigation";
+import type { CookieIngredients, KrogerJWT } from "@/types";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import Location from "./(components)/location";
 import KrogerIngredients from "./(components)/krogerIngredients";
 import { Suspense } from "react";
 import KrogerSignIn from "./(components)/krogerSignIn";
+import { ReadJWT } from "@/app/actions/jwt";
 
 export default async function KrogerCart({
     searchParams,
@@ -19,13 +17,23 @@ export default async function KrogerCart({
         csp: boolean | undefined;
     };
 }) {
-    const session = (await getServerSession(authOptions)) as MySession;
-    if (!session || !session.accessToken || session.expiresAt < Date.now()) {
-        return (
-            <div className="box column" style={{ marginTop: "2rem" }}>
-                <KrogerSignIn></KrogerSignIn>
-            </div>
-        );
+    
+    const signin = (
+        <div className="box column" style={{ marginTop: "2rem" }}>
+            <KrogerSignIn
+                clientId={process.env.KROGER_CLIENT_ID!}
+            ></KrogerSignIn>
+        </div>
+    );
+
+    const sessionCookie = cookies().get("session");
+    if (!sessionCookie || !sessionCookie.value) {
+        return signin;
+    }
+
+    let jwt = await ReadJWT(sessionCookie.value);
+    if (!jwt || !jwt.payload.krogerId || jwt.payload.exp < Date.now()) {
+        return signin;
     }
 
     const cookieIngredientsCookie = cookies().get("mtcingredients");
@@ -67,7 +75,7 @@ export default async function KrogerCart({
             <KrogerIngredients
                 storeId={searchParams.storeId}
                 filters={filters}
-                session={session}
+                session={jwt as KrogerJWT}
             ></KrogerIngredients>
         </div>
     );

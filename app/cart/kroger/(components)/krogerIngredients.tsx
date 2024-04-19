@@ -3,6 +3,8 @@ import type {
     MappedIngredient,
     KrogerProductInfo,
     CookieIngredients,
+    JWT,
+    KrogerJWT,
 } from "@/types";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -11,7 +13,7 @@ import KrogerIngredientsClient from "./krogerIngredientsClient";
 
 async function GetKrogerProductInfo(
     ingredientName: string,
-    session: MySession,
+    session: KrogerJWT,
     storeId?: string | undefined,
     filters?: string[]
 ) {
@@ -36,7 +38,7 @@ async function GetKrogerProductInfo(
         method: "GET",
         headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + session.accessToken,
+            Authorization: "Bearer " + session.payload.krogerAccessToken,
         },
     });
 
@@ -53,7 +55,7 @@ export default async function Ingredients({
     filters,
 }: {
     storeId: string | undefined;
-    session: MySession;
+    session: KrogerJWT;
     filters: string[];
 }) {
     const cookieIngredientsCookie = cookies().get("mtcingredients");

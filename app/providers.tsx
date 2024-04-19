@@ -1,6 +1,5 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
 import CartProvider from "@/sharedComponents/cartProvider/cartProvider";
 
 type Props = {
